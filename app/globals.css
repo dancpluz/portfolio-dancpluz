@@ -4,27 +4,24 @@
 
 @layer base {
   :root {
-    --background: #000000;
-    --foreground: #ffffff;
-    --secondary: #141414;
-    --tertiary: #C4C4C4;
+    --background: 0, 0 ,0;
+    --foreground: 255, 255, 255;
+    --secondary: 20, 20, 20;
+    --tertiary: 196, 196, 196;
   }
 
   ::selection {
-    
+    background-color: var(--tertiary);
+    color: var(--background);
   }
+
+  /* body {
+    @apply bg-background text-foreground;
+  }
+
+  
 
   .light {
     
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground;
-  }
+  } */
 }
