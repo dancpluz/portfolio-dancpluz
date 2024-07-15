@@ -9,21 +9,9 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "rgba(var(--background))",
-        foreground: "rgba(var(--foreground))",
-        secondary: "rgba(var(--secondary))",
-        tertiary: "rgba(var(--tertiary))",
+        background: 'rgba(var(--background))',
+        foreground: 'rgba(var(--foreground))',
       },
-      animation: {
-        perspective: 'perspective 1.8s infinite',
-      },
-      keyframes: {
-        perspective: {
-          '0%': { transform: 'perspective(120px)' },
-          ' 50%': { transform: 'perspective(120px)' },
-          '100%': { transform: 'perspective(120px) rotateY(180deg)' },
-        },
-      }
     },
   },
   plugins: [],
