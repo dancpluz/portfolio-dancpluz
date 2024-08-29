@@ -5,9 +5,20 @@
 :root {
   --background: 0, 0, 0;
   --foreground: 255, 255, 255;
+  --alternate: 111, 111, 111;
+  scroll-behavior: smooth !important;
 }
 
 @layer base {
+  .font-outline-1 {
+    -webkit-text-stroke: 1px rgba(var(--foreground));
+    -webkit-text-fill-color: transparent;
+  }
+
+  .pause {
+    animation-play-state: paused;
+  }
+
   body {
     @apply bg-background text-foreground;
   }
