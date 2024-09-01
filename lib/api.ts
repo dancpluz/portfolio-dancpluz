@@ -9,7 +9,7 @@ export function buildImageUrl(record, firstFilename: string) {
 export async function getProjects() {
   try {
     const records = await pb.collection('projects').getFullList({
-      expand: 'icons',
+      expand: 'icon_refs',
     });
     return records;
   }
@@ -22,6 +22,21 @@ export async function getTechnologies() {
   try {
     const records = await pb.collection('icons').getFullList({
       filter: 'technology = true',
+    });
+    console.log('Resultado:', records)
+    return records;
+  }
+  catch (error) {
+    console.log('Erro: ', error)
+    throw (error);
+  }
+}
+
+export async function getExperience() {
+  try {
+    const records = await pb.collection('experience').getFullList({
+      sort: '+start_date',
+      expand: 'icon_ref'
     });
     console.log('Resultado:', records)
     return records;

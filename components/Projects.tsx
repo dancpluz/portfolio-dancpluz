@@ -36,14 +36,14 @@ function Project({ project }) {
   const [onHover, setOnHover] = useState(false)
 
   return (
-    <div onMouseEnter={() => setOnHover(true)} onMouseLeave={() => setOnHover(false)} className='h-[400px] w-[600px] [&>*]:[&>div]:[&>div]:hover:pause overflow-hidden relative flex border border-foreground rounded-3xl px-9 gap-9'>
+    <div onMouseEnter={() => setOnHover(true)} onMouseLeave={() => setOnHover(false)} className='h-[400px] w-[600px] overflow-hidden relative flex border border-foreground rounded-3xl px-9 gap-9'>
       <div className={`flex flex-col py-9 z-10`}>
         <div className='flex flex-col'>
           <div className='flex gap-2'>
             <h1 className="overflow-hidden text-4xl font-bold leading-8 text-white">
               {title.toUpperCase().match(/./g)!.map((char: string, index: number) => (
                 <span
-                  className={`${onHover ? 'animate-text-reveal' : 'opacity-0'} transition-opacity inline-block [animation-fill-mode:backwards]`}
+                  className={`${onHover ? 'animate-text-reveal' : 'opacity-0'} transition-opacity duration-[700ms] inline-block [animation-fill-mode:backwards]`}
                   key={`${char}-${index}`}
                   style={{ animationDelay: `${index * 0.05}s` }}
                 >
@@ -52,19 +52,19 @@ function Project({ project }) {
               ))}
             </h1>
             {link && 
-              <Link href={link} target="_blank">
-                <Image className={`transition-opacity ${onHover ? 'opacity-1' : 'opacity-0'}`} src='link.svg' width={32} height={32} alt={'Ícone Link ' + title} />
+              <Link className='hover:-translate-y-1 transition-transform' href={link} target="_blank">
+                <Image className={`transition-opacity delay-[800ms] duration-[700ms] ${onHover ? 'opacity-1' : 'opacity-0 delay-0'}`} src='link.svg' width={32} height={32} alt={'Ícone Link ' + title} />
               </Link>}
           </div>
-          <h2 className={`text-2xl tracking-widest transition-opacity ${onHover ? 'opacity-1' : 'opacity-0'} delay-[2000ms] duration-[300ms]`}>{subtitle.toUpperCase()}</h2>
+          <h2 style={{ opacity: onHover ? 1 : 0, animationDelay: onHover ? '1000ms' : '0ms' }} className={`text-2xl tracking-widest transition-opacity duration-[700ms]`}>{subtitle.toUpperCase()}</h2>
         </div>
-        <p className={`text-xl tracking-wide py-6 grow transition-opacity ${onHover ? 'opacity-1' : 'opacity-0'} delay-[2000ms] duration-[300ms]`}>{text}</p>
+        <p style={{ opacity: onHover ? 1 : 0, animationDelay: onHover ? '1200ms' : '0ms' }} className={`text-xl tracking-wide py-6 grow transition-opacity duration-[700ms]`}>{text}</p>
         <div className='flex justify-between'>
-          <span className={`text-2xl tracking-widest transition-opacity ${onHover ? 'opacity-1' : 'opacity-0'} delay-[2000ms] duration-[300ms]`}>{formatDate(start_date)} - {end_date ? formatDate(end_date) : 'ATUAL'}</span>
+          <span style={{ opacity: onHover ? 1 : 0, animationDelay: onHover ? '1400ms' : '0ms' }} className={`text-2xl tracking-widest transition-opacity duration-[700ms]`}>{formatDate(start_date)} - {end_date ? formatDate(end_date) : 'ATUAL'}</span>
           <div className='flex gap-1'>
-            {expand.icons.map((icon) => (
+            {expand.icon_refs.map((icon) => (
                 <Link key={icon.alt} href={icon.link} target="_blank">
-                  <Image src={buildImageUrl(icon, icon.icon)} width={32} height={32} alt={icon.alt} />
+                <Image className='hover:-translate-y-1 transition-transform animate-pulse' src={buildImageUrl(icon, icon.icon)} width={32} height={32} alt={icon.alt} />
                 </Link>
               ))}
           </div>
@@ -72,10 +72,10 @@ function Project({ project }) {
       </div>
       <div className='flex flex-col w-[60px] justify-between gap-8 z-10'>
         <div className='flex grow-0'>
-          <h2 className='text-5xl font-extrabold tracking-wide font-outline-1 animate-infinite-scroll-v [writing-mode:vertical-lr]'>{title.toUpperCase()}</h2>
+          <h2 style={{ animationDuration: onHover ? '10s' : '5s' }} className='text-5xl font-extrabold tracking-wide font-outline-1 animate-infinite-scroll-v [writing-mode:vertical-lr]'>{title.toUpperCase()}</h2>
         </div>
         <div className='flex grow-0'>
-          <h2 className='text-5xl font-extrabold tracking-wide font-outline-1 animate-infinite-scroll-v [writing-mode:vertical-lr]'>{title.toUpperCase()}</h2>
+          <h2 style={{ animationDuration: onHover ? '10s' : '5s' }} className='text-5xl font-extrabold tracking-wide font-outline-1 animate-infinite-scroll-v [writing-mode:vertical-lr]'>{title.toUpperCase()}</h2>
         </div>
       </div>
       <Image className='z-0' alt={'test'} src={buildImageUrl(project, cover)} fill />

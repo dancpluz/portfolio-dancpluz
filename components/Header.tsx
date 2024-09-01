@@ -8,7 +8,7 @@ import { useState } from 'react';
 export default function Header({ sections }: { sections: React.RefObject<HTMLDivElement>[] }) {
 
   return (
-    <nav className='sticky z-10 top-0 w-screen flex justify-between py-6 px-40 bg-background/30 backdrop-blur-sm items-center'>
+    <nav className='sticky z-20 top-0 w-screen flex justify-between py-6 px-40 bg-background/30 backdrop-blur-sm items-center'>
       <Link href='#inicio'>
         <Image alt={'Logo Lumentosh'} src={'logo.svg'} height={40} width={66} />
       </Link>

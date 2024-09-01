@@ -47,10 +47,10 @@ export default function HomePage() {
       <div id={sections.inicio.id} ref={sections.inicio.ref} className='h-[100vh]'>
         <h1>Home</h1>
       </div>
-      <div id={sections.projetos.id} ref={sections.projetos.ref} className=''>
+      <div id={sections.projetos.id} ref={sections.projetos.ref}>
         <Projects />
       </div>
-      <div id={sections.sobre.id} ref={sections.sobre.ref} className='h-[100vh]'>
+      <div id={sections.sobre.id} ref={sections.sobre.ref}>
         <About />
       </div>
       <div id={sections.habilidades.id} ref={sections.habilidades.ref} className='h-[100vh]'>
