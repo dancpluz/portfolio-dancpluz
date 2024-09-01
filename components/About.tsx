@@ -1,6 +1,9 @@
 import { buildImageUrl, getExperience, getTechnologies } from '@/lib/api'
 import { useQuery } from '@tanstack/react-query'
 import Image from 'next/image'
+import MyPopup from '@/components/MyPopup';
+import { formatTimeDifference, formatDate } from '@/lib/utils';
+import Link from 'next/link';
 
 function Technologies() {
   const { isPending, isError, data, error } = useQuery({
@@ -50,15 +53,42 @@ function Experience() {
     return <span>Error: {error.message}</span>
   }
 
+  function ExperienceItem({ experience }) {
+    const { expand, title, start_date, end_date } = experience;
+
+    return (
+      <>
+        <div className='flex gap-3 items-center grow'>
+          <div className='h-[2px] bg-foreground grow' />
+          <MyPopup
+          on="hover"
+          trigger={
+            expand.icon_ref.link ? 
+              <Link href={expand.icon_ref.link} target="_blank">
+                <div className='relative w-14 h-14'>
+                  <Image className='object-contain' src={buildImageUrl(expand.icon_ref, expand.icon_ref.icon)} fill alt={expand.icon_ref.alt} />
+                </div>
+              </Link>
+            :
+              <div className='relative w-14 h-14'>
+                <Image className='object-contain' src={buildImageUrl(expand.icon_ref, expand.icon_ref.icon)} fill alt={expand.icon_ref.alt} />
+              </div>
+          }
+          position="top center">
+            <div className='flex flex-col'>
+              <p className='text-base font-extrabold'>{title.toUpperCase()}</p>
+              <span className='text-sm'>{formatTimeDifference(start_date, end_date)} | {formatDate(start_date, end_date)}</span>
+            </div>
+          </MyPopup>
+        </div>
+      </>
+    )
+  }
+
   return (
     <div className='flex items-center gap-3 grow'>
-      {data.map(({ title, expand }) => (
-        <>
-          <div className='h-[2px] bg-foreground grow' />
-          <div key={title} className='relative w-16 h-16'>
-            <Image className='object-contain' src={buildImageUrl(expand.icon_ref, expand.icon_ref.icon)} fill alt={expand.icon_ref.alt} />
-          </div>
-        </>
+      {data.map((experience) => (
+        <ExperienceItem key={experience.title} experience={experience} />
       ))}
       
       <hr className='border-2 border-dashed max-w-24 grow' />
@@ -92,7 +122,10 @@ export default function About() {
               if (value > semester) {
                 return (
                   <>
-                    <div className='w-3 h-3 rounded-full border' />
+                    <MyPopup on="hover" trigger={<div className='w-3 h-3 rounded-full border' />} position="right center">
+                      <span>{value}º Semestre</span>
+                    </MyPopup>
+                    
                     <div className='w-[2px] bg-alternate grow' />
                   </>
                 )
@@ -100,7 +133,10 @@ export default function About() {
               
               return (
                 <>
-                  <div className={`w-3 h-3 rounded-full bg-foreground ${value === semester ? 'before:animate-ping before:absolute before:h-3 before:w-3 before:rounded-full before:content-[""] before:bg-foreground' : ''}`} />
+                  <MyPopup on="hover" trigger={<div className={`w-3 h-3 rounded-full bg-foreground ${value === semester ? 'before:animate-ping before:absolute before:h-3 before:w-3 before:rounded-full before:content-[""] before:bg-foreground' : ''}`} />} position="right center">
+                    <span>{value}º Semestre</span>
+                  </MyPopup>
+                  
                   <div className='w-[2px] bg-foreground grow' />
                 </>
               )

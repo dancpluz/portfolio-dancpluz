@@ -2,25 +2,36 @@ export const angleToRadians = (angle: number) => {
   return angle * (Math.PI / 180)
 }
 
-export function formatDate(dateString: string) {
-  const date = new Date(dateString);
+export function formatDate(startDateString: string, endDateString: string | null = null) {
+  const startDate = new Date(startDateString);
 
-  const months = [
+  const monthsInPortuguese = [
     'JAN', 'FEV', 'MAR', 'ABR', 'MAI', 'JUN',
     'JUL', 'AGO', 'SET', 'OUT', 'NOV', 'DEZ'
   ];
 
-  const month = months[date.getUTCMonth()];
-  const year = date.getUTCFullYear().toString().slice(-2);
+  const formatSingleDate = (date: Date) => {
+    const month = monthsInPortuguese[date.getUTCMonth()];
+    const year = date.getUTCFullYear().toString().slice(-2);
+    return `${month} ${year}`;
+  };
 
-  return `${month} ${year}`;
+  const startFormatted = formatSingleDate(startDate);
+
+  if (endDateString) {
+    const endDate = new Date(endDateString);
+    const endFormatted = formatSingleDate(endDate);
+    return `${startFormatted} - ${endFormatted}`;
+  }
+
+  return `${startFormatted} - ATUAL`;
 }
 
-export function formatTimeDifference(dateString) {
-  const inputDate = new Date(dateString);
-  const today = new Date();
+export function formatTimeDifference(startDateString: string, endDateString: string | null = null) {
+  const startDate = new Date(startDateString);
+  const endDate = endDateString ? new Date(endDateString) : new Date();
 
-  const diffMs = today - inputDate;
+  const diffMs = endDate.getTime() - startDate.getTime();
 
   const years = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 365.25));
   const months = Math.floor((diffMs % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24 * 30.44));
