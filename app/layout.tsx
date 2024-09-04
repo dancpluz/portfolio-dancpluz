@@ -1,8 +1,18 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Public_Sans } from "next/font/google";
+import localFont from 'next/font/local'
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const publicSans = Public_Sans({ 
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
+
+const baseNeue = localFont({
+  src: './BaseNeue-SuperExpandedBlack.ttf',
+  display: 'swap',
+  variable: '--font-base',
+})
 
 export const metadata: Metadata = {
   title: "Portfólio",
@@ -16,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-br">
-      <body className={inter.className}>
+      <body className={`${publicSans.variable} ${baseNeue.variable} sans dark`}>
           {children}
       </body>
     </html>
