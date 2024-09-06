@@ -27,6 +27,8 @@
 
 .sans {
   font-family: var(--font-sans);
+  font-weight: 100;
+  letter-spacing: .025em;
 }
 
 .base {
