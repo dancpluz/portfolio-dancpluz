@@ -1,19 +1,24 @@
 'use client'
 
 import Image from 'next/image';
-import useScrollProgress from '@/hooks/useScrollProgress';
+import { motion, MotionValue, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import { useState } from 'react';
 
-export default function Header({ sections }: { sections: React.RefObject<HTMLDivElement>[] }) {
+type SectionProps = {
+  scroll: MotionValue<number>,
+  icon?: string,
+  id: string,
+}
 
+export default function Header({ sections }: { sections: Record<string, SectionProps> }) {
   return (
     <nav className='sticky z-20 top-0 w-screen flex justify-between py-6 px-40 bg-background/30 backdrop-blur-sm items-center'>
       <Link href='#inicio'>
         <Image alt={'Logo Lumentosh'} src={'logo.svg'} height={40} width={66} />
       </Link>
       <div className='w-full px-80'>
-        <ul className='flex gap-1'>
+        <ul className='flex grow gap-10'>
           <Section section={sections.inicio} />
           <Section section={sections.projetos} />
           <Section section={sections.sobre} />
@@ -22,31 +27,39 @@ export default function Header({ sections }: { sections: React.RefObject<HTMLDiv
         </ul>
       </div>
       <div>
-        <Image alt={'Ícone câmera'} src={'camera.svg'} width={40} height={40} />
+        {/* <Image alt={'Ícone câmera'} src={'camera.svg'} width={40} height={40} /> */}
       </div>
     </nav>
   )
 }
 
-export function Section({ section }) {
-  const { ref, icon, id } = section; 
-  const progress = useScrollProgress(ref);
+export function Section({ section: { scroll, icon, id } }: { section: SectionProps }) {
+
+
+  let percent = ["0%", "100%"];
+
+  const scale = useTransform(scroll, [0, 1], percent)
+  const textOpacity = useTransform(scroll, [0, 0.1, 0.4, 0.5], [0, 1, 1, 0])
+  const iconOpacity = useTransform(scroll, [0.1, 0], [1, 0.7])
+  
   const [hovered, setHovered] = useState(false)
 
   return (
-    <li className={`flex relative w-full items-center pl-8 gap-1 ${progress === 0 ? 'pl-[27px]' : ''}`}>
+    <li className={`flex relative w-full items-center`}>
       {icon &&
-        <Link className={`left-0 absolute transition-opacity rounded-full`} href={'#' + id}>
-          <p style={{ opacity: hovered || progress > 0 && progress <= 20 ? 1 : 0 }} className='absolute transition-opacity left-1/2 transform -translate-x-1/2 bottom-7 text-xs'>
+        <Link onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} className={`-left-8 absolute transition-opacity rounded-full`} href={'#' + id}>
+          <motion.p style={{ opacity: hovered ? 1 : textOpacity  }} className='absolute font-normal transition-opacity left-1/2 transform -translate-x-1/2 bottom-7 text-xs'>
             {id.toUpperCase()}
-          </p>
-          <Image className={'transition-opacity'} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} style={{ opacity: progress > 0 ? 1 : 0.6 }} alt={'Ícone ' + id} src={icon} height={24} width={24} />
+          </motion.p>
+          <motion.div style={{ opacity: hovered ? 1 : iconOpacity }}>
+            <Image className={'transition-opacity'} alt={'Ícone ' + id} src={icon} height={24} width={24} />
+          </motion.div>
         </Link>
       }
-      <div style={{ width: `${progress}%` }} className='h-0.5 bg-foreground w-full' /> {/* Progress bar */}
-      {progress != 100 && progress != 0 && <div className='w-2 h-2 rounded-full bg-foreground' />} {/* Progress dot */}
-
-      <div className='h-0.5 bg-alternate flex-1' /> {/* Background bar */}
+      <div className='absolute w-full h-0.5 bg-alternate flex-1' />
+      <motion.div style={{ width: scale }} className='relative z-10 w-3 h-0.5 bg-foreground' >
+        {/* <div style={{ width: scrollYProgress.get() < 1 ? '0' : '' }} className='rounded-full -right-2 top-1/2 transform -translate-y-1/2 bg-foreground absolute w-2 h-2' /> */}
+      </motion.div>
     </li>
   )
 }
