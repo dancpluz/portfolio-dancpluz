@@ -14,7 +14,7 @@ export default function Footer() {
         <h1 className='text-center text-8xl font-extrabold'>?</h1>
       </div>
       <div className='w-full bg-foreground py-1'>
-        <p className='text-center text-background'>TODOS OS DIRETOS RESERVADOS DANIEL LUZ </p>
+        <p className='text-center font-regular text-background'>TODOS OS DIRETOS RESERVADOS DANIEL LUZ </p>
       </div>
     </>
   )

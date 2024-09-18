@@ -13,11 +13,24 @@ function Technologies() {
   })
 
   if (isPending) {
-    return <span>Loading...</span>
+    return (
+      <div className='flex overflow-hidden justify-between gap-8 [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-200px),transparent_100%)]'>
+        <ul className='min-w-full flex items-center shrink-0 gap-8 justify-between animate-infinite-scroll-h'>
+          {Array(8).fill(null).map((_,i) => (
+              <Image key={i} alt='Carregando' className='animate-spin' src='/loader.svg' width={48} height={48} />
+          ))}
+        </ul>
+        <ul aria-hidden='true' className='min-w-full flex items-center shrink-0 gap-8 justify-between animate-infinite-scroll-h'>
+          {Array(8).fill(null).map((_, i) => (
+              <Image key={i} alt='Carregando' className='animate-spin' src='/loader.svg' width={48} height={48} />
+          ))}
+        </ul>
+      </div>
+    )
   }
 
   if (isError) {
-    return <span>Error: {error.message}</span>
+    return
   }
 
   return (
@@ -47,39 +60,32 @@ function Experience() {
   })
 
   if (isPending) {
-    return <span>Loading...</span>
+    return (
+      <div className='flex items-center gap-3 grow'>
+        {Array(4).fill(null).map((_,i) => (
+          <div key={i} className='flex gap-3 items-center grow'>
+            <div className='h-[2px] bg-foreground grow' />
+            <MyPopup
+              on="hover"
+              trigger={
+                <Image alt='Carregando' className='animate-spin' src='/loader.svg' width={36} height={36} />
+              }
+              position="top center">
+              <div className='flex flex-col'>
+                <p className='text-base font-extrabold'>CARREGANDO...</p>
+              </div>
+            </MyPopup>
+          </div>
+        ))}
+      <hr className='border-2 border-foreground border-dashed max-w-24 grow' />
+    </div>
+    )
   }
 
   if (isError) {
-    return <span>Error: {error.message}</span>
-  }
-
-  function ExperienceItem({ experience }: { experience: ExperienceResponse<IconExpand> }) {
-    const { expand, title, start_date, end_date } = experience;
-
     return (
-      <div className='flex gap-3 items-center grow'>
-        <div className='h-[2px] bg-foreground grow' />
-        <MyPopup
-        on="hover"
-        trigger={
-          expand?.icon_ref.link ? 
-            <Link href={expand.icon_ref.link} target="_blank">
-              <div className='relative w-14 h-14'>
-                <Image className='object-contain' src={buildImageUrl(expand.icon_ref, expand.icon_ref.icon)} fill alt={'Ícone ' + expand.icon_ref.alt} />
-              </div>
-            </Link>
-          :
-            <div className='relative w-14 h-14'>
-              {expand && <Image className='object-contain' src={buildImageUrl(expand.icon_ref, expand.icon_ref.icon)} fill alt={'Ícone ' + expand.icon_ref.alt} />}
-            </div>
-        }
-        position="top center">
-          <div className='flex flex-col'>
-            <p className='text-base font-extrabold'>{title.toUpperCase()}</p>
-            <span className='text-sm tracking-wider'>{formatTimeDifference(start_date, end_date)} | {formatDate(start_date, end_date)}</span>
-          </div>
-        </MyPopup>
+      <div className='flex items-center gap-3 grow'>
+        Ocorreu um Erro Inesperado: {error.message}
       </div>
     )
   }
@@ -93,6 +99,37 @@ function Experience() {
     </div>
   )
 }
+
+function ExperienceItem({ experience }: { experience: ExperienceResponse<IconExpand> }) {
+  const { expand, title, start_date, end_date } = experience;
+
+  return (
+    <div className='flex gap-3 items-center grow'>
+      <div className='h-[2px] bg-foreground grow' />
+      <MyPopup
+        on="hover"
+        trigger={
+          expand?.icon_ref.link ?
+            <Link href={expand.icon_ref.link} target="_blank">
+              <div className='relative w-14 h-14'>
+                <Image className='object-contain' src={buildImageUrl(expand.icon_ref, expand.icon_ref.icon)} fill alt={'Ícone ' + expand.icon_ref.alt} />
+              </div>
+            </Link>
+            :
+            <div className='relative w-14 h-14'>
+              {expand && <Image className='object-contain' src={buildImageUrl(expand.icon_ref, expand.icon_ref.icon)} fill alt={'Ícone ' + expand.icon_ref.alt} />}
+            </div>
+        }
+        position="top center">
+        <div className='flex flex-col'>
+          <p className='text-base font-extrabold'>{title.toUpperCase()}</p>
+          <span className='text-sm tracking-wider'>{formatTimeDifference(start_date, end_date)} | {formatDate(start_date, end_date)}</span>
+        </div>
+      </MyPopup>
+    </div>
+  )
+}
+
 
 export default function About() {
   const semester = 4;

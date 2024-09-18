@@ -22,11 +22,41 @@ export default function Projects() {
   const x = useTransform(scrollYProgress, [0, 1], ["1%", "-95%"])
 
   if (isPending) {
-    return <span>Loading...</span>
+    return (
+      <div ref={targetRef} className='relative h-[300vh]'>
+        <div className='px-40 h-screen overflow-hidden flex items-center sticky top-0'>
+          <motion.div style={{ x }} className='flex gap-12'>
+            {Array(4).fill(null).map((_, i) =>
+              <div key={i} className='h-[400px] w-[600px] overflow-hidden relative justify-center items-center flex border border-foreground rounded-3xl'>
+                <Image alt='Carregando' className='animate-spin' src='/loader.svg' width={48} height={48} />
+              </div>
+            )}
+          </motion.div>
+          {/* {data.map((project) => 
+          <Project key={project.title} project={project} />
+        )} */}
+        </div>
+      </div>
+    )
   }
   
   if (isError) {
-    return <span>Error: {error.message}</span>
+    return (
+      <div ref={targetRef} className='relative h-[300vh]'>
+        <div className='px-40 h-screen overflow-hidden flex items-center sticky top-0'>
+          <motion.div style={{ x }} className='flex gap-12'>
+            {Array(4).fill(null).map((_, i) =>
+              <div key={i} className='h-[400px] w-[600px] overflow-hidden relative justify-center items-center flex border border-foreground rounded-3xl p-9'>
+                Ocorreu um Erro Inesperado: {error.message}
+              </div>
+            )}
+          </motion.div>
+          {/* {data.map((project) => 
+          <Project key={project.title} project={project} />
+        )} */}
+        </div>
+      </div>
+    )
   }
 
   return (
