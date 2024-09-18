@@ -1,7 +1,7 @@
-import { CollectionRecords, ExperienceResponse, IconsResponse, ProjectsResponse, TypedPocketBase } from '@/pocketbase-types';
+import { ExperienceResponse, IconsResponse, ProjectsResponse, TypedPocketBase } from '@/pocketbase-types';
 import PocketBase from 'pocketbase';
 
-const pb = new PocketBase('http://hub.ruadebaixo.com.br:1002') as TypedPocketBase;
+const pb = new PocketBase('/') as TypedPocketBase;
 
 export function buildImageUrl(record: IconsResponse | ProjectsResponse, firstFilename: string) {
   return pb.files.getUrl(record, firstFilename)
