@@ -7,6 +7,8 @@ import Link from 'next/link'
 import { useState, useRef } from 'react'
 import { motion, useTransform, useScroll } from 'framer-motion'
 import { ProjectsResponse } from '@/pocketbase-types'
+import useVerticalScroll from '@/hooks/useVerticalScroll'
+import useMeasure from 'react-use-measure'
 
 
 export default function Projects() {
@@ -32,9 +34,6 @@ export default function Projects() {
               </div>
             )}
           </motion.div>
-          {/* {data.map((project) => 
-          <Project key={project.title} project={project} />
-        )} */}
         </div>
       </div>
     )
@@ -51,9 +50,6 @@ export default function Projects() {
               </div>
             )}
           </motion.div>
-          {/* {data.map((project) => 
-          <Project key={project.title} project={project} />
-        )} */}
         </div>
       </div>
     )
@@ -67,9 +63,6 @@ export default function Projects() {
             <Project key={project.title} project={project} />
           )}
         </motion.div>
-        {/* {data.map((project) => 
-          <Project key={project.title} project={project} />
-        )} */}
       </div>
     </div>
   )
@@ -80,8 +73,12 @@ function Project({ project }: { project: ProjectsResponse<IconsExpand> }) {
 
   const [onHover, setOnHover] = useState(false)
 
+  let [ref, { height }] = useMeasure();
+
+  const { yTranslation, setMustFinish, setDuration } = useVerticalScroll(8, height);
+
   return (
-    <div onMouseEnter={() => setOnHover(true)} onMouseLeave={() => setOnHover(false)} className='h-[400px] w-[600px] overflow-hidden relative flex border border-foreground rounded-3xl px-9 gap-9'>
+    <div onMouseEnter={() => setOnHover(true)} onMouseLeave={() => setOnHover(false)} className='h-[400px] w-[600px] overflow-hidden relative flex border border-foreground rounded-3xl px-9 gap-9 pr-[100px]'>
       <div className={`flex flex-col py-9 z-10`}>
         <div className='flex flex-col'>
           <div className='flex gap-2'>
@@ -115,14 +112,19 @@ function Project({ project }: { project: ProjectsResponse<IconsExpand> }) {
           </div>
         </div>
       </div>
-      <div className='flex flex-col w-[60px] justify-between gap-8 z-10'>
-        <div className='flex grow-0'>
-          <h2 style={{ animationDuration: onHover ? '10s' : '5s' }} className='text-5xl base font-extrabold tracking-wide font-outline-1 animate-infinite-scroll-v [writing-mode:vertical-lr]'>{title.toUpperCase()}</h2>
-        </div>
-        <div className='flex grow-0'>
-          <h2 style={{ animationDuration: onHover ? '10s' : '5s' }} className='text-5xl base font-extrabold tracking-wide font-outline-1 animate-infinite-scroll-v [writing-mode:vertical-lr]'>{title.toUpperCase()}</h2>
-        </div>
-      </div>
+      <motion.div
+        ref={ref}
+        style={{ y: yTranslation }}
+        // onHoverStart={() => { setMustFinish(true); setDuration(8); }}
+        // onHoverEnd={() => { setMustFinish(true); setDuration(12); }}
+        className='right-8 w-max absolute flex flex-col whitespace-nowrap gap-[48px] z-10'
+      >
+        <h2 className='text-5xl base font-extrabold tracking-wide w-12 font-outline-1 [writing-mode:vertical-lr]'>{title.toUpperCase()}</h2>
+        <h2 className='text-5xl base font-extrabold tracking-wide w-12 font-outline-1 [writing-mode:vertical-lr]'>{title.toUpperCase()}</h2>
+      </motion.div>
+      {/* <div className='flex grow-0'>
+        <h2 style={{ animationDuration: onHover ? '10s' : '5s' }} className='text-5xl base font-extrabold tracking-wide font-outline-1 animate-infinite-scroll-v [writing-mode:vertical-lr]'>{title.toUpperCase()}</h2>
+      </div> */}
       {cover &&
         <Image className='z-0' alt={'Fundo ' + title} src={buildImageUrl(project, cover)} fill />
       }

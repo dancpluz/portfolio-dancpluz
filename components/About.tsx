@@ -5,6 +5,10 @@ import MyPopup from '@/components/MyPopup';
 import { formatTimeDifference, formatDate } from '@/lib/utils';
 import Link from 'next/link';
 import { ExperienceResponse } from '@/pocketbase-types';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import useHorizontalScroll from '@/hooks/useHorizontalScroll';
+import useMeasure from 'react-use-measure';
 
 function Technologies() {
   const { isPending, isError, data, error } = useQuery({
@@ -12,43 +16,50 @@ function Technologies() {
     queryFn: getTechnologies,
   })
 
+  const FAST = 30;
+  const SLOW = 60;
+
+  let [ref, { width }] = useMeasure();
+
+  const { xTranslation, setMustFinish, setDuration } = useHorizontalScroll(FAST, width);
+
   if (isPending) {
     return (
-      <div className='flex overflow-hidden justify-between gap-8 [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-200px),transparent_100%)]'>
-        <ul className='min-w-full flex items-center shrink-0 gap-8 justify-between animate-infinite-scroll-h'>
-          {Array(8).fill(null).map((_,i) => (
-              <Image key={i} alt='Carregando' className='animate-spin' src='/loader.svg' width={48} height={48} />
-          ))}
-        </ul>
-        <ul aria-hidden='true' className='min-w-full flex items-center shrink-0 gap-8 justify-between animate-infinite-scroll-h'>
-          {Array(8).fill(null).map((_, i) => (
-              <Image key={i} alt='Carregando' className='animate-spin' src='/loader.svg' width={48} height={48} />
-          ))}
-        </ul>
-      </div>
+      <div className='flex overflow-hidden justify-between'>
+      <motion.ul
+        ref={ref}
+        style={{ x: xTranslation }}
+          className='w-max flex items-center shrink-0 gap-32'>
+        {Array(16).fill(null).map((_, i) => (
+          <div key={i} className='w-12 h-12 relative' >
+            <Image alt='Carregando' className='absolute top-0 left-0 animate-spin' src='/loader.svg' fill />
+          </div>
+          )
+        )}
+      </motion.ul>
+    </div>
     )
   }
 
   if (isError) {
     return
   }
-
+  
   return (
-    <div className='flex overflow-hidden justify-between gap-8 [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-200px),transparent_100%)]'>
-      <ul className='min-w-full flex items-center shrink-0 gap-8 justify-between animate-infinite-scroll-h'>
-        {data.map((tech) => (
-          <li className='w-16' key={tech.alt}>
+    <div className='flex overflow-hidden justify-between'>
+      <motion.ul
+        ref={ref}
+        style={{ x: xTranslation }}
+        onHoverStart={() => { setMustFinish(true); setDuration(SLOW); }}
+        onHoverEnd={() => { setMustFinish(true); setDuration(FAST); }}
+        className='w-max flex items-center shrink-0 gap-12'>
+        {[...data, ...data].map((tech, i) => (
+          <li className='w-16' key={tech.alt + '-' + i}>
             <Image src={buildImageUrl(tech, tech.icon)} width={64} height={64} alt={'Ícone ' + tech.alt} />
           </li>
-        ))}
-      </ul>
-      <ul aria-hidden='true' className='min-w-full flex items-center shrink-0 gap-8 justify-between animate-infinite-scroll-h'>
-        {data.map((tech) => (
-          <li className='w-16' key={tech.alt}>
-            <Image src={buildImageUrl(tech, tech.icon)} width={64} height={64} alt={'Ícone ' + tech.alt} />
-          </li>
-        ))}
-      </ul>
+          )
+        )}
+      </motion.ul>
     </div>
   )
 }
@@ -133,12 +144,25 @@ function ExperienceItem({ experience }: { experience: ExperienceResponse<IconExp
 
 export default function About() {
   const semester = 4;
+  const [isLoaded, setIsLoaded] = useState(false);
   
   return (
     <div className='flex flex-col gap-16 py-16'>
       <div className='flex gap-8 px-40'>
         <div className='relative overflow-hidden h-[500px] w-[800px] rounded-3xl border border-foreground'>
-          <Image className='object-cover' alt='Autor do site Daniel' src={'/daniel.webp'} fill/>
+          <Image
+            className='object-cover'
+            alt='Autor do site Daniel'
+            src={'/daniel.webp'}
+            style={{
+            opacity: isLoaded ? 1 : 0,
+            }}
+            fill
+            onLoad={() => setIsLoaded(true)}
+          />
+          {!isLoaded && 
+          <Image alt='Carregando' className='absolute right-0 left-0 top-0 bottom-0 m-auto animate-spin' src='/loader.svg' width={48} height={48} />
+          }
         </div>
         <div className='flex gap-4 flex-col grow'>
           <div className='flex gap-8'>
