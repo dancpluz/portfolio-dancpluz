@@ -1,6 +1,5 @@
 import { motion, useCycle, AnimatePresence } from "framer-motion";
 import { useEffect } from "react";
-import useMeasure from "react-use-measure";
 
 export default function Footer() {
   return (
@@ -12,8 +11,6 @@ export default function Footer() {
             <p className='text-2xl font-extrabold'>UM</p>
           </div>
           <RevealLinks />
-          {/* <h1 className='text-center text-8xl font-extrabold'>PROJETO UI/UX</h1> */}
-          {/* <h1 layout className='text-center text-8xl font-extrabold'>?</h1> */}
         </div>
         <div className='w-full bg-foreground py-1'>
           <p className='text-center font-regular text-background'>TODOS OS DIRETOS RESERVADOS DANIEL LUZ </p>
@@ -24,15 +21,15 @@ export default function Footer() {
 
 export const RevealLinks = () => {
   return (
-    <motion.section layout className="gridplace-content-left gap-2 text-foreground">
+    <section className="gridplace-content-left gap-2 text-foreground">
       <FlipLinks />
-    </motion.section>
+    </section>
   );
 };
 
-const DURATION = 0.25;
+const DURATION = 0.45;
 const STAGGER = 0.025;
-const INTERVAL = 4;
+const INTERVAL = 3;
 
 export function FlipLinks() {
   const texts = ["Site", "vídeo", "curso", "Portfolio", "Ecommerce", "aplicativo"];
@@ -44,7 +41,6 @@ export function FlipLinks() {
       cycleAnimationState();
     }, INTERVAL * 1000);
 
-    // Clear interval when component unmounts
     return () => clearInterval(interval);
   }, [cycleAnimationState]);
 
@@ -53,15 +49,15 @@ export function FlipLinks() {
       animate={animationState}
       className="relative base overflow-hidden whitespace-nowrap text-8xl font-black uppercase"
       style={{
-        lineHeight: 1,
+        lineHeight: 0.75,
       }}
     >
       <AnimatePresence mode="wait">
         <motion.div className='flex' layout>
-          <motion.h1 className='w-auto text-transparent tracking-widest' layout>
+          <motion.h1 className='text-transparent tracking-widest' layout>
             {texts[Number(animationState)]}
           </motion.h1>
-          <motion.h1 className='w-auto text-foreground tracking-widest' layout>
+          <motion.h1 className='w-auto text-foreground' layout>
             ?
           </motion.h1>
         </motion.div>
@@ -77,7 +73,6 @@ export function FlipLinks() {
             else if (i === nextIndex) return { ...acc, [i]: { y: "-100%", opacity: 0 } }
             else return { ...acc, [i]: { y: "-100%", opacity: 0 } }
           }, {});
-          console.log(variant)
         return (
           <div key={text} className='absolute inset-0'>
             {text.split("").map((l, i) => (
