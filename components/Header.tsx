@@ -52,7 +52,7 @@ export function Section({ section: { scroll, icon, id } }: { section: SectionPro
             {id.toUpperCase()}
           </motion.p>
           <motion.div style={{ opacity: hovered ? 1 : iconOpacity }}>
-            <Image className={'transition-opacity'} alt={'Ícone ' + id} src={icon} height={24} width={24} />
+            <Image priority className={'transition-opacity'} alt={'Ícone ' + id} src={icon} height={24} width={24} />
           </motion.div>
         </Link>
       }

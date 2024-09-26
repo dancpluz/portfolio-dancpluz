@@ -1,10 +1,26 @@
 import Image from 'next/image'
+import { useState } from 'react';
 
 function SkillItem({ title, text, image, alt } : { title: string, text: string, image: string, alt: string }) {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  
   return (
     <div className='flex gap-8 w-full'>
       <div className='shrink-0 transition-transform hover:scale-110 relative w-32 h-32'>
-        <Image alt={'Forma Geométrica 3D ' + alt} src={image} fill />
+        <Image
+          alt={'Forma Geométrica 3D ' + alt}
+          src={image}
+          style={{
+            opacity: imageLoaded ? 1 : 0,
+          }}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          unoptimized
+          onLoad={() => setImageLoaded(true)}
+        />
+        {!imageLoaded && 
+          <Image alt='Carregando' className='absolute right-0 left-0 top-0 bottom-0 m-auto animate-spin' src='/loader.svg' width={48} height={48} />
+        }
       </div>
       <div className='flex flex-col gap-1'>
         <h2 className='text-5xl base'>{title.toUpperCase()}</h2>
