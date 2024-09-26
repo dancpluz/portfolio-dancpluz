@@ -14,6 +14,12 @@ const nextConfig = {
         port: '3000',
         pathname: '/api/files/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'lumentosh',
+        port: '',
+        pathname: '/api/files/**',
+      },
     ],
   },
   async rewrites() {
