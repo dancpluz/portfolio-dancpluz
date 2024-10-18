@@ -11,7 +11,8 @@ export default function useHorizontalScroll(initialDuration: number, width: numb
 
   useEffect(() => {
     let controls;
-    let finalPosition = -width / 2 - 96;
+    let finalPosition = -width / 2 - 48;
+
     if (mustFinish) {
       controls = animate(xTranslation, [xTranslation.get(), finalPosition], {
         ease: 'linear',

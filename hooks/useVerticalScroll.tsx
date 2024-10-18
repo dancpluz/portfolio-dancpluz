@@ -1,6 +1,5 @@
 import { useMotionValue, animate } from "framer-motion";
 import { useEffect, useState } from "react";
-import useMeasure from "react-use-measure";
 
 export default function useVerticalScroll(initialDuration: number, height: number) {
 
