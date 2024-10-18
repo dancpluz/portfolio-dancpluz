@@ -13,11 +13,11 @@ type SectionProps = {
 
 export default function Header({ sections }: { sections: Record<string, SectionProps> }) {
   return (
-    <nav className='sticky z-20 xl:bg-red-200 lg:bg-green-200 md:bg-slate-400 sm:bg-orange-400 top-0 w-screen flex justify-between py-6 px-40 bg-background/30 backdrop-blur-sm items-center'>
+    <nav className='sticky z-20 top-0 w-full flex flex-col gap-8 lg:flex-row justify-between py-6 px-8 lg:px-40 bg-background/30 backdrop-blur-sm items-center'>
       <Link href='#inicio'>
-        <Image alt={'Logo Lumentosh'} src={'logo.svg'} height={40} width={66} />
+        <Image alt={'Logo Lumentosh'} src={'logo.svg'} className='w-[50px] lg:w-[70px] h-auto' height={40} width={66} />
       </Link>
-      <div className='w-full px-80'>
+      <div className='w-full px-4 xl:px-80'>
         <ul className='flex grow gap-10'>
           <Section section={sections.inicio} />
           <Section section={sections.projetos} />
