@@ -1,17 +1,18 @@
 'use client'
 
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import RevealWords from "@/components/RevealWords";
 
 export default function Home() {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   return (
     <div className='min-h-screen relative'>
-      <div
-        className={`absolute top-12 left-0 w-full transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
-      >
+      <div className={`absolute top-12 left-0 w-full transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}>
+        <div className='absolute w-full top-1/2 left-[50%]'>
+          <RevealWords words={["site", "vídeo", "portfolio", "ecommerce", "aplicativo"]} />
+        </div>
         <Image
           priority
           unoptimized

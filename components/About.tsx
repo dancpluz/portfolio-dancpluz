@@ -50,8 +50,8 @@ function Technologies() {
       <motion.ul
         ref={ref}
         style={{ x: xTranslation }}
-        onHoverStart={() => { setMustFinish(true); setDuration(SLOW); }}
-        onHoverEnd={() => { setMustFinish(true); setDuration(FAST); }}
+        // onHoverStart={() => { setMustFinish(true); setDuration(SLOW); }}
+        // onHoverEnd={() => { setMustFinish(true); setDuration(FAST); }}
         className='w-max flex items-center shrink-0 gap-12'>
         {[...data, ...data].map((tech, i) => (
           <li className='w-16' key={tech.alt + '-' + i}>

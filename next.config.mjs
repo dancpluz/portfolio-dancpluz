@@ -16,7 +16,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'lumentosh',
+        hostname: 'lumentosh.com',
         port: '',
         pathname: '/api/files/**',
       },

@@ -5,6 +5,7 @@
 :root {
   scroll-behavior: smooth !important;
   -webkit-font-smoothing: antialiased;
+  user-select: none;
 }
 
 .dark {

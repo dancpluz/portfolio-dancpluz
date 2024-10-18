@@ -53,7 +53,7 @@ export default function Contact() {
       <div className='px-40 py-8 mr-60'>
         <h2 className='text-7xl base'>FALE COMIGO</h2>
         <p className='text-4xl'>Estou aberto a oportunidades e propostas, fique à vontade para mandar mensagem em qualquer meio de comunicação.</p>
-        <div className='absolute -top-10 right-0'>
+        <div className='absolute -top-10 right-0 transition duration-700 hover:-translate-y-16'>
           <Image
             alt='Forma 3D Globo Girando'
             src={'/sphere.webp'}
