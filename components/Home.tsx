@@ -3,15 +3,20 @@
 import Image from "next/image";
 import { useState } from "react";
 import RevealWords from "@/components/RevealWords";
+import Skeleton from "react-loading-skeleton";
+import 'react-loading-skeleton/dist/skeleton.css'
 
 export default function Home() {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   return (
     <div className='min-h-screen relative'>
-      <div className={`absolute top-12 left-0 w-full transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}>
+      <div className={`absolute top-0 left-0 w-full transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}>
+        <div className='absolute w-full top-[calc(50%-85px)] left-[50%]'>
+          <RevealWords interval={6} words={["UI/UX", "Design","ecommerce", "aplicativo"]} />
+        </div>
         <div className='absolute w-full top-1/2 left-[50%]'>
-          <RevealWords words={["site", "vídeo", "portfolio", "ecommerce", "aplicativo"]} />
+          <RevealWords interval={2} invert words={["UI/UX", "Design", "ecommerce", "aplicativo"]} />
         </div>
         <Image
           priority
@@ -30,11 +35,9 @@ export default function Home() {
           onLoad={() => setImageLoaded(true)}
         />
       </div>
-      {!imageLoaded && (
-        <div className="absolute top-12 left-0 w-full max-w-[900px] aspect-square flex items-center justify-center ">
-          <Image alt='Carregando' className='animate-spin' src='/loader.svg' width={48} height={48} />
-        </div>
-      )}
+      {!imageLoaded && 
+        <Skeleton className='w-full h-full' containerClassName='absolute top-16 left-0 size-[900px]' />
+      }
     </div>
   )
 }

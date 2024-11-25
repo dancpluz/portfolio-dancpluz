@@ -9,6 +9,8 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import useHorizontalScroll from '@/hooks/useHorizontalScroll';
 import useMeasure from 'react-use-measure';
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 function Technologies() {
   const { isPending, isError, data, error } = useQuery({
@@ -17,7 +19,7 @@ function Technologies() {
   })
 
   const FAST = 30;
-  const SLOW = 60;
+  const SLOW = 300;
 
   let [ref, { width }] = useMeasure();
 
@@ -29,11 +31,9 @@ function Technologies() {
       <motion.ul
         ref={ref}
         style={{ x: xTranslation }}
-          className='w-max flex items-center shrink-0 gap-32'>
+          className='w-max flex items-center shrink-0 gap-12'>
         {Array(16).fill(null).map((_, i) => (
-          <div key={i} className='w-12 h-12 relative' >
-            <Image alt='Carregando' className='absolute top-0 left-0 animate-spin' src='/loader.svg' fill />
-          </div>
+          <Skeleton key={i} className='h-full w-full' containerClassName='size-16 rounded-lg relative overflow-hidden relative justify-center items-center flex border border-foreground'/>
           )
         )}
       </motion.ul>
@@ -54,9 +54,19 @@ function Technologies() {
         // onHoverEnd={() => { setMustFinish(true); setDuration(FAST); }}
         className='w-max flex items-center shrink-0 gap-12'>
         {[...data, ...data].map((tech, i) => (
-          <li className='w-16' key={tech.alt + '-' + i}>
-            <Image src={buildImageUrl(tech, tech.icon)} width={64} height={64} alt={'Ícone ' + tech.alt} />
-          </li>
+           <MyPopup
+              key={tech.alt + '-' + i}
+              on="hover"
+              trigger={
+                <li className='w-16'>
+                  <Image src={buildImageUrl(tech, tech.icon)} width={64} height={64} alt={'Ícone ' + tech.alt} />
+                </li>
+              }
+              position="top center">
+              <div className='flex flex-col'>
+                <p className='text-base font-semibold'>{tech.alt.replace('Ícone','')}</p>
+              </div>
+            </MyPopup>
           )
         )}
       </motion.ul>
@@ -76,16 +86,7 @@ function Experience() {
         {Array(4).fill(null).map((_,i) => (
           <div key={i} className='flex gap-3 items-center grow'>
             <div className='h-[2px] bg-foreground grow' />
-            <MyPopup
-              on="hover"
-              trigger={
-                <Image alt='Carregando' className='animate-spin' src='/loader.svg' width={36} height={36} />
-              }
-              position="top center">
-              <div className='flex flex-col'>
-                <p className='text-base font-extrabold'>CARREGANDO...</p>
-              </div>
-            </MyPopup>
+            <Skeleton key={i} className='h-full w-full' containerClassName='size-16 rounded-lg relative overflow-hidden relative justify-center items-center flex border border-foreground' />
           </div>
         ))}
       <hr className='border-2 border-foreground border-dashed max-w-24 grow' />
@@ -155,21 +156,30 @@ export default function About() {
             alt='Autor do site Daniel'
             src={'/daniel.webp'}
             style={{
-            opacity: isLoaded ? 1 : 0,
+              opacity: isLoaded ? 1 : 0,
             }}
             fill
             onLoad={() => setIsLoaded(true)}
           />
           {!isLoaded && 
-          <Image alt='Carregando' className='absolute right-0 left-0 top-0 bottom-0 m-auto animate-spin' src='/loader.svg' width={48} height={48} />
+            <Skeleton className='h-full w-full' />
           }
         </div>
         <div className='flex gap-4 flex-col grow'>
           <div className='flex gap-8'>
             <h1 className='base text-8xl font-bold'>DANIEL LUZ</h1>
-              <Image alt={'Logo Lumentosh'} src={'logo.svg'} height={40} width={66} />
+            <MyPopup
+              on="hover"
+              trigger={
+                <Image alt={'Logo Lumentosh'} src={'logo.svg'} height={40} width={66} />
+              }
+              position="top center">
+              <div className='flex flex-col'>
+                <p className='text-base font-semibold'>LUMENTOSH</p>
+              </div>
+            </MyPopup>
           </div>
-          <p className='text-3xl'>Inspirado pela moda, o bom design e a crescente vontade de solucionar problemas, me esforço para tornar a vidas das pessoas mais fácil e expressar minha arte ao mesmo tempo.</p>
+          <p className='text-3xl'>Inspirado pela moda, o bom design e a crescente vontade de solucionar problemas, me esforço para tornar a vida das pessoas mais fácil e expressar minha arte ao mesmo tempo.</p>
           <Experience />
         </div>
         <div className='flex flex-col items-center gap-4'>

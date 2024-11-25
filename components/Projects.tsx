@@ -9,6 +9,8 @@ import { motion, useTransform, useScroll } from 'framer-motion'
 import { ProjectsResponse } from '@/pocketbase-types'
 import useVerticalScroll from '@/hooks/useVerticalScroll'
 import useMeasure from 'react-use-measure'
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 
 export default function Projects() {
@@ -29,9 +31,7 @@ export default function Projects() {
         <div className='px-40 h-screen overflow-hidden flex items-center sticky top-0'>
           <motion.div style={{ x }} className='flex gap-12'>
             {Array(4).fill(null).map((_, i) =>
-              <div key={i} className='h-[400px] w-[600px] overflow-hidden relative justify-center items-center flex border border-foreground rounded-3xl'>
-                <Image alt='Carregando' className='animate-spin' src='/loader.svg' width={48} height={48} />
-              </div>
+              <Skeleton key={i} className='h-full w-full' containerClassName='h-[400px] w-[600px] overflow-hidden relative justify-center items-center flex border border-foreground rounded-3xl' />
             )}
           </motion.div>
         </div>
@@ -72,6 +72,7 @@ function Project({ project }: { project: ProjectsResponse<IconsExpand> }) {
   const { title, subtitle, text, cover, link, start_date, end_date, expand } = project;
 
   const [onHover, setOnHover] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false)
 
   let [ref, { height }] = useMeasure();
 
@@ -122,11 +123,22 @@ function Project({ project }: { project: ProjectsResponse<IconsExpand> }) {
         <h2 className='text-5xl base font-extrabold tracking-wide w-12 font-outline-1 [writing-mode:vertical-lr]'>{title.toUpperCase()}</h2>
         <h2 className='text-5xl base font-extrabold tracking-wide w-12 font-outline-1 [writing-mode:vertical-lr]'>{title.toUpperCase()}</h2>
       </motion.div>
-      {/* <div className='flex grow-0'>
-        <h2 style={{ animationDuration: onHover ? '10s' : '5s' }} className='text-5xl base font-extrabold tracking-wide font-outline-1 animate-infinite-scroll-v [writing-mode:vertical-lr]'>{title.toUpperCase()}</h2>
-      </div> */}
       {cover &&
-        <Image className='z-0' alt={'Fundo ' + title} src={buildImageUrl(project, cover)} fill />
+        <>
+          <Image
+            className='z-0'
+            alt={'Fundo ' + title}
+            src={buildImageUrl(project, cover)}
+            style={{
+            opacity: isLoaded ? 1 : 0,
+            }}
+            fill
+            onLoad={() => setIsLoaded(true)}
+          />
+          {!isLoaded && 
+            <Skeleton className='h-full w-full' containerClassName='absolute top-0 left-0 h-full w-full' />
+          }
+        </>
       }
       <div className={`absolute inset-0 bg-black transition-opacity duration-500 ${onHover ? 'opacity-60' : 'opacity-0'}`}/>
     </div>
