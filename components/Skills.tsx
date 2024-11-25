@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import { useState } from 'react';
-import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
+import MySkeleton from './MySkeleton'
 
 function SkillItem({ title, text, image, alt } : { title: string, text: string, image: string, alt: string }) {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -21,7 +20,7 @@ function SkillItem({ title, text, image, alt } : { title: string, text: string, 
           onLoad={() => setImageLoaded(true)}
         />
         {!imageLoaded && 
-          <Skeleton className='h-full w-full rounded-lg border border-foreground' />
+          <MySkeleton className='h-full w-full rounded-md border border-foreground' />
         }
       </div>
       <div className='flex flex-col gap-1'>

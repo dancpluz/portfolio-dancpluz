@@ -3,8 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from 'react'
-import Skeleton from 'react-loading-skeleton'
-import 'react-loading-skeleton/dist/skeleton.css'
+import MySkeleton from './MySkeleton'
 
 export default function Contact() {
   const { isPending, isError, data, error } = useQuery({
@@ -21,11 +20,11 @@ export default function Contact() {
           <h2 className='text-7xl base'>FALE COMIGO</h2>
           <p className='text-4xl'>Estou aberto a oportunidades e propostas, fique à vontade para mandar mensagem em qualquer meio de comunicação.</p>
           <div className='size-[700px] absolute -top-10 -right-[250px]'>
-            <Skeleton circle className='h-full w-full' />
+            <MySkeleton circle className='h-full w-full' />
           </div>
           <div className='flex gap-2 py-6'>
             {Array(4).fill(null).map((_, i) => (
-              <Skeleton key={i} className='h-full w-full' containerClassName='size-16 rounded-lg relative overflow-hidden border border-foreground'/>
+              <MySkeleton key={i} className='h-full w-full' containerClassName='size-16 rounded-md relative overflow-hidden border border-foreground'/>
               )
             )}
           </div>
@@ -53,7 +52,7 @@ export default function Contact() {
             />
             {!isLoaded && 
               <div className='size-[700px] absolute -top-10 -right-[250px]'>
-                <Skeleton circle className='h-full w-full' />
+                <MySkeleton circle className='h-full w-full' />
               </div>
             }
           </div>
@@ -83,7 +82,7 @@ export default function Contact() {
           />
           {!isLoaded && 
           <div className='size-[700px] absolute -top-10 -right-[250px]'>
-            <Skeleton circle className='h-full w-full' />
+            <MySkeleton circle className='h-full w-full' />
           </div>
           }
         </div>

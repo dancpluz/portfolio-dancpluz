@@ -11,3 +11,4 @@
 - [ ] Responsivo
 - [ ] Animações Saída/Entrada
 - [ ] Formulário Contato
+- [ ] Organizar Melhor Componentes

@@ -20,7 +20,7 @@ export default function RevealWords({ words, question, invert, interval }: { wor
   return (
     <motion.div
       animate={animationState}
-      className={`relative base overflow-hidden whitespace-nowrap text-8xl font-black uppercase ${invert ? 'text-background text-stroke' : ''}`}
+      className={`relative base overflow-hidden whitespace-nowrap text-4xl md:text-8xl font-black uppercase ${invert ? 'text-background text-stroke' : ''}`}
       style={{
         lineHeight: 0.75,
       }}
