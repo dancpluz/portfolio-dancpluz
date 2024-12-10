@@ -1,5 +1,6 @@
-import Image from 'next/image'
+import Image from 'next/image';
 import { useState } from 'react';
+import MySkeleton from './MySkeleton'
 
 function SkillItem({ title, text, image, alt } : { title: string, text: string, image: string, alt: string }) {
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -19,7 +20,7 @@ function SkillItem({ title, text, image, alt } : { title: string, text: string, 
           onLoad={() => setImageLoaded(true)}
         />
         {!imageLoaded && 
-          <Image alt='Carregando' className='absolute right-0 left-0 top-0 bottom-0 m-auto animate-spin' src='/loader.svg' width={48} height={48} />
+          <MySkeleton className='h-full w-full rounded-md border border-foreground' />
         }
       </div>
       <div className='flex flex-col gap-1'>

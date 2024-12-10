@@ -76,7 +76,7 @@ export default function HomePage() {
   return (
     <QueryClientProvider client={queryClient}>
       <Header sections={sections} />
-      <section id={sections.inicio.id} ref={inicioRef}>
+      <section className='w-screen overflow-hidden' id={sections.inicio.id} ref={inicioRef}>
         <Home />
       </section>
       <section id={sections.projetos.id} ref={projetosRef}>

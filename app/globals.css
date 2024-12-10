@@ -42,10 +42,15 @@
     color: rgb(var(--background));
     text-shadow: none;
   }
-  
-  .font-outline-1 {
-    -webkit-text-stroke: 1px #FFF;
+
+  .text-stroke {
+    -webkit-text-stroke-width: 0.5px;
+    -webkit-text-stroke-color: rgba(var(--foreground));
     -webkit-text-fill-color: transparent;
+  }
+
+  .no-text-stroke {
+    -webkit-text-stroke-width: 0px;
   }
   
   .pause {

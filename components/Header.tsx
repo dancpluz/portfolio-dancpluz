@@ -13,9 +13,9 @@ type SectionProps = {
 
 export default function Header({ sections }: { sections: Record<string, SectionProps> }) {
   return (
-    <nav className='sticky z-20 top-0 w-full flex flex-col gap-8 lg:flex-row justify-between py-6 px-8 lg:px-40 bg-background/30 backdrop-blur-sm items-center'>
+    <nav className='fixed z-20 left-0 top-0 w-screen flex flex-col gap-6 md:flex-row justify-between py-6 px-4 md:px-40 bg-background/30 backdrop-blur-sm items-center'>
       <Link href='#inicio'>
-        <Image alt={'Logo Lumentosh'} src={'logo.svg'} className='w-[50px] lg:w-[70px] h-auto' height={40} width={66} />
+        <Image alt={'Logo Lumentosh'} src={'logo.svg'} className='w-[50px] md:w-[70px] h-auto' height={40} width={66} />
       </Link>
       <div className='w-full px-4 xl:px-80'>
         <ul className='flex grow gap-10'>
@@ -26,16 +26,14 @@ export default function Header({ sections }: { sections: Record<string, SectionP
           <Section section={sections.contato} />
         </ul>
       </div>
-      <div>
-        {/* <Image alt={'Ícone câmera'} src={'camera.svg'} width={40} height={40} /> */}
-      </div>
+      {/* <div>
+        <Image alt={'Ícone câmera'} src={'camera.svg'} width={40} height={40} />
+      </div> */}
     </nav>
   )
 }
 
 export function Section({ section: { scroll, icon, id } }: { section: SectionProps }) {
-
-
   let percent = ["0%", "100%"];
 
   const scale = useTransform(scroll, [0, 1], percent)
@@ -48,7 +46,7 @@ export function Section({ section: { scroll, icon, id } }: { section: SectionPro
     <li className={`flex relative w-full items-center`}>
       {icon &&
         <Link onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)} className={`-left-8 absolute transition-opacity rounded-full`} href={'#' + id}>
-          <motion.p style={{ opacity: hovered ? 1 : textOpacity  }} className='absolute font-normal transition-opacity left-1/2 transform -translate-x-1/2 bottom-7 text-xs'>
+          <motion.p style={{ opacity: hovered ? 1 : textOpacity }} className='absolute font-normal transition-opacity left-1/2 transform -translate-x-1/2 translate-y-7 lg:-translate-y-5 text-xs'>
             {id.toUpperCase()}
           </motion.p>
           <motion.div style={{ opacity: hovered ? 1 : iconOpacity }}>

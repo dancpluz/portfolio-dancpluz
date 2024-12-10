@@ -1,4 +1,4 @@
-import FlipLinks from "@/components/RevealWords";
+import RevealWords from "@/components/RevealWords";
 
 export default function Footer() {
   return (
@@ -9,7 +9,7 @@ export default function Footer() {
             <p className='text-2xl font-extrabold'>FAZER</p>
             <p className='text-2xl font-extrabold'>UM</p>
           </div>
-          <FlipLinks question words={["site", "vídeo", "curso", "portfolio", "ecommerce", "aplicativo"]} />
+          <RevealWords interval={3} question words={["site", "vídeo", "curso", "portfolio", "ecommerce", "aplicativo"]} />
         </div>
         <div className='w-full bg-foreground py-1'>
           <p className='text-center font-regular text-background'>TODOS OS DIRETOS RESERVADOS DANIEL LUZ </p>
