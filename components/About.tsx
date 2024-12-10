@@ -149,9 +149,8 @@ export default function About() {
   return (
     <div className='flex flex-col gap-16 py-16'>
       <div className='flex flex-col md:flex-row gap-4 md:gap-8 px-4 md:px-40'>
-        <div className='relative overflow-hidden aspect-[7/8] md:aspect-[5/8] w-full md:w-[800px] rounded-3xl border border-foreground'>
+        <div className='relative overflow-hidden aspect-[7/8] md:aspect-[5/8] w-full md:w-[800px] rounded-3xl'>
           <Image
-            className='object-cover'
             alt='Autor do site Daniel'
             src={'/daniel.webp'}
             className='object-cover object-top'
@@ -164,6 +163,7 @@ export default function About() {
           {!isLoaded && 
             <MySkeleton className='h-full w-full' />
           }
+          <div className='before:content-[""] before:z-[-1] before:absolute before:border-t before:border-foreground before:rounded-3xl before:size-full border-t-0 bottom-0 rounded-3xl border border-foreground absolute w-full h-[70%]'></div>
         </div>
         <div className='flex gap-4 py-4 md:py-0 flex-col grow'>
           <div className='md:pr-10 pr-6 relative'>

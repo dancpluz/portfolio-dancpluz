@@ -10,7 +10,7 @@ export default function Home() {
 
   return (
     <div className='relative'>
-      <div className={`mt-48 w-full transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}>
+      <div className={`mt-48 md:mt-0 w-full transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}>
         <div className='absolute w-full left-8 -top-7 md:top-[calc(50%-85px)] md:left-[50%]'>
           <RevealWords interval={6} words={["UI/UX", "Design","ecommerce", "aplicativo"]} />
         </div>

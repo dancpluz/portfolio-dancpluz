@@ -28,7 +28,6 @@ export async function getTechnologies() {
     const records = await pb.collection('icons').getFullList({
       filter: 'technology = true',
     });
-    console.log('Resultado:', records)
     return records;
   }
   catch (error) {
@@ -47,7 +46,6 @@ export async function getExperience() {
       sort: '+start_date',
       expand: 'icon_ref'
     });
-    console.log('Resultado:', records)
     return records;
   }
   catch (error) {
@@ -61,7 +59,6 @@ export async function getContact() {
     const records = await pb.collection('icons').getFullList({
       filter: 'contact = true',
     });
-    console.log('Resultado:', records)
     return records;
   }
   catch (error) {

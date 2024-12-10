@@ -15,8 +15,8 @@ const baseNeue = localFont({
 })
 
 export const metadata: Metadata = {
-  title: "Portfólio",
-  description: "",
+  title: "Lumentosh | Portfólio Daniel Luz",
+  description: "Bem vindo ao meu portfólio de desenvolvedor, me chamo Daniel Luz e aqui você encontra meus projetos, experiências e tecnologias que já trabalhei.",
 };
 
 export default function RootLayout({

@@ -103,7 +103,7 @@ function Project({ project }: { project: ProjectsResponse<IconsExpand> }) {
         <div className='flex justify-between'>
           <span style={{ opacity: onHover ? 1 : 0, animationDelay: onHover ? '1400ms' : '0ms' }} className={`text-white text-2xl tracking-wider transition-opacity duration-[700ms]`}>{formatDate(start_date, end_date)}</span>
           <div className='flex gap-1'>
-            {expand?.icon_refs.map((icon) => (
+            {expand?.icon_refs?.map((icon) => (
                 <Link key={icon.alt} href={icon.link} target="_blank">
                 <Image className='hover:-translate-y-1 transition-transform animate-pulse' src={buildImageUrl(icon, icon.icon)} width={32} height={32} alt={'Ícone ' + icon.alt} />
                 </Link>
@@ -130,6 +130,7 @@ function Project({ project }: { project: ProjectsResponse<IconsExpand> }) {
             style={{
             opacity: isLoaded ? 1 : 0,
             }}
+            unoptimized
             fill
             onLoad={() => setIsLoaded(true)}
           />
