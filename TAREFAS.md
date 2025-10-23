@@ -1,0 +1,21 @@
+- [ ] Landing Page
+  - [x] Header
+  - [x] Hero Banner Section
+  - [x] Projects Section
+  - [x] Testimonials Section
+  - [x] About Section
+  - [x] Loading State
+  - [x] Organize Code
+  - [ ] Section to explain my brand
+  - [ ] Photos Page
+  - [ ] Convert to Server Components/remove React Query
+  - [ ] Fix marquee
+  - [ ] Make more responsive
+  - [ ] Add Entry/Exit Animations
+  - [ ] Create Contact Form
+- [ ] Blog
+  - [ ] Fetch blog posts
+  - [ ] Blog page
+  - [ ] Rich Text
+  - [ ] Interactions
+  - [ ] Animations

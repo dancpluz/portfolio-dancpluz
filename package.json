@@ -11,25 +11,25 @@
     "copytypes": "npx pocketbase-typegen -o ./types/pocketbase.ts"
   },
   "dependencies": {
-    "@tanstack/react-query": "^5.52.2",
-    "framer-motion": "^11.3.31",
+    "@tanstack/react-query": "^5.90.5",
+    "framer-motion": "^11.18.2",
     "next": "14.2.5",
     "pocketbase": "^0.21.5",
-    "react": "^18",
-    "react-dom": "^18",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-loading-skeleton": "^3.5.0",
-    "react-use-measure": "^2.1.1",
+    "react-use-measure": "^2.1.7",
     "reactjs-popup": "^2.0.6"
   },
   "devDependencies": {
-    "@tanstack/eslint-plugin-query": "^5.52.0",
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "eslint": "^8",
+    "@tanstack/eslint-plugin-query": "^5.91.2",
+    "@types/node": "^20.19.23",
+    "@types/react": "^18.3.26",
+    "@types/react-dom": "^18.3.7",
+    "eslint": "^8.57.1",
     "eslint-config-next": "14.2.5",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.18",
+    "typescript": "^5.9.3"
   }
 }
