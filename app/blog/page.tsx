@@ -1,4 +1,5 @@
 import BlogContainer from '@/components/blog/container';
+import PostList from '@/components/blog/post-list';
 import { getPosts } from '@/lib/api';
 import React from 'react';
 
@@ -32,15 +33,8 @@ export default async function Blog() {
     <BlogContainer>
       {/* <pre>{JSON.stringify(posts, null, 2)}</pre> */}
       <section>
-        <h1 className='text-8xl base uppercase'>Blog</h1>
-        <div className='posts-list'>
-          {posts.map((post) => (
-            <article key={post.id}>
-              <h2>{post.title}</h2>
-              {/* ... render other post details ... */}
-            </article>
-          ))}
-        </div>
+        <h1 className='text-8xl font-header uppercase'>Blog</h1>
+        <PostList posts={posts} />
       </section>
     </BlogContainer>
   );

@@ -3,7 +3,10 @@
 @theme {
   --color-background: rgba(var(--background));
   --color-foreground: rgba(var(--foreground));
+  --color-accent: rgba(var(--accent));
   --color-alternate: rgba(var(--alternate));
+  --font-header: var(--font-header);
+  --font-text: var(--font-text);
 
   --animate-infinite-scroll-h: infinite-scroll-h 40s linear infinite;
   --animate-infinite-scroll-v: infinite-scroll-v 5s linear infinite;
@@ -54,6 +57,7 @@
   .dark {
     --background: 0, 0, 0;
     --foreground: 255, 255, 255;
+    --accent: 0, 120, 255;
     --alternate: 111, 111, 111;
 
     background: rgba(var(--background));
@@ -63,20 +67,11 @@
   .light {
     --background: 255, 255, 255;
     --foreground: 0, 0, 0;
+    --accent: 0, 120, 255;
     --alternate: 160, 160, 160;
 
     background: rgba(var(--background));
     color: rgba(var(--foreground));
-  }
-
-  .sans {
-    font-family: var(--font-sans);
-    font-weight: 100;
-    letter-spacing: 0.025em;
-  }
-
-  .base {
-    font-family: var(--font-base);
   }
 }
 

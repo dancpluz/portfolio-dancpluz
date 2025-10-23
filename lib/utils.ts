@@ -1,3 +1,6 @@
+import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+
 export const angleToRadians = (angle: number) => {
   return angle * (Math.PI / 180);
 };
@@ -107,4 +110,10 @@ export function parseApiError(err: unknown, objectName: string): string {
   }
 
   return errorMessage;
+}
+
+export function formatDatePtBR(dateInput: string | Date): string {
+  const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
+  if (Number.isNaN(date.getTime())) return '';
+  return format(date, 'MMMM d, yyyy', { locale: ptBR });
 }

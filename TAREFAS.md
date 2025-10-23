@@ -14,7 +14,9 @@
   - [ ] Add Entry/Exit Animations
   - [ ] Create Contact Form
 - [ ] Blog
-  - [ ] Fetch blog posts
+  - [x] Fetch blog posts
+  - [ ] Blog List
+  - [ ] Dark theme
   - [ ] Blog page
   - [ ] Rich Text
   - [ ] Interactions

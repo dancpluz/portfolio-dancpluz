@@ -1,4 +1,5 @@
-import { PostsResponse } from "@/types/pocketbase";
+import { PostsResponse } from '@/types/pocketbase';
+import PostCard from './post-card';
 
 interface PostListProps {
   posts: PostsResponse[];
@@ -7,8 +8,8 @@ interface PostListProps {
 export default function PostList({ posts }: PostListProps) {
   return (
     <ul>
-      {posts.map((post) => (
-        <li key={post.id}>{post.title}</li>
+      {posts.map((post, index) => (
+        <PostCard key={post.id} post={post} index={index} />
       ))}
     </ul>
   );

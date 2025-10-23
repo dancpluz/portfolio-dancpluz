@@ -1,17 +1,21 @@
 import type { Metadata } from 'next';
-import { Public_Sans } from 'next/font/google';
+import { Mukta } from 'next/font/google';
 import localFont from 'next/font/local';
 import './globals.css';
 
-const publicSans = Public_Sans({
+const mukta = Mukta({
+  weight: ['200', '300', '400', '500', '600', '700'],
+  variable: '--font-text',
   subsets: ['latin'],
-  variable: '--font-sans',
+  display: 'swap',
+  preload: true,
 });
 
 const baseNeue = localFont({
   src: './BaseNeue-SuperExpandedBlack.ttf',
   display: 'swap',
-  variable: '--font-base',
+  variable: '--font-header',
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -27,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='pt-br'>
-      <body className={`${publicSans.variable} ${baseNeue.variable} sans dark`}>
+      <body className={`${mukta.variable} ${baseNeue.variable} font-text dark`}>
         {children}
       </body>
     </html>
