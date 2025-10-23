@@ -28,14 +28,6 @@ const nextConfig = {
       },
     ],
   },
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: 'https://hub.ruadebaixo.com.br:1002/api/:path*',
-      },
-    ]
-  },
 };
 
 export default nextConfig;

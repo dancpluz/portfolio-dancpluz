@@ -35,14 +35,6 @@
   }
 }
 
-/*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
 @layer base {
   *,
   ::after,
@@ -57,7 +49,6 @@
   :root {
     scroll-behavior: smooth !important;
     -webkit-font-smoothing: antialiased;
-    user-select: none;
   }
 
   .dark {
@@ -90,7 +81,8 @@
 }
 
 @layer base {
-  ::selection, ::-moz-selection {
+  ::selection,
+  ::-moz-selection {
     background: rgba(var(--foreground), 0.9);
     color: rgb(var(--background));
     text-shadow: none;
@@ -105,7 +97,7 @@
   .no-text-stroke {
     -webkit-text-stroke-width: 0px;
   }
-  
+
   .pause {
     animation-play-state: paused;
   }

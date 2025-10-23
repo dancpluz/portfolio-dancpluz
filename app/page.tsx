@@ -1,50 +1,49 @@
-'use client'
+'use client';
 
-import About from "@/components/About";
-import Contact from "@/components/Contact";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
-import Home from "@/components/Home";
-import Projects from "@/components/Projects";
-import Skills from "@/components/Skills";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useScroll } from "framer-motion";
-import { useRef } from "react";
+import About from '@/components/About';
+import Contact from '@/components/Contact';
+import Footer from '@/components/Footer';
+import Header from '@/components/Header';
+import Home from '@/components/Home';
+import Projects from '@/components/Projects';
+import Skills from '@/components/Skills';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useScroll } from 'framer-motion';
+import { useRef } from 'react';
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 export default function HomePage() {
-  
-  const inicioRef = useRef<HTMLDivElement | null>(null)
-  const projetosRef = useRef<HTMLDivElement | null>(null)
-  const sobreRef = useRef<HTMLDivElement | null>(null)
-  const habilidadesRef = useRef<HTMLDivElement | null>(null)
-  const contatoRef = useRef<HTMLDivElement | null>(null)
+  const inicioRef = useRef<HTMLDivElement | null>(null);
+  const projetosRef = useRef<HTMLDivElement | null>(null);
+  const sobreRef = useRef<HTMLDivElement | null>(null);
+  const habilidadesRef = useRef<HTMLDivElement | null>(null);
+  const contatoRef = useRef<HTMLDivElement | null>(null);
 
   const { scrollYProgress: inicioScroll } = useScroll({
     target: inicioRef,
-    offset: ["start start", "end center"]
-  })
+    offset: ['start start', 'end center'],
+  });
 
   const { scrollYProgress: projetosScroll } = useScroll({
     target: projetosRef,
-    offset: ["start center", "end center"]
-  })
+    offset: ['start center', 'end center'],
+  });
 
   const { scrollYProgress: sobreScroll } = useScroll({
     target: sobreRef,
-    offset: ["start center", "end center"]
-  })
+    offset: ['start center', 'end center'],
+  });
 
   const { scrollYProgress: habilidadesScroll } = useScroll({
     target: habilidadesRef,
-    offset: ["start center", "end center"]
-  })
+    offset: ['start center', 'end center'],
+  });
 
   const { scrollYProgress: contatoScroll } = useScroll({
     target: contatoRef,
-    offset: ["start center", "end center"]
-  })
+    offset: ['start center', 'end center'],
+  });
 
   const sections = {
     inicio: {
@@ -71,12 +70,16 @@ export default function HomePage() {
       id: 'contato',
       icon: 'phone.svg',
     },
-  }
+  };
 
   return (
     <QueryClientProvider client={queryClient}>
       <Header sections={sections} />
-      <section className='w-screen overflow-hidden' id={sections.inicio.id} ref={inicioRef}>
+      <section
+        className='w-screen overflow-hidden'
+        id={sections.inicio.id}
+        ref={inicioRef}
+      >
         <Home />
       </section>
       <section id={sections.projetos.id} ref={projetosRef}>
@@ -95,5 +98,5 @@ export default function HomePage() {
         <Footer />
       </footer>
     </QueryClientProvider>
-  )
+  );
 }
