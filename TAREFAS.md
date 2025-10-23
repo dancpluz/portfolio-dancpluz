@@ -16,7 +16,7 @@
 - [ ] Blog
   - [x] Fetch blog posts
   - [ ] Blog List
-  - [ ] Dark theme
+  - [x] Dark theme
   - [ ] Blog page
   - [ ] Rich Text
   - [ ] Interactions

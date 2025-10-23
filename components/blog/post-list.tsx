@@ -8,7 +8,7 @@ interface PostListProps {
 export default function PostList({ posts }: PostListProps) {
   return (
     <ul>
-      {posts.map((post, index) => (
+      {Array(10).fill(posts[0]).map((post, index) => (
         <PostCard key={post.id} post={post} index={index} />
       ))}
     </ul>

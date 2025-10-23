@@ -1,44 +1,83 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-background: rgba(var(--background));
-  --color-foreground: rgba(var(--foreground));
-  --color-accent: rgba(var(--accent));
-  --color-alternate: rgba(var(--alternate));
-  --font-header: var(--font-header);
+  --color-background: #080808;
+  --color-foreground: #efefef;
+  --color-accent: #eca400;
+  --color-alternate: #888888;
   --font-text: var(--font-text);
+  --font-heading: var(--font-heading);
+}
 
-  --animate-infinite-scroll-h: infinite-scroll-h 40s linear infinite;
-  --animate-infinite-scroll-v: infinite-scroll-v 5s linear infinite;
-  --animate-text-reveal: text-reveal 1s cubic-bezier(0.77, 0, 0.175, 1) 0.5s;
+@layer {
+  button {
+    cursor: pointer;
+  }
 
-  @keyframes infinite-scroll-h {
-    0% {
-      transform: translateX(calc(-100% - 32px));
-    }
-    100% {
-      transform: translateX(0);
-    }
+  [data-theme='dark'] {
+    --color-background: #080808;
+    --color-foreground: #efefef;
   }
-  @keyframes infinite-scroll-v {
-    0% {
-      transform: translateY(calc(-100% - 32px));
-    }
-    100% {
-      transform: translateY(0);
-    }
+
+  [data-theme='light'] {
+    --color-background: #efefef;
+    --color-foreground: #080808;
   }
-  @keyframes text-reveal {
-    0% {
-      transform: translate(0, 100%);
+
+  body {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-text);
+    /* transition: background 0.3s ease-in-out, color 0.3s ease-in-out; */
+  }
+
+  /* ViewTransition API Animations for Theme Toggle */
+  html {
+    view-transition-name: theme;
+  }
+
+  ::view-transition-old(theme),
+  ::view-transition-new(theme) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+
+  /* Circle animation from top-right */
+  ::view-transition-new(theme) {
+    clip-path: circle(0% at top right);
+    animation: circle-top-right 0.5s ease-out;
+    animation-fill-mode: both;
+    transform-origin: top right;
+  }
+
+  ::view-transition-old(theme) {
+    z-index: -1;
+  }
+
+  @keyframes circle-top-right {
+    from {
+      clip-path: circle(0% at top right);
     }
-    100% {
-      transform: translate(0, 0);
+    to {
+      clip-path: circle(150% at top right);
     }
   }
 }
 
-@layer base {
+@layer utilities {
+  .underline-magical {
+    @apply bg-linear-to-r from-accent to-accent bg-no-repeat 
+    no-underline bg-position-[0_100%]
+    bg-size-[100%_0.2em] focus:bg-size-[100%_100%] hover:text-background
+    hover:bg-size-[100%_100%] motion-safe:transition-all
+    motion-safe:duration-300;
+  }
+
+  :root {
+    scroll-behavior: smooth !important;
+    -webkit-font-smoothing: antialiased;
+  }
+
   *,
   ::after,
   ::before,
@@ -46,46 +85,17 @@
   ::file-selector-button {
     border-color: var(--color-gray-200, currentcolor);
   }
-}
 
-@layer utilities {
-  :root {
-    scroll-behavior: smooth !important;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  .dark {
-    --background: 0, 0, 0;
-    --foreground: 255, 255, 255;
-    --accent: 0, 120, 255;
-    --alternate: 111, 111, 111;
-
-    background: rgba(var(--background));
-    color: rgba(var(--foreground));
-  }
-
-  .light {
-    --background: 255, 255, 255;
-    --foreground: 0, 0, 0;
-    --accent: 0, 120, 255;
-    --alternate: 160, 160, 160;
-
-    background: rgba(var(--background));
-    color: rgba(var(--foreground));
-  }
-}
-
-@layer base {
   ::selection,
   ::-moz-selection {
-    background: rgba(var(--foreground), 0.9);
-    color: rgb(var(--background));
+    background: rgba(var(--color-foreground), 0.9);
+    color: rgb(var(--color-background));
     text-shadow: none;
   }
 
   .text-stroke {
     -webkit-text-stroke-width: 0.5px;
-    -webkit-text-stroke-color: rgba(var(--foreground));
+    -webkit-text-stroke-color: rgba(var(--color-foreground));
     -webkit-text-fill-color: transparent;
   }
 
@@ -131,3 +141,35 @@
     }
   }
 }
+
+/* @theme {
+
+  --animate-infinite-scroll-h: infinite-scroll-h 40s linear infinite;
+  --animate-infinite-scroll-v: infinite-scroll-v 5s linear infinite;
+  --animate-text-reveal: text-reveal 1s cubic-bezier(0.77, 0, 0.175, 1) 0.5s;
+
+  @keyframes infinite-scroll-h {
+    0% {
+      transform: translateX(calc(-100% - 32px));
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+  @keyframes infinite-scroll-v {
+    0% {
+      transform: translateY(calc(-100% - 32px));
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+  @keyframes text-reveal {
+    0% {
+      transform: translate(0, 100%);
+    }
+    100% {
+      transform: translate(0, 0);
+    }
+  }
+} */

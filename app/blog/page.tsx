@@ -32,8 +32,12 @@ export default async function Blog() {
   return (
     <BlogContainer>
       {/* <pre>{JSON.stringify(posts, null, 2)}</pre> */}
-      <section>
-        <h1 className='text-8xl font-header uppercase'>Blog</h1>
+      <section className='space-y-8'>
+        <div className='flex w-full items-center gap-4'>
+          <h1 className='text-7xl font-heading uppercase'>Ideias</h1>
+          <p className='underline-magical'>ASASFAFS</p>
+          <span className='h-[1px] w-full bg-accent' />
+        </div>
         <PostList posts={posts} />
       </section>
     </BlogContainer>

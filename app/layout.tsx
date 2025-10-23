@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { Mukta } from 'next/font/google';
 import localFont from 'next/font/local';
 import './globals.css';
+import Providers from './providers';
+import ThemeSwitch from '@/components/theme-switcher';
 
 const mukta = Mukta({
   weight: ['200', '300', '400', '500', '600', '700'],
@@ -14,7 +16,7 @@ const mukta = Mukta({
 const baseNeue = localFont({
   src: './BaseNeue-SuperExpandedBlack.ttf',
   display: 'swap',
-  variable: '--font-header',
+  variable: '--font-heading',
   preload: true,
 });
 
@@ -30,10 +32,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='pt-br'>
-      <body className={`${mukta.variable} ${baseNeue.variable} font-text dark`}>
-        {children}
-      </body>
+    <html lang='pt-BR'>
+      <Providers>
+        <body className={`${mukta.variable} ${baseNeue.variable}`}>
+          <ThemeSwitch />
+          {children}
+        </body>
+      </Providers>
     </html>
   );
 }
