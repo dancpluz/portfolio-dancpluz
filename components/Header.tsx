@@ -13,7 +13,7 @@ type SectionProps = {
 
 export default function Header({ sections }: { sections: Record<string, SectionProps> }) {
   return (
-    <nav className='fixed z-20 left-0 top-0 w-screen flex flex-col gap-6 md:flex-row justify-between py-6 px-4 md:px-40 bg-background/30 backdrop-blur-sm items-center'>
+    <nav className='fixed z-20 left-0 top-0 w-screen flex flex-col gap-6 md:flex-row justify-between py-6 px-4 md:px-40 bg-background/30 backdrop-blur-xs items-center'>
       <Link href='#inicio'>
         <Image alt={'Logo Lumentosh'} src={'logo.svg'} className='w-[50px] md:w-[70px] h-auto' height={40} width={66} />
       </Link>

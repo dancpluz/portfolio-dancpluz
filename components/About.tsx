@@ -149,7 +149,7 @@ export default function About() {
   return (
     <div className='flex flex-col gap-16 py-16'>
       <div className='flex flex-col md:flex-row gap-4 md:gap-8 px-4 md:px-40'>
-        <div className='relative overflow-hidden aspect-[7/8] md:aspect-[5/8] w-full md:w-[800px] rounded-3xl'>
+        <div className='relative overflow-hidden aspect-7/8 md:aspect-5/8 w-full md:w-[800px] rounded-3xl'>
           <Image
             alt='Autor do site Daniel'
             src={'/daniel.webp'}
