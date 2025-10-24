@@ -1,8 +1,10 @@
-import { useMotionValue, animate } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useMotionValue, animate } from 'motion/react';
+import { useEffect, useState } from 'react';
 
-export default function useHorizontalScroll(initialDuration: number, width: number) {
-
+export default function useHorizontalScroll(
+  initialDuration: number,
+  width: number
+) {
   const [duration, setDuration] = useState(initialDuration);
 
   const xTranslation = useMotionValue(0);
@@ -18,7 +20,7 @@ export default function useHorizontalScroll(initialDuration: number, width: numb
         ease: 'linear',
         duration: duration * (1 - xTranslation.get() / finalPosition),
         onComplete: () => {
-          setMustFinish(false)
+          setMustFinish(false);
         },
         repeat: Infinity,
         repeatType: 'loop',
@@ -34,13 +36,12 @@ export default function useHorizontalScroll(initialDuration: number, width: numb
       });
     }
 
-
-    return controls?.stop
-  }, [xTranslation, width, duration, mustFinish])
+    return controls?.stop;
+  }, [xTranslation, width, duration, mustFinish]);
 
   return {
     xTranslation,
     setDuration,
     setMustFinish,
-  }
+  };
 }

@@ -32,13 +32,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='pt-BR'>
-      <Providers>
-        <body className={`${mukta.variable} ${baseNeue.variable}`}>
+    <html lang='pt-BR' suppressHydrationWarning>
+      <body className={`${mukta.variable} ${baseNeue.variable}`}>
+        <Providers>
           <ThemeSwitch />
           {children}
-        </body>
-      </Providers>
+        </Providers>
+      </body>
     </html>
   );
 }

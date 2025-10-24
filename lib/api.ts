@@ -15,10 +15,10 @@ type ApiResponse<T> = {
   error: string | null;
 };
 
-export function buildImageUrl(
-  record: IconsResponse | ProjectsResponse,
+export function buildImageUrl<T extends Record<string, any>>(
+  record: T,
   firstFilename: string
-) {
+): string {
   return pb.files.getUrl(record, firstFilename);
 }
 
@@ -92,6 +92,17 @@ export async function getPosts(): Promise<ApiResponse<PostsResponse[]>> {
     console.log('[ERROR]: ', err);
     const errorMessage = parseApiError(err, 'posts');
 
+    return { data: null, error: errorMessage };
+  }
+}
+
+export async function getPostById(id: string): Promise<ApiResponse<PostsResponse>> {
+  try {
+    const record = await pb.collection('posts').getOne<PostsResponse>(id);
+    return { data: record, error: null };
+  } catch (err) {
+    console.log('[ERROR]: ', err);
+    const errorMessage = parseApiError(err, 'post');
     return { data: null, error: errorMessage };
   }
 }

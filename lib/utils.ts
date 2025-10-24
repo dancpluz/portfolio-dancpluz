@@ -116,7 +116,7 @@ export function parseApiError(err: unknown, objectName: string): string {
 export function formatDatePtBR(dateInput: string | Date): string {
   const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
   if (Number.isNaN(date.getTime())) return '';
-  return format(date, 'MMMM d, yyyy', { locale: ptBR });
+  return format(date, 'd MMMM, yyyy', { locale: ptBR });
 }
 
 export function plural<T>(array: T[]): string {
@@ -124,6 +124,6 @@ export function plural<T>(array: T[]): string {
 }
 
 export function getPostCategories(posts: PostsResponse[]) {
-  const categories = posts.map((post) => post.categories).flat();
+  const categories = posts.map((post) => post.category).flat();
   return Array.from(new Set(categories));
 }

@@ -1,8 +1,10 @@
-import { useMotionValue, animate } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useMotionValue, animate } from 'motion/react';
+import { useEffect, useState } from 'react';
 
-export default function useVerticalScroll(initialDuration: number, height: number) {
-
+export default function useVerticalScroll(
+  initialDuration: number,
+  height: number
+) {
   const [duration, setDuration] = useState(initialDuration);
 
   const yTranslation = useMotionValue(0);
@@ -18,7 +20,7 @@ export default function useVerticalScroll(initialDuration: number, height: numbe
         ease: 'linear',
         duration: duration * (yTranslation.get() / finalPosition),
         onComplete: () => {
-          setMustFinish(false)
+          setMustFinish(false);
         },
         repeat: Infinity,
         repeatType: 'loop',
@@ -34,13 +36,12 @@ export default function useVerticalScroll(initialDuration: number, height: numbe
       });
     }
 
-
-    return controls?.stop
-  }, [yTranslation, height, duration, mustFinish])
+    return controls?.stop;
+  }, [yTranslation, height, duration, mustFinish]);
 
   return {
     yTranslation,
     setDuration,
     setMustFinish,
-  }
+  };
 }

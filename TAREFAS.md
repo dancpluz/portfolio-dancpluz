@@ -1,3 +1,4 @@
+- [ ] Maintenance Page
 - [ ] Landing Page
   - [x] Header
   - [x] Hero Banner Section
@@ -17,6 +18,10 @@
   - [x] Fetch blog posts
   - [x] Blog List
   - [x] Dark theme
+  - [x] Article card image
+  - [ ] Error state
+  - [ ] Loading state
+  - [ ] Autenticação api
   - [ ] Categories
   - [ ] Query params
   - [ ] Blog page

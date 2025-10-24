@@ -114,17 +114,18 @@ export type IconsRecord = {
 	updated?: IsoDateString
 }
 
-export enum PostsCategoriesOptions {
+export enum PostsCategoryOptions {
 	"tutorial" = "tutorial",
 	"notícias" = "notícias",
 	"opinião" = "opinião",
 	"carreira" = "carreira",
 	"histórias" = "histórias",
 	"desenvolvimento" = "desenvolvimento",
+	"curiosidades" = "curiosidades",
 }
 export type PostsRecord<Tkeywords = unknown> = {
 	article?: HTMLString
-	categories?: PostsCategoriesOptions
+	category?: PostsCategoryOptions
 	created?: IsoDateString
 	gifs?: string[]
 	id: string

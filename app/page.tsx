@@ -8,7 +8,7 @@ import Home from '@/components/Home';
 import Projects from '@/components/Projects';
 import Skills from '@/components/Skills';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useScroll } from 'framer-motion';
+import { useScroll } from 'motion/react';
 import { useRef } from 'react';
 
 const queryClient = new QueryClient();
