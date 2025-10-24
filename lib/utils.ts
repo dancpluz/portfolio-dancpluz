@@ -1,3 +1,4 @@
+import { PostsResponse } from '@/types/pocketbase';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -116,4 +117,13 @@ export function formatDatePtBR(dateInput: string | Date): string {
   const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
   if (Number.isNaN(date.getTime())) return '';
   return format(date, 'MMMM d, yyyy', { locale: ptBR });
+}
+
+export function plural<T>(array: T[]): string {
+  return array.length === 1 ? '' : 's';
+}
+
+export function getPostCategories(posts: PostsResponse[]) {
+  const categories = posts.map((post) => post.categories).flat();
+  return Array.from(new Set(categories));
 }

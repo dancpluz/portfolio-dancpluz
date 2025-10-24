@@ -16,24 +16,27 @@ export default function PostCard({ post, index }: PostCardProps) {
   return (
     <motion.li
       key={id}
-      className='border-b border-accent/50 transition-colors duration-500'
+      className='last:border-b-0 border-b border-foreground/20 transition-colors duration-500 group w-full'
       initial={{ scale: 0.8, opacity: 0, filter: 'blur(2px)' }}
-      transition={{ duration: 0.6, delay: index / 10 }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
       whileInView={{ scale: 1, opacity: 1, filter: 'blur(0px)' }}
       viewport={{ once: true }}
     >
       <Link href={`/blog/${id}`} aria-label={`Leia "${title}"`}>
-        <article className='space-y-1 py-5'>
-          <div className='flex gap-4 w-full items-center justify-between'>
-            <h2 className='text-2xl w-full max-w-2xl truncate whitespace-nowrap pr-2 font-bold group-hover:underline'>
-              {title}
-            </h2>
-            <div className='mx-1 flex flex-1' />
-            <time className='w-max whitespace-nowrap text-sm pl-2'>
-              {formatDatePtBR(created)}
-            </time>
+        <article className='py-5 flex gap-4'>
+          <div className='aspect-square h-[100px] bg-accent  group-hover:scale-110 group-hover:rotate-3 group-hover:-translate-y-1  ease-spring duration-600'></div>
+          <div className='space-y-1 transition-[padding] group-hover:px-2'>
+            <div className='flex gap-4 w-full justify-between'>
+              <h2 className='leading-none text-2xl font-bold underline-magical-2 group-hover:bg-size-[100%_100%] group-hover:text-background'>
+                {title}
+              </h2>
+              <span className='flex flex-1 h-px bg-accent' />
+              <time className='w-max whitespace-nowrap text-sm pl-2 text-foreground/60'>
+                {formatDatePtBR(created)}
+              </time>
+            </div>
+            <p className='text-foreground/60 leading-tight'>{long_text}</p>
           </div>
-          <p className=''>{long_text}</p>
         </article>
       </Link>
     </motion.li>

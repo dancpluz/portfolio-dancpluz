@@ -24,7 +24,7 @@ export default function ThemeSwitcher() {
   };
 
   return (
-    <div className='absolute top-4 right-4 z-10'>
+    <div className='fixed top-3 right-3 z-10 p-2 backdrop-blur-xs flex items-center justify-center rounded-full'>
       <motion.button
         aria-label='Toggle Dark Mode'
         type='button'
@@ -37,9 +37,9 @@ export default function ThemeSwitcher() {
         onClick={toggleTheme}
       >
         {mounted && (theme === 'dark' || resolvedTheme === 'dark') ? (
-          <Sun className='size-6' />
+          <Sun className='size-6 text-foreground' />
         ) : (
-          <Moon className='size-6' />
+          <Moon className='size-6 text-foreground' />
         )}
       </motion.button>
     </div>

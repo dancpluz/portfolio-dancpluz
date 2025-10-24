@@ -7,6 +7,8 @@
   --color-alternate: #888888;
   --font-text: var(--font-text);
   --font-heading: var(--font-heading);
+
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 @layer {
@@ -69,6 +71,14 @@
     @apply bg-linear-to-r from-accent to-accent bg-no-repeat 
     no-underline bg-position-[0_100%]
     bg-size-[100%_0.2em] focus:bg-size-[100%_100%] hover:text-background
+    hover:bg-size-[100%_100%] motion-safe:transition-all
+    motion-safe:duration-300;
+  }
+
+  .underline-magical-2 {
+    @apply bg-linear-to-r from-accent to-accent bg-no-repeat 
+    no-underline bg-position-[0_100%]
+    bg-size-[100%_0px] focus:bg-size-[100%_100%] hover:text-background
     hover:bg-size-[100%_100%] motion-safe:transition-all
     motion-safe:duration-300;
   }

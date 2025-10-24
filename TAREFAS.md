@@ -15,8 +15,10 @@
   - [ ] Create Contact Form
 - [ ] Blog
   - [x] Fetch blog posts
-  - [ ] Blog List
+  - [x] Blog List
   - [x] Dark theme
+  - [ ] Categories
+  - [ ] Query params
   - [ ] Blog page
   - [ ] Rich Text
   - [ ] Interactions
