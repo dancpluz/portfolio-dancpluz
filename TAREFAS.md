@@ -26,6 +26,7 @@
   - [x] Categories and Anim
   - [x] Query params
   - [ ] Article
-    - [ ] Rich Text
+    - [x] Render Rich Text
+    - [ ] Improve Rich text
     - [x] Progress Bar
-    - [ ] Sections
+    - [ ] Table of contents

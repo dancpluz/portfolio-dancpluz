@@ -1,7 +1,7 @@
 'use client';
 
 import { categoryEmoji } from '@/lib/const';
-import { formatDatePtBR } from '@/lib/utils';
+import { formatDatePtBR, getFirstParagraphText } from '@/lib/utils';
 import { PostsResponse } from '@/types/pocketbase';
 import { motion } from 'motion/react';
 import Link from 'next/link';
@@ -14,7 +14,9 @@ interface PostCardProps {
 }
 
 export default function PostCard({ post, index }: PostCardProps) {
-  const { title, id, long_text, created } = post;
+  const { title, id, long_text, article, created } = post;
+
+  const description = long_text || getFirstParagraphText(article);
 
   return (
     <motion.li
@@ -29,7 +31,7 @@ export default function PostCard({ post, index }: PostCardProps) {
     >
       <Link href={`/blog/${id}`} aria-label={`Leia "${title}"`}>
         <article className='py-5 flex gap-4'>
-          <div className='aspect-square size-[100px] bg-accent  group-hover:scale-110 group-hover:rotate-3 group-hover:-translate-y-1 ease-spring duration-600 text-xs grid content-center place-items-center border-accent border'>
+          <div className='aspect-square size-20 bg-accent group-hover:scale-110 group-hover:rotate-3 group-hover:-translate-y-1 ease-spring duration-600 text-xs grid content-center place-items-center border-accent border'>
             <ImageGif post={post} />
           </div>
           <div className='space-y-1 transition-[padding] group-hover:px-2 w-full'>
@@ -42,8 +44,8 @@ export default function PostCard({ post, index }: PostCardProps) {
                 {formatDatePtBR(created)}
               </time>
             </div>
-            <p className='text-foreground/60 leading-tight line-clamp-2'>
-              {long_text}
+            <p className='text-foreground/60 leading-tight line-clamp-3'>
+              {description}
             </p>
           </div>
         </article>
@@ -83,7 +85,7 @@ function ImageGif({ post }: { post: PostsResponse }) {
   }
 
   return (
-    <p className='grayscale contrast-300 text-3xl'>
+    <p className='grayscale contrast-300 text-2xl'>
       {category ? categoryEmoji[category] : '🗒️'}
     </p>
   );

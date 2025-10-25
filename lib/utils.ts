@@ -1,6 +1,9 @@
 import { PostsResponse } from '@/types/pocketbase';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import * as cheerio from 'cheerio';
+import { Heading } from '@/types/utils';
+import slugify from 'slugify';
 
 export const angleToRadians = (angle: number) => {
   return angle * (Math.PI / 180);
@@ -126,4 +129,49 @@ export function plural<T>(array: T[]): string {
 export function getPostCategories(posts: PostsResponse[]) {
   const categories = posts.map((post) => post.category).flat();
   return Array.from(new Set(categories));
+}
+
+export function processArticleHtml(htmlString: string): {
+  headings: Heading[];
+  processedHtml: string;
+} {
+  const headings: Heading[] = [];
+  const $ = cheerio.load(htmlString);
+
+  // Encontra todas as tags <h2> e <h3>
+  $('h2, h3').each((_, element) => {
+    const level = parseInt(element.tagName.replace('h', ''), 10);
+    const text = $(element).text();
+    const id = slugify(text);
+
+    if (text) {
+      // 1. Injeta o ID diretamente na tag HTML
+      $(element).attr('id', id);
+
+      // 2. Adiciona ao nosso array de cabeçalhos
+      headings.push({ id, text, level });
+    }
+  });
+
+  // 3. Retorna o HTML modificado e a lista de cabeçalhos
+  const processedHtml = $.html();
+
+  return { headings, processedHtml };
+}
+
+export function getFirstParagraphText(htmlString: string): string {
+  const $ = cheerio.load(htmlString);
+
+  let firstText = '';
+
+  $('p').each((_, element) => {
+    const text = $(element).text().trim();
+
+    if (text) {
+      firstText = text;
+      return false;
+    }
+  });
+
+  return firstText;
 }
