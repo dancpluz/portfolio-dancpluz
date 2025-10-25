@@ -1,5 +1,7 @@
+import ArticleProgressBar from "@/components/blog/article-progress-bar";
 import Container from "@/components/blog/container";
 import { getPostById, getPosts } from "@/lib/api";
+import { Suspense } from 'react';
 
 export async function generateStaticParams() {
   const { data: posts, error } = await getPosts();
@@ -23,9 +25,17 @@ export default async function Article(props: { params: Promise<{ id: string }> }
     );
   }
 
+  const { article, title } = post || {};
+
   return (
-    <Container>
-      <div>{post?.title}</div>
-    </Container>
+    <>
+      <Suspense>
+        <ArticleProgressBar />
+      </Suspense>
+      <Container>
+        <div>{title}</div>
+        <div dangerouslySetInnerHTML={{ __html: article || '' }} />
+      </Container>
+    </>
   );
 }

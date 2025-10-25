@@ -1,4 +1,5 @@
 - [ ] Maintenance Page
+- [ ] Smooth scroll
 - [ ] Landing Page
   - [x] Header
   - [x] Hero Banner Section
@@ -24,7 +25,7 @@
   - [ ] Autenticação api
   - [x] Categories and Anim
   - [x] Query params
-  - [ ] Blog page
-  - [ ] Rich Text
-  - [ ] Interactions
-  - [ ] Animations
+  - [ ] Article
+    - [ ] Rich Text
+    - [x] Progress Bar
+    - [ ] Sections
