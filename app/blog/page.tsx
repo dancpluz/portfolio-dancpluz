@@ -2,6 +2,14 @@ import PostList from '@/components/blog/post-list';
 import { getPosts } from '@/lib/api';
 import React from 'react';
 import Section from '@/components/blog/section';
+import {
+  createLoader,
+  createSearchParamsCache,
+  parseAsStringEnum,
+  SearchParams,
+} from 'nuqs/server';
+import { PostsCategoryOptions } from '@/types/pocketbase';
+import { getPostCategories } from '@/lib/utils';
 
 export const metadata = {
   title: 'Blog',
@@ -10,7 +18,19 @@ export const metadata = {
 
 export const revalidate = 0;
 
-export default async function Blog() {
+const loadCategoryParams = createLoader({
+  categoria: parseAsStringEnum<PostsCategoryOptions>(
+    Object.values(PostsCategoryOptions)
+  ),
+});
+
+export default async function Blog({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>;
+}) {
+  const { categoria } = await loadCategoryParams(searchParams);
+
   const { data: posts, error } = await getPosts();
 
   if (error) {
@@ -29,11 +49,16 @@ export default async function Blog() {
     );
   }
 
+  const filteredPosts =
+    categoria && posts
+      ? posts.filter((post) => post.category === categoria)
+      : posts;
+
+  const categories = posts ? getPostCategories(posts) : [];
+
   return (
-    <Section posts={posts}>
-      {/* <pre>{JSON.stringify(posts, null, 2)}</pre> */}
-      <PostList posts={posts} />
+    <Section posts={filteredPosts} categories={categories}>
+      <PostList posts={filteredPosts} />
     </Section>
   );
 }
-

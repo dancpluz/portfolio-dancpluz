@@ -1,5 +1,8 @@
+'use client';
+
 import { PostsResponse } from '@/types/pocketbase';
 import PostCard from './post-card';
+import { AnimatePresence } from 'motion/react';
 
 interface PostListProps {
   posts: PostsResponse[];
@@ -7,11 +10,12 @@ interface PostListProps {
 
 export default function PostList({ posts }: PostListProps) {
   return (
-    <ul>
-      {posts
-        .map((post, index) => (
+    <AnimatePresence mode='popLayout'>
+      <ul>
+        {posts.map((post, index) => (
           <PostCard key={post.id} post={post} index={index} />
         ))}
-    </ul>
+      </ul>
+    </AnimatePresence>
   );
 }

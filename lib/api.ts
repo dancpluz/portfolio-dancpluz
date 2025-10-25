@@ -82,10 +82,13 @@ export async function getContact() {
   }
 }
 
-export async function getPosts(): Promise<ApiResponse<PostsResponse[]>> {
+export async function getPosts(
+  category?: string
+): Promise<ApiResponse<PostsResponse[]>> {
   try {
     const records = await pb.collection('posts').getFullList<PostsResponse>({
       sort: '-created',
+      filter: category ? `category = "${category}"` : '',
     });
     return { data: records, error: null };
   } catch (err) {
@@ -96,7 +99,9 @@ export async function getPosts(): Promise<ApiResponse<PostsResponse[]>> {
   }
 }
 
-export async function getPostById(id: string): Promise<ApiResponse<PostsResponse>> {
+export async function getPostById(
+  id: string
+): Promise<ApiResponse<PostsResponse>> {
   try {
     const record = await pb.collection('posts').getOne<PostsResponse>(id);
     return { data: record, error: null };

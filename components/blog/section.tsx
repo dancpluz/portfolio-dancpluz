@@ -1,15 +1,16 @@
-import { getPostCategories, plural } from "@/lib/utils";
-import { PostsResponse } from "@/types/pocketbase";
+import { plural } from '@/lib/utils';
+import { PostsCategoryOptions, PostsResponse } from '@/types/pocketbase';
 import BlogContainer from '@/components/blog/container';
+import CategoriesButtons from './categories-buttons';
+import { Suspense } from 'react';
 
 interface SectionProps {
   children: React.ReactNode;
   posts?: PostsResponse[];
+  categories?: PostsCategoryOptions[];
 }
 
-export default function Section({ children, posts }: SectionProps) {
-  const categories = posts ? getPostCategories(posts) : [];
-
+export default function Section({ children, posts, categories }: SectionProps) {
   return (
     <BlogContainer>
       <section className='space-y-8'>
@@ -18,20 +19,14 @@ export default function Section({ children, posts }: SectionProps) {
             Ideias
           </h1>
           <div className='flex flex-col items-end w-full justify-between'>
-            <div className='flex gap-2'>
-              {categories.map((category) => (
-                <p
-                  className='underline-magical-2 font-semibold text-base'
-                  key={category}
-                >
-                  {category}
-                </p>
-              ))}
-            </div>
+            <Suspense>
+              <CategoriesButtons categories={categories ?? []} />
+            </Suspense>
             <span className='h-px flex w-full bg-accent' />
             {posts && (
-              <p className='text-base'>
-                {posts.length} artigo{plural(posts)} encontrado{plural(posts)}
+              <p className='text-sm'>
+                {posts.length} artigo{plural(posts)} encontrado
+                {plural(posts)}
               </p>
             )}
           </div>

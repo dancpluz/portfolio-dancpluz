@@ -22,8 +22,8 @@
   - [ ] Error state
   - [ ] Loading state
   - [ ] Autenticação api
-  - [ ] Categories
-  - [ ] Query params
+  - [x] Categories and Anim
+  - [x] Query params
   - [ ] Blog page
   - [ ] Rich Text
   - [ ] Interactions
