@@ -25,9 +25,10 @@
   - [ ] Autenticação api
   - [x] Categories and Anim
   - [x] Query params
+  - [ ] Responsive
   - [ ] Article
     - [x] Render Rich Text
-    - [ ] Improve Rich text
+    - [x] Improve Rich text
     - [x] Progress Bar
     - [x] Table of contents
     - [ ] Mídias

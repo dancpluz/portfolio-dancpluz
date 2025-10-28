@@ -87,7 +87,7 @@ export async function getPosts(
 ): Promise<ApiResponse<PostsResponse[]>> {
   try {
     const records = await pb.collection('posts').getFullList<PostsResponse>({
-      sort: '-created',
+      sort: '-updated',
       filter: category ? `category = "${category}"` : '',
     });
     return { data: records, error: null };

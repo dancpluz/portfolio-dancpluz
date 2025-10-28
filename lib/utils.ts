@@ -138,22 +138,18 @@ export function processArticleHtml(htmlString: string): {
   const headings: Heading[] = [];
   const $ = cheerio.load(htmlString);
 
-  // Encontra todas as tags <h2> e <h3>
-  $('h2, h3').each((_, element) => {
+  $('h1, h2, h3, h4').each((_, element) => {
     const level = parseInt(element.tagName.replace('h', ''), 10);
     const text = $(element).text();
     const id = slugify(text);
 
     if (text) {
-      // 1. Injeta o ID diretamente na tag HTML
       $(element).attr('id', id);
 
-      // 2. Adiciona ao nosso array de cabeçalhos
       headings.push({ id, text, level });
     }
   });
 
-  // 3. Retorna o HTML modificado e a lista de cabeçalhos
   const processedHtml = $('body').html() || '';
 
   return { headings, processedHtml };

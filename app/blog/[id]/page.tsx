@@ -42,18 +42,16 @@ export default async function Article(props: {
         <ArticleProgressBar />
       </Suspense>
       <Container>
-        <article>
-          <div className='flex flex-col gap-2'>
-            <h1 className='font-heading uppercase text-3xl leading-none'>{title}</h1>
-            <time className='text-foreground/70'>{formatDatePtBR(updated ?? '')}</time>
-          </div>
-          <div className='mt-6 flex gap-10'>
-            <Suspense>
-              <ArticleRenderer dirtyHtml={processedHtml} />
-              <TableOfContents headings={headings} />
-            </Suspense>
-          </div>
-        </article>
+        <div className='flex flex-col gap-2'>
+          <h1 className='font-heading uppercase text-3xl leading-none'>{title}</h1>
+          <time className='text-foreground/70'>{formatDatePtBR(updated ?? '')}</time>
+        </div>
+        <div className='mt-6 flex gap-10'>
+          <Suspense>
+            <ArticleRenderer dirtyHtml={processedHtml} />
+            <TableOfContents headings={headings} />
+          </Suspense>
+        </div>
       </Container>
     </>
   );

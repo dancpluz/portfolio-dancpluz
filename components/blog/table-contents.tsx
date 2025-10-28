@@ -39,7 +39,6 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
       const scrollTop = document.documentElement.scrollTop;
       const clientHeight = document.documentElement.clientHeight;
 
-      // Check if user has scrolled to the bottom (within threshold)
       if (scrollHeight - scrollTop - clientHeight < 10) {
         const lastHeading = headings[headings.length - 1];
         if (lastHeading) {
@@ -65,6 +64,13 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
     return null;
   }
 
+  const indentationClasses: { [key: number]: string } = {
+    1: 'ml-0', // h1
+    2: 'ml-3', // h2
+    3: 'ml-6', // h3
+    4: 'ml-9', // h4
+  };
+
   return (
     <nav className=''>
       <div className='sticky top-24 w-58'>
@@ -72,10 +78,11 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
         <ul className='space-y-1 text-sm'>
           {headings.map((heading) => {
             const isActive = activeId === heading.id;
-            const isH3 = heading.level === 3;
+
+            const marginClass = indentationClasses[heading.level] || 'ml-0';
 
             return (
-              <li key={heading.id} className={isH3 ? 'ml-4' : ''}>
+              <li key={heading.id} className={marginClass}>
                 <Link
                   href={`#${heading.id}`}
                   onClick={(e) => {
@@ -91,13 +98,15 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
                   }}
                   className={`group flex items-start gap-2 py-1 transition-all duration-200 ${
                     isActive
-                      ? 'text-foreground ml-1'
+                      ? 'text-foreground ml-1' // 
                       : 'text-foreground/50 hover:text-foreground'
                   }`}
                 >
                   <span
                     className={`text-base transition-all duration-200 group-hover:scale-100 ${
-                      isActive ? 'text-accent scale-100' : 'text-foreground/20 scale-0'
+                      isActive
+                        ? 'text-accent scale-100'
+                        : 'text-foreground/20 scale-0'
                     }`}
                   >
                     •
