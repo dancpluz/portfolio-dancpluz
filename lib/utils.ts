@@ -119,7 +119,7 @@ export function parseApiError(err: unknown, objectName: string): string {
 export function formatDatePtBR(dateInput: string | Date): string {
   const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
   if (Number.isNaN(date.getTime())) return '';
-  return format(date, 'd MMMM, yyyy', { locale: ptBR });
+  return format(date, "d 'de' MMMM, yyyy", { locale: ptBR });
 }
 
 export function plural<T>(array: T[]): string {

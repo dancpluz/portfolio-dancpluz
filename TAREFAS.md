@@ -1,5 +1,5 @@
 - [ ] Maintenance Page
-- [ ] Smooth scroll
+- [x] Smooth scroll
 - [ ] Landing Page
   - [x] Header
   - [x] Hero Banner Section
@@ -28,7 +28,10 @@
   - [ ] Responsive
   - [ ] Article
     - [x] Render Rich Text
+    - [ ] Responsive
+    - [ ] Header
     - [x] Improve Rich text
     - [x] Progress Bar
     - [x] Table of contents
-    - [ ] Mídias
+    - [ ] Medias
+    - [ ] Generate metadata
