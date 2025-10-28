@@ -29,4 +29,5 @@
     - [x] Render Rich Text
     - [ ] Improve Rich text
     - [x] Progress Bar
-    - [ ] Table of contents
+    - [x] Table of contents
+    - [ ] Mídias

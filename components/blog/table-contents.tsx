@@ -2,6 +2,7 @@
 
 import { Heading } from '@/types/utils';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 interface TableOfContentsProps {
   headings: Heading[];
@@ -38,7 +39,7 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
       const scrollTop = document.documentElement.scrollTop;
       const clientHeight = document.documentElement.clientHeight;
 
-      // Check if user has scrolled to the bottom (within 10px threshold)
+      // Check if user has scrolled to the bottom (within threshold)
       if (scrollHeight - scrollTop - clientHeight < 10) {
         const lastHeading = headings[headings.length - 1];
         if (lastHeading) {
@@ -65,19 +66,17 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
   }
 
   return (
-    <nav className='lg:block pt-3'>
+    <nav className=''>
       <div className='sticky top-24 w-58'>
-        <h2 className='text-sm font-semibold mb-4'>
-          On this page
-        </h2>
-        <ul className='space-y-2 text-sm'>
+        <h2 className='text-sm font-semibold mb-3'>Nessa página</h2>
+        <ul className='space-y-1 text-sm'>
           {headings.map((heading) => {
             const isActive = activeId === heading.id;
             const isH3 = heading.level === 3;
 
             return (
               <li key={heading.id} className={isH3 ? 'ml-4' : ''}>
-                <a
+                <Link
                   href={`#${heading.id}`}
                   onClick={(e) => {
                     e.preventDefault();
@@ -90,14 +89,23 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
                       window.history.pushState(null, '', `#${heading.id}`);
                     }
                   }}
-                  className={`block py-1 transition-colors duration-200 ${
+                  className={`group flex items-start gap-2 py-1 transition-all duration-200 ${
                     isActive
-                      ? 'dark:text-white text-black underline'
-                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100'
+                      ? 'text-foreground ml-1'
+                      : 'text-foreground/50 hover:text-foreground'
                   }`}
                 >
-                  {heading.text}
-                </a>
+                  <span
+                    className={`text-base transition-all duration-200 group-hover:scale-100 ${
+                      isActive ? 'text-accent scale-100' : 'text-foreground/20 scale-0'
+                    }`}
+                  >
+                    •
+                  </span>
+                  <span className={isActive ? 'underline' : ''}>
+                    {heading.text}
+                  </span>
+                </Link>
               </li>
             );
           })}

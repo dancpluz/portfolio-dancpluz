@@ -4,7 +4,6 @@ import React from 'react';
 import Section from '@/components/blog/section';
 import {
   createLoader,
-  createSearchParamsCache,
   parseAsStringEnum,
   SearchParams,
 } from 'nuqs/server';
@@ -16,7 +15,7 @@ export const metadata = {
   description: 'Minhas ideias idiotas',
 };
 
-export const revalidate = 0;
+export const revalidate = 30;
 
 const loadCategoryParams = createLoader({
   categoria: parseAsStringEnum<PostsCategoryOptions>(

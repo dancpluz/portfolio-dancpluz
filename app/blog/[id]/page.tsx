@@ -3,7 +3,7 @@ import Container from '@/components/blog/container';
 import { getPostById, getPosts } from '@/lib/api';
 import { Suspense } from 'react';
 import ArticleRenderer from '@/components/blog/article-renderer';
-import { processArticleHtml } from '@/lib/utils';
+import { processArticleHtml, formatDatePtBR } from '@/lib/utils';
 import TableOfContents from '@/components/blog/table-contents';
 
 export async function generateStaticParams() {
@@ -15,6 +15,8 @@ export async function generateStaticParams() {
 
   return posts.map((post) => ({ id: post.id }));
 }
+
+export const revalidate = 30;
 
 export default async function Article(props: {
   params: Promise<{ id: string }>;
@@ -30,7 +32,7 @@ export default async function Article(props: {
     );
   }
 
-  const { article, title } = post || {};
+  const { article, title, updated } = post || {};
 
   const { headings, processedHtml } = article ? processArticleHtml(article) : { headings: [], processedHtml: '' };
 
@@ -40,14 +42,17 @@ export default async function Article(props: {
         <ArticleProgressBar />
       </Suspense>
       <Container>
-        <aside className=''>
-          <TableOfContents headings={headings} />
-        </aside>
-        <article className=''>
-          <h1 className='font-heading uppercase text-3xl'>{title}</h1>
-          <Suspense>
-            <ArticleRenderer dirtyHtml={processedHtml} />
-          </Suspense>
+        <article>
+          <div className='flex flex-col gap-2'>
+            <h1 className='font-heading uppercase text-3xl leading-none'>{title}</h1>
+            <time className='text-foreground/70'>{formatDatePtBR(updated ?? '')}</time>
+          </div>
+          <div className='mt-6 flex gap-10'>
+            <Suspense>
+              <ArticleRenderer dirtyHtml={processedHtml} />
+              <TableOfContents headings={headings} />
+            </Suspense>
+          </div>
         </article>
       </Container>
     </>

@@ -154,7 +154,7 @@ export function processArticleHtml(htmlString: string): {
   });
 
   // 3. Retorna o HTML modificado e a lista de cabeçalhos
-  const processedHtml = $.html();
+  const processedHtml = $('body').html() || '';
 
   return { headings, processedHtml };
 }

@@ -30,12 +30,26 @@ const options: HTMLReactParserOptions = {
           />
         );
       }
+      if (domNode.name === 'a') {
+        return (
+          <a
+            href={domNode.attribs.href}
+            target='_blank'
+            rel='noopener noreferrer'
+            className='underline-magical'
+          >
+            {/* @ts-expect-error */}
+            {domToReact(domNode.children, options)}
+          </a>
+        );
+      }
       if (domNode.name === 'h2') {
         return (
           <h2
             id={domNode.attribs.id}
             className='text-3xl font-bold leading-tight'
           >
+            {/* @ts-expect-error */}
             {domToReact(domNode.children, options)}
           </h2>
         );
@@ -43,9 +57,10 @@ const options: HTMLReactParserOptions = {
       if (domNode.name === 'h3') {
         return (
           <h3
-            id={domNode.attribs.id} // 👈 PASSE O ID AQUI
+            id={domNode.attribs.id}
             className='text-2xl font-semibold leading-tight mt-6 mb-3'
           >
+            {/* @ts-expect-error */}
             {domToReact(domNode.children, options)}
           </h3>
         );
@@ -53,6 +68,7 @@ const options: HTMLReactParserOptions = {
       if (domNode.name === 'p') {
         return (
           <p className='mb-4 leading-relaxed'>
+            {/* @ts-expect-error */}
             {domToReact(domNode.children, options)}
           </p>
         );
