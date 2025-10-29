@@ -1,6 +1,7 @@
-- [ ] Maintenance Page
-- [x] Smooth scroll
+# OLD
+
 - [ ] Landing Page
+  - [ ] Three js Diamond
   - [x] Header
   - [x] Hero Banner Section
   - [x] Projects Section
@@ -15,6 +16,14 @@
   - [ ] Make more responsive
   - [ ] Add Entry/Exit Animations
   - [ ] Create Contact Form
+
+# NEW
+
+- [ ] Maintenance Page
+- [ ] Internalization
+- [x] Smooth scroll
+- [ ] Landing Page
+  - [ ] Three js Diamond
 - [ ] Blog
   - [x] Fetch blog posts
   - [x] Blog List

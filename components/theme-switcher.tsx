@@ -24,7 +24,7 @@ export default function ThemeSwitcher() {
   };
 
   return (
-    <div className='fixed top-3 right-3 z-10 p-2 backdrop-blur-xs flex items-center justify-center rounded-full'>
+    <div className='fixed top-3 right-3 z-100 p-2 backdrop-blur-xs flex items-center justify-center rounded-full'>
       <motion.button
         aria-label='Toggle Dark Mode'
         type='button'
