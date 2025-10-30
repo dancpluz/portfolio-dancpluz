@@ -24,7 +24,9 @@
 - [x] Smooth scroll
 - [ ] Landing Page
   - [ ] Hero Banner
-    - [ ] Diamond Model
+    - [x] Diamond Model
+    - [x] Dark mode
+    - [x] Materials
     - [ ] Texts
     - [ ] Animations
     - [ ] Interactions

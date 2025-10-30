@@ -24,7 +24,19 @@ export const darkBackground = parseInt(
   16
 );
 
+export const darkForeground = parseInt(
+  typedThemes['dark']['--color-foreground'].substring(1),
+  16
+);
+
+export const lightForeground = parseInt(
+  typedThemes['light']['--color-foreground'].substring(1),
+  16
+);
+
 export const accent = parseInt(
   typedThemes['light']['--color-accent'].substring(1),
   16
 );
+
+

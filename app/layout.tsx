@@ -14,7 +14,7 @@ const mukta = Mukta({
 });
 
 const baseNeue = localFont({
-  src: './BaseNeue-SuperExpandedBlack.ttf',
+  src: '../public/fonts/BaseNeue-SuperExpandedBlack.ttf',
   display: 'swap',
   variable: '--font-heading',
   preload: true,
@@ -22,8 +22,7 @@ const baseNeue = localFont({
 
 export const metadata: Metadata = {
   title: 'Portfólio Daniel Luz',
-  description:
-    'Bem vindo ao meu portfólio',
+  description: 'Bem vindo ao meu portfólio',
 };
 
 export default function RootLayout({
