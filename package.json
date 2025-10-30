@@ -5,10 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "turbo": "next dev --turbo",
-    "build": "next build",
+    "build": "pnpm run build-theme && next build",
     "start": "next start",
     "lint": "next lint",
-    "copytypes": "npx pocketbase-typegen -o ./types/pocketbase.ts"
+    "copytypes": "npx pocketbase-typegen -o ./types/pocketbase.ts",
+    "build-theme": "node ./build-theme.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.6",
