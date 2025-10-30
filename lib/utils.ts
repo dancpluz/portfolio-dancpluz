@@ -171,21 +171,3 @@ export function getFirstParagraphText(htmlString: string): string {
 
   return firstText;
 }
-
-export function hexToRgb(hex: unknown): [number, number, number] | null {
-  if (!hex || typeof hex !== 'string' || !hex.startsWith('#')) return null;
-  let hexValue = hex.substring(1);
-  if (hexValue.length === 3) {
-    hexValue = hexValue
-      .split('')
-      .map((char) => char + char)
-      .join('');
-  }
-  if (hexValue.length === 6) {
-    const r = parseInt(hexValue.substring(0, 2), 16);
-    const g = parseInt(hexValue.substring(2, 4), 16);
-    const b = parseInt(hexValue.substring(4, 6), 16);
-    return [r, g, b];
-  }
-  return null;
-}

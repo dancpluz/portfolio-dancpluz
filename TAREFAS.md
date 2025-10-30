@@ -23,7 +23,12 @@
 - [ ] Internalization
 - [x] Smooth scroll
 - [ ] Landing Page
-  - [ ] Three js Diamond
+  - [ ] Hero Banner
+    - [ ] Diamond Model
+    - [ ] Texts
+    - [ ] Animations
+    - [ ] Interactions
+  - [ ] Projects
 - [ ] Blog
   - [x] Fetch blog posts
   - [x] Blog List

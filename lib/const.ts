@@ -13,3 +13,18 @@ export const categoryEmoji: Record<PostsCategoryOptions, string> = {
 };
 
 export const typedThemes = themes as Themes;
+
+export const lightBackground = parseInt(
+  typedThemes['light']['--color-background'].substring(1),
+  16
+);
+
+export const darkBackground = parseInt(
+  typedThemes['dark']['--color-background'].substring(1),
+  16
+);
+
+export const accent = parseInt(
+  typedThemes['light']['--color-accent'].substring(1),
+  16
+);

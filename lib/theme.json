@@ -1,10 +1,12 @@
 {
   "dark": {
     "--color-background": "#080808",
-    "--color-foreground": "#efefef"
+    "--color-foreground": "#efefef",
+    "--color-accent": "#eca400"
   },
   "light": {
     "--color-background": "#efefef",
-    "--color-foreground": "#080808"
+    "--color-foreground": "#080808",
+    "--color-accent": "#eca400"
   }
 }

@@ -19,11 +19,13 @@
   [data-theme='dark'] {
     --color-background: #080808;
     --color-foreground: #efefef;
+    --color-accent: #eca400;
   }
 
   [data-theme='light'] {
     --color-background: #efefef;
     --color-foreground: #080808;
+    --color-accent: #eca400;
   }
 
   body {
