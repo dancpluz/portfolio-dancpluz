@@ -27,6 +27,8 @@
     - [x] Diamond Model
     - [x] Dark mode
     - [x] Materials
+    - [x] Small Diamonds
+    - [x] Memoization
     - [ ] Positioning
     - [ ] Texts
     - [ ] Animations
