@@ -1,7 +1,13 @@
 'use client';
 
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Environment, SpotLight, OrbitControls } from '@react-three/drei';
+import {
+  Environment,
+  SpotLight,
+  OrbitControls,
+  Stats,
+  PerspectiveCamera,
+} from '@react-three/drei';
 import { easing } from 'maath';
 import DiamondModel from './3d-diamond';
 import { useTheme } from 'next-themes';
@@ -39,16 +45,35 @@ export default function Scene() {
     penumbra: { value: 0.5, min: 0, max: 1 }, // Suavidade da borda
   });
 
+  // 2. --- Novos Controles da Câmera ---
+  const cameraProps = useControls('Camera', {
+    position: {
+      value: [0, 0, 8], // Posição inicial [x, y, z]
+      step: 0.1,
+    },
+    fov: {
+      value: 50, // Field of View (zoom)
+      min: 10,
+      max: 120,
+    },
+  });
+
   return (
     <Canvas>
+      <Stats />
       <SpotLight {...spotLightProps} castShadow />
       {resolvedTheme === 'dark' ? (
         <color attach='background' args={[darkBackground]} />
       ) : (
         <color attach='background' args={[lightBackground]} />
       )}
-      <OrbitControls />
+      {/* <OrbitControls /> */}
       {/* <CameraParallax /> */}
+      <PerspectiveCamera
+        makeDefault // Diz ao R3F para usar esta como a câmera principal
+        position={cameraProps.position}
+        fov={cameraProps.fov}
+      />
       <directionalLight intensity={3} position={[0, 3, 2]} />
       <Environment
         backgroundBlurriness={0.9}
