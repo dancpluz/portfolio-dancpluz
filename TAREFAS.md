@@ -31,6 +31,7 @@
     - [x] Memoization
     - [ ] Positioning
     - [ ] Texts
+    - [ ] Scroll animations
     - [ ] Animations
     - [ ] Interactions
   - [ ] Projects

@@ -4,11 +4,14 @@ import {
   Center,
   MeshTransmissionMaterial,
   useGLTF,
+  useScroll,
 } from '@react-three/drei';
 import { GLTF } from 'three-stdlib';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useTheme } from 'next-themes';
-import { darkForeground, lightForeground } from '@/lib/const';
+import { darkForeground, lightForeground, vertexPoints } from '@/lib/const';
+import { easing } from 'maath';
+import { MathUtils } from 'three';
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -42,73 +45,6 @@ const diamondMaterialProps = {
   backside: false,
   color: '#2e2e2e',
 };
-
-interface VertexPoint {
-  position: [number, number, number];
-  rotation: [number, number, number];
-  scale: number;
-  label: string;
-  color: string;
-}
-
-const vertexPoints: VertexPoint[] = [
-  {
-    position: [-0.499, -0.065, 0.001],
-    rotation: [0, 0, 0],
-    scale: 0.1,
-    label: 'FULLSTACK',
-    color: '#f9cc01',
-  },
-  {
-    position: [-0.351, -0.065, 0.35],
-    rotation: [0, 0, 0],
-    scale: 0.1,
-    label: 'FRONTEND',
-    color: '#b9b9b9',
-  },
-  {
-    position: [0.001, -0.065, 0.499],
-    rotation: [0, 0, 0],
-    scale: 0.1,
-    label: 'BACKEND',
-    color: '#0201f7',
-  },
-  {
-    position: [0.35, -0.065, 0.351],
-    rotation: [0, 0, 0],
-    scale: 0.1,
-    label: 'DEVOPS',
-    color: '#24d400',
-  },
-  {
-    position: [0.499, -0.065, -0.001],
-    rotation: [0, 0, 0],
-    scale: 0.1,
-    label: 'DESIGN',
-    color: '#fa00ec',
-  },
-  {
-    position: [0.351, -0.065, -0.35],
-    rotation: [0, 0, 0],
-    scale: 0.1,
-    label: 'MOBILE',
-    color: '#14c4f8',
-  },
-  {
-    position: [-0.001, -0.065, -0.499],
-    rotation: [0, 0, 0],
-    scale: 0.1,
-    label: 'AI',
-    color: '#f83800',
-  },
-  {
-    position: [-0.35, -0.065, -0.351],
-    rotation: [0, 0, 0],
-    scale: 0.1,
-    label: 'BLOCKCHAIN',
-    color: '#ff5b00',
-  },
-];
 
 const meshXOffset = 0.05;
 const meshYOffset = -0.015;
@@ -190,9 +126,37 @@ export default function Model(props: JSX.IntrinsicElements['group']) {
 
   const scene = useRef<THREE.Group>(null!);
 
+  const scroll = useScroll();
+
   useFrame((_, delta) => {
-    const r = scene.current.rotation;
-    r.y += 0.2 * delta;
+    if (!scene.current) return;
+
+    // --- 1. Rotação Contínua ---
+    scene.current.rotation.y += 0.2 * delta;
+
+    // --- 2. Animação de Posição (baseada no scroll) ---
+
+    // Pega o progresso da "Seção 2" (de 1/3 a 2/3 do scroll)
+    const section2Progress = scroll.range(0, 1 / 3);
+
+    // Calcula a *posição alvo* de X e Z usando lerp
+    // Isso nos diz onde o diamante *deveria* estar baseado no scroll
+    const targetX = MathUtils.lerp(0, -4, section2Progress);
+    const targetZ = MathUtils.lerp(0, 4, section2Progress);
+
+    // A posição Y agora é estática (0.5), conforme a posição inicial do grupo.
+    const targetPosition: [number, number, number] = [targetX, 0.5, targetZ];
+
+    // 3. (NOVO) Use 'damp3' para animar
+    // Em vez de definir a posição instantaneamente, 'damp3' vai
+    // mover 'scene.current.position' em direção a 'targetPosition'
+    // de forma suave, usando 'delta' e 'smoothTime' (0.25s).
+    easing.damp3(
+      scene.current.position, // O objeto (Vector3) a ser animado
+      targetPosition, // O array [x, y, z] alvo
+      0.25, // smoothTime (tempo de suavização)
+      delta // delta (independência de frame-rate)
+    );
   });
 
   return (
@@ -200,7 +164,7 @@ export default function Model(props: JSX.IntrinsicElements['group']) {
       {...props}
       ref={scene}
       scale={fit * padding}
-      position={[0, 0.5, 0]}
+      position={[-4, 0.5, 4]}
       dispose={null}
       name='Scene'
     >

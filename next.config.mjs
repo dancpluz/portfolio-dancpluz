@@ -4,6 +4,12 @@ const nextConfig = {
   experimental: {
     reactCompiler: true,
   },
+  // typescript: {
+  //   ignoreBuildErrors: true,
+  // },
+  // eslint: {
+  //   ignoreDuringBuilds: true,
+  // },
   images: {
     remotePatterns: [
       {
