@@ -23,6 +23,7 @@
 - [ ] Internalization
 - [x] Smooth scroll
 - [ ] Landing Page
+  - [ ] Improve Loader
   - [ ] Hero Banner
     - [x] Diamond Model
     - [x] Dark mode
@@ -34,6 +35,7 @@
     - [ ] Scroll animations
     - [ ] Animations
     - [ ] Interactions
+    - [ ] Stars
   - [ ] Projects
 - [ ] Blog
   - [x] Fetch blog posts

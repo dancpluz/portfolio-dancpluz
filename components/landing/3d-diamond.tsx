@@ -82,8 +82,8 @@ const MemoizedDiamond = React.memo(function MemoizedDiamond({
 
 export default function Model(props: JSX.IntrinsicElements['group']) {
   const { viewport } = useThree();
-  const fit = Math.min(viewport.width, viewport.height);
-  const padding = 0.8;
+  // const fit = Math.min(viewport.width, viewport.height);
+  // const padding = 0.8;
 
   const { nodes } = useGLTF('/models/diamond.glb') as unknown as GLTFResult;
   const { resolvedTheme } = useTheme();
@@ -136,35 +136,35 @@ export default function Model(props: JSX.IntrinsicElements['group']) {
 
     // --- 2. Animação de Posição (baseada no scroll) ---
 
-    // Pega o progresso da "Seção 2" (de 1/3 a 2/3 do scroll)
-    const section2Progress = scroll.range(0, 1 / 3);
+    // // Pega o progresso da "Seção 2" (de 1/3 a 2/3 do scroll)
+    // const section2Progress = scroll.range(0, 1 / 3);
 
-    // Calcula a *posição alvo* de X e Z usando lerp
-    // Isso nos diz onde o diamante *deveria* estar baseado no scroll
-    const targetX = MathUtils.lerp(0, -4, section2Progress);
-    const targetZ = MathUtils.lerp(0, 4, section2Progress);
+    // // Calcula a *posição alvo* de X e Z usando lerp
+    // // Isso nos diz onde o diamante *deveria* estar baseado no scroll
+    // const targetX = MathUtils.lerp(0, -4, section2Progress);
+    // const targetZ = MathUtils.lerp(0, 4, section2Progress);
 
-    // A posição Y agora é estática (0.5), conforme a posição inicial do grupo.
-    const targetPosition: [number, number, number] = [targetX, 0.5, targetZ];
+    // // A posição Y agora é estática (0.5), conforme a posição inicial do grupo.
+    // const targetPosition: [number, number, number] = [targetX, 0.5, targetZ];
 
-    // 3. (NOVO) Use 'damp3' para animar
-    // Em vez de definir a posição instantaneamente, 'damp3' vai
-    // mover 'scene.current.position' em direção a 'targetPosition'
-    // de forma suave, usando 'delta' e 'smoothTime' (0.25s).
-    easing.damp3(
-      scene.current.position, // O objeto (Vector3) a ser animado
-      targetPosition, // O array [x, y, z] alvo
-      0.25, // smoothTime (tempo de suavização)
-      delta // delta (independência de frame-rate)
-    );
+    // // 3. (NOVO) Use 'damp3' para animar
+    // // Em vez de definir a posição instantaneamente, 'damp3' vai
+    // // mover 'scene.current.position' em direção a 'targetPosition'
+    // // de forma suave, usando 'delta' e 'smoothTime' (0.25s).
+    // easing.damp3(
+    //   scene.current.position, // O objeto (Vector3) a ser animado
+    //   targetPosition, // O array [x, y, z] alvo
+    //   0.25, // smoothTime (tempo de suavização)
+    //   delta // delta (independência de frame-rate)
+    // );
   });
 
   return (
     <group
       {...props}
       ref={scene}
-      scale={fit * padding}
-      position={[-4, 0.5, 4]}
+      scale={6}
+      position={[0, 0.5, 0]}
       dispose={null}
       name='Scene'
     >

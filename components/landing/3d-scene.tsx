@@ -9,6 +9,7 @@ import {
   PerspectiveCamera,
   ScrollControls,
   Scroll,
+  Stars,
 } from '@react-three/drei';
 import { easing } from 'maath';
 import DiamondModel from './3d-diamond';
@@ -76,6 +77,15 @@ export default function Scene() {
       camera={{ position: [0, 0, 8], fov: 50 }}
     >
       <ScrollControls pages={totalScrollPages} damping={0.5}>
+        <Stars
+          radius={100}
+          depth={100}
+          count={5000}
+          factor={4}
+          saturation={0}
+          fade
+          speed={1}
+        />
         <Stats />
         <SpotLight {...spotLightProps} castShadow />
         {resolvedTheme === 'dark' ? (
@@ -86,7 +96,7 @@ export default function Scene() {
         {/* <OrbitControls /> */}
         {/* <CameraParallax /> */}
         <PerspectiveCamera
-          makeDefault // Diz ao R3F para usar esta como a câmera principal
+          makeDefault
           position={cameraProps.position}
           fov={cameraProps.fov}
         />
