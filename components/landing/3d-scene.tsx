@@ -17,6 +17,8 @@ import { useTheme } from 'next-themes';
 import { darkBackground, lightBackground } from '@/lib/const';
 import { useControls } from 'leva';
 import { motion } from 'motion/react';
+import CameraController from './camera-controller';
+import { sections, TOTAL_SCROLL_PAGES } from '@/lib/scroll-sections';
 
 // function CameraParallax() {
 //   useFrame((state, delta) => {
@@ -35,21 +37,20 @@ import { motion } from 'motion/react';
 export default function Scene() {
   const { resolvedTheme } = useTheme();
 
-  const spotLightProps = useControls('SpotLight', {
-    // --- Controles que você pediu ---
-    distance: { value: 5.0, min: 0, max: 20 },
-    angle: { value: 0.15, min: 0, max: Math.PI / 4 }, // Ângulo em radianos
-    attenuation: { value: 5.0, min: 0, max: 10 },
-    anglePower: { value: 5.0, min: 0, max: 20 },
+  // const spotLightProps = useControls('SpotLight', {
+  //   // --- Controles que você pediu ---
+  //   distance: { value: 5.0, min: 0, max: 20 },
+  //   angle: { value: 0.15, min: 0, max: Math.PI / 4 }, // Ângulo em radianos
+  //   attenuation: { value: 5.0, min: 0, max: 10 },
+  //   anglePower: { value: 5.0, min: 0, max: 20 },
 
-    // --- Controles extras (altamente recomendados) ---
-    color: '#ffffff',
-    intensity: { value: 10.0, min: 0, max: 100 },
-    position: [0, 5, 0], // Posição [x, y, z]
-    penumbra: { value: 0.5, min: 0, max: 1 }, // Suavidade da borda
-  });
+  //   // --- Controles extras (altamente recomendados) ---
+  //   color: '#ffffff',
+  //   intensity: { value: 10.0, min: 0, max: 100 },
+  //   position: [0, 5, 0], // Posição [x, y, z]
+  //   penumbra: { value: 0.5, min: 0, max: 1 }, // Suavidade da borda
+  // });
 
-  // 2. --- Novos Controles da Câmera ---
   const cameraProps = useControls('Camera', {
     position: {
       value: [0, 0, 8], // Posição inicial [x, y, z]
@@ -62,8 +63,6 @@ export default function Scene() {
     },
   });
 
-  const totalScrollPages = 2.2;
-
   return (
     <Canvas
       style={{
@@ -74,9 +73,12 @@ export default function Scene() {
         width: '100%',
       }}
       shadows
-      camera={{ position: [0, 0, 8], fov: 50 }}
+      camera={{
+        position: sections[0].cameraPosition,
+        fov: sections[0].cameraFov,
+      }}
     >
-      <ScrollControls pages={totalScrollPages} damping={0.5}>
+      <ScrollControls pages={TOTAL_SCROLL_PAGES} damping={0.5}>
         <Stars
           radius={100}
           depth={100}
@@ -87,7 +89,7 @@ export default function Scene() {
           speed={1}
         />
         <Stats />
-        <SpotLight {...spotLightProps} castShadow />
+        {/* <SpotLight {...spotLightProps} castShadow /> */}
         {resolvedTheme === 'dark' ? (
           <color attach='background' args={[darkBackground]} />
         ) : (
@@ -95,11 +97,12 @@ export default function Scene() {
         )}
         {/* <OrbitControls /> */}
         {/* <CameraParallax /> */}
-        <PerspectiveCamera
+        {/* <PerspectiveCamera
           makeDefault
           position={cameraProps.position}
           fov={cameraProps.fov}
-        />
+        /> */}
+        <CameraController />
         <directionalLight intensity={3} position={[0, 3, 2]} />
         <Environment
           backgroundBlurriness={0.9}
