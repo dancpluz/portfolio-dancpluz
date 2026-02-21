@@ -12,11 +12,3 @@ export type Themes = {
   dark: ThemeConfig;
   light: ThemeConfig;
 };
-
-export interface VertexPoint {
-  position: [number, number, number];
-  rotation: [number, number, number];
-  scale: number;
-  label: string;
-  color: string;
-}
