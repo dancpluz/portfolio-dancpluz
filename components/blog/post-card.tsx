@@ -8,6 +8,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { buildImageUrl } from '@/lib/api';
 import { useLocale } from 'next-intl';
+import { LineReveal, Reveal } from '../motion/reveal';
 
 interface PostCardProps {
   post: PostsResponse;
@@ -41,14 +42,22 @@ export default function PostCard({ post, index }: PostCardProps) {
               <h2 className='leading-none text-xl font-bold underline-magical-2 group-hover:bg-size-[100%_100%] group-hover:text-background'>
                 {title}
               </h2>
-              <span className='flex grow h-px bg-accent self-center' />
+              {/* <LineReveal className='grow h-px bg-accent self-center'/> */}
+              <m.span
+                initial={{ scaleX: 0 }}
+                whileInView={{ scaleX: 1 }}
+                transition={{ duration: 0.6, delay: 0.5 + index * 0.4 }}
+                className='flex grow h-px bg-accent self-center origin-left'
+              />
               <time className='w-max whitespace-nowrap text-sm text-foreground/60'>
                 {formatDateLocal(created, locale)}
               </time>
             </div>
-            <p className='text-foreground/60 leading-tight line-clamp-3'>
-              {description}
-            </p>
+            <Reveal direction='up' delay={index * 0.4} duration={0.6}>
+              <p className='text-foreground/60 leading-tight line-clamp-3'>
+                {description}
+              </p>
+            </Reveal>
           </div>
         </article>
       </Link>

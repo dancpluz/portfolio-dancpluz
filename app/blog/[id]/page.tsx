@@ -7,6 +7,7 @@ import { processArticleHtml, formatDateLocal } from '@/lib/utils';
 import TableOfContents from '@/components/blog/table-contents';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { ArticlePageSkeleton } from '@/components/blog/skeletons';
+import { Reveal } from '@/components/motion/reveal';
 
 export async function generateStaticParams() {
   const { data: posts, error } = await getPosts();
@@ -46,14 +47,18 @@ export default async function Article(props: {
         <ArticleProgressBar />
       </Suspense>
       <Container>
-        <div className='flex flex-col gap-2'>
+        <Reveal direction='down' duration={0.8} className='flex flex-col gap-2 relative z-10'>
           <h1 className='font-heading uppercase text-3xl leading-none underline-magical-2'>{title}</h1>
           <time className='text-foreground/70 text-sm'>{formatDateLocal(updated ?? '', locale)}</time>
-        </div>
-        <div className='mt-6 flex gap-10'>
+        </Reveal>
+        <div className='mt-6 flex gap-10 relative z-10'>
           <Suspense fallback={<ArticlePageSkeleton />}>
-            <ArticleRenderer dirtyHtml={processedHtml} />
-            <TableOfContents headings={headings} />
+            <Reveal direction='up' delay={0.2} duration={0.8}>
+              <ArticleRenderer dirtyHtml={processedHtml} />
+            </Reveal>
+            <Reveal direction='right' delay={0.4} className='hidden md:block'>
+              <TableOfContents headings={headings} />
+            </Reveal>
           </Suspense>
         </div>
       </Container>
