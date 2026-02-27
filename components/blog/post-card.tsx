@@ -1,12 +1,13 @@
 'use client';
 
 import { categoryEmoji } from '@/lib/const';
-import { formatDatePtBR, getFirstParagraphText } from '@/lib/utils';
+import { formatDateLocal, getFirstParagraphText } from '@/lib/utils';
 import { PostsResponse } from '@/types/pocketbase';
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { buildImageUrl } from '@/lib/api';
+import { useLocale } from 'next-intl';
 
 interface PostCardProps {
   post: PostsResponse;
@@ -14,6 +15,7 @@ interface PostCardProps {
 }
 
 export default function PostCard({ post, index }: PostCardProps) {
+  const locale = useLocale();
   const { title, id, long_text, article, created } = post;
 
   const description = long_text || getFirstParagraphText(article);
@@ -41,7 +43,7 @@ export default function PostCard({ post, index }: PostCardProps) {
               </h2>
               <span className='flex grow h-px bg-accent self-center' />
               <time className='w-max whitespace-nowrap text-sm text-foreground/60'>
-                {formatDatePtBR(created)}
+                {formatDateLocal(created, locale)}
               </time>
             </div>
             <p className='text-foreground/60 leading-tight line-clamp-3'>

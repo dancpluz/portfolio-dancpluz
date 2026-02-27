@@ -1,6 +1,6 @@
 import { PostsResponse } from '@/types/pocketbase';
 import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { ptBR, enUS } from 'date-fns/locale';
 import * as cheerio from 'cheerio';
 import { Heading } from '@/types/utils';
 import slugify from 'slugify';
@@ -116,10 +116,15 @@ export function parseApiError(err: unknown, objectName: string): string {
   return errorMessage;
 }
 
-export function formatDatePtBR(dateInput: string | Date): string {
+export function formatDateLocal(dateInput: string | Date, localeStr: string = 'pt'): string {
   const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
   if (Number.isNaN(date.getTime())) return '';
-  return format(date, "d 'de' MMMM, yyyy", { locale: ptBR });
+  
+  if (localeStr === 'pt') {
+    return format(date, "d 'de' MMMM, yyyy", { locale: ptBR });
+  } else {
+    return format(date, "MMMM d, yyyy", { locale: enUS });
+  }
 }
 
 export function plural<T>(array: T[]): string {

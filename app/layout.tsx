@@ -2,9 +2,10 @@ import type { Metadata } from 'next';
 import { Mukta } from 'next/font/google';
 import localFont from 'next/font/local';
 import './globals.css';
-import Providers from './providers';
 import { ReactLenis } from 'lenis/react';
 import Header from '@/components/header';
+import ClientProviders from './client-providers';
+import ServerProviders from './server-providers';
 
 const mukta = Mukta({
   weight: ['200', '300', '400', '500', '600', '700'],
@@ -33,13 +34,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='pt-BR' suppressHydrationWarning>
-      <body className={`${mukta.variable} ${baseNeue.variable}`}>
-        <Providers>
-          <Header />
-          <ReactLenis root>
-            {children}
-          </ReactLenis>
-        </Providers>
+      <body className={`${mukta.variable} ${baseNeue.variable}`}> 
+          <ServerProviders>
+            <ClientProviders>
+              <Header />
+              <ReactLenis root>{children}</ReactLenis>
+            </ClientProviders>
+          </ServerProviders>
       </body>
     </html>
   );

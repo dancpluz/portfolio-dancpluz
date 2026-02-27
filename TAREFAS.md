@@ -1,6 +1,6 @@
 - [ ] Maintenance Page
 - [ ] 404 Page
-- [ ] Internationalization
+- [x] Internationalization
 - [ ] Error Page
 - [x] Smooth scroll
 - [ ] Header

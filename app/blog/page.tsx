@@ -1,6 +1,5 @@
 import PostList from '@/components/blog/post-list';
 import { getPosts } from '@/lib/api';
-import React from 'react';
 import BlogSection from '@/components/blog/blog-section';
 import {
   createLoader,
@@ -9,11 +8,16 @@ import {
 } from 'nuqs/server';
 import { PostsCategoryOptions } from '@/types/pocketbase';
 import { getPostCategories } from '@/lib/utils';
+import { getTranslations } from 'next-intl/server';
 
-export const metadata = {
-  title: 'Blog',
-  description: 'Minhas ideias idiotas',
-};
+export async function generateMetadata() {
+  const t = await getTranslations('blog');
+  
+  return {
+    title: t('title'),
+    description: t('description'),
+  };
+}
 
 export const revalidate = 30;
 
@@ -29,6 +33,7 @@ export default async function Blog({
   searchParams: Promise<SearchParams>;
 }) {
   const { categoria } = await loadCategoryParams(searchParams);
+  const t = await getTranslations('blog');
 
   const { data: posts, error } = await getPosts();
 
@@ -43,7 +48,7 @@ export default async function Blog({
   if (!posts || posts.length === 0) {
     return (
       <BlogSection>
-        <div>Nenhum post encontrado ainda.</div>
+        <div>{t('no_posts_found')}</div>
       </BlogSection>
     );
   }

@@ -5,11 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "turbo": "next dev --turbo",
-    "build": "pnpm run build-theme && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "copytypes": "npx pocketbase-typegen -o ./types/pocketbase.ts",
-    "build-theme": "node ./build-theme.mjs"
+    "copytypes": "npx pocketbase-typegen -o ./types/pocketbase.ts"
   },
   "dependencies": {
     "babel-plugin-react-compiler": "^1.0.0",
@@ -20,6 +19,7 @@
     "lucide-react": "^0.575.0",
     "motion": "^12.34.3",
     "next": "^16.1.6",
+    "next-intl": "^4.8.3",
     "next-themes": "^0.4.6",
     "nuqs": "^2.8.8",
     "pocketbase": "^0.26.8",

@@ -24,24 +24,22 @@ export default function ThemeSwitcher() {
   };
 
   return (
-    <div className='fixed top-3 right-3 z-100 p-2 backdrop-blur-xs flex items-center justify-center rounded-full'>
-      <motion.button
-        aria-label='Toggle Dark Mode'
-        type='button'
-        whileTap={{
-          scale: 0.7,
-          rotate: 360,
-          transition: { duration: 0.2 },
-        }}
-        whileHover={{ scale: 1.2 }}
-        onClick={toggleTheme}
-      >
-        {mounted && (theme === 'dark' || resolvedTheme === 'dark') ? (
-          <Sun className='size-6 text-foreground' />
-        ) : (
-          <Moon className='size-6 text-foreground' />
-        )}
-      </motion.button>
-    </div>
+    <motion.button
+      aria-label='Toggle Dark Mode'
+      type='button'
+      whileTap={{
+        scale: 0.7,
+        rotate: 360,
+        transition: { duration: 0.2 },
+      }}
+      whileHover={{ scale: 1.2 }}
+      onClick={toggleTheme}
+    >
+      {mounted && (theme === 'dark' || resolvedTheme === 'dark') ? (
+        <Sun className='size-6 text-foreground' />
+      ) : (
+        <Moon className='size-6 text-foreground' />
+      )}
+    </motion.button>
   );
 };
