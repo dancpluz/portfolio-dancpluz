@@ -4,13 +4,13 @@ import BlogContainer from '@/components/blog/container';
 import CategoriesButtons from './categories-buttons';
 import { Suspense } from 'react';
 
-interface SectionProps {
+interface BlogSectionProps {
   children: React.ReactNode;
   posts?: PostsResponse[];
   categories?: PostsCategoryOptions[];
 }
 
-export default function Section({ children, posts, categories }: SectionProps) {
+export default function BlogSection({ children, posts, categories }: BlogSectionProps) {
   return (
     <BlogContainer>
       <section className='space-y-8'>

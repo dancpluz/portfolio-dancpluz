@@ -1,7 +1,7 @@
 import PostList from '@/components/blog/post-list';
 import { getPosts } from '@/lib/api';
 import React from 'react';
-import Section from '@/components/blog/section';
+import BlogSection from '@/components/blog/blog-section';
 import {
   createLoader,
   parseAsStringEnum,
@@ -34,17 +34,17 @@ export default async function Blog({
 
   if (error) {
     return (
-      <Section>
+      <BlogSection>
         <p className='text-red-500'>{error}</p>
-      </Section>
+      </BlogSection>
     );
   }
 
   if (!posts || posts.length === 0) {
     return (
-      <Section>
+      <BlogSection>
         <div>Nenhum post encontrado ainda.</div>
-      </Section>
+      </BlogSection>
     );
   }
 
@@ -56,8 +56,8 @@ export default async function Blog({
   const categories = posts ? getPostCategories(posts) : [];
 
   return (
-    <Section posts={filteredPosts} categories={categories}>
+    <BlogSection posts={filteredPosts} categories={categories}>
       <PostList posts={filteredPosts} />
-    </Section>
+    </BlogSection>
   );
 }

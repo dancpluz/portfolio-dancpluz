@@ -1,42 +1,17 @@
-# OLD
-
-- [ ] Landing Page
-  - [ ] Three js Diamond
-  - [x] Header
-  - [x] Hero Banner Section
-  - [x] Projects Section
-  - [x] Testimonials Section
-  - [x] About Section
-  - [x] Loading State
-  - [x] Organize Code
-  - [ ] Section to explain my brand
-  - [ ] Photos Page
-  - [ ] Convert to Server Components/remove React Query
-  - [ ] Fix marquee
-  - [ ] Make more responsive
-  - [ ] Add Entry/Exit Animations
-  - [ ] Create Contact Form
-
-# NEW
-
 - [ ] Maintenance Page
-- [ ] Internalization
+- [ ] 404 Page
+- [ ] Internationalization
+- [ ] Error Page
 - [x] Smooth scroll
+- [ ] Header
 - [ ] Landing Page
-  - [ ] Improve Loader
-  - [ ] Hero Banner
-    - [x] Diamond Model
-    - [x] Dark mode
-    - [x] Materials
-    - [x] Small Diamonds
-    - [x] Memoization
-    - [ ] Positioning
-    - [ ] Texts
-    - [ ] Scroll animations
-    - [ ] Animations
-    - [ ] Interactions
-    - [ ] Stars
+  - [ ] Hero
   - [ ] Projects
+  - [ ] Tech
+  - [ ] About
+  - [ ] Testimonial
+  - [ ] Contact
+- [ ] Project Page
 - [ ] Blog
   - [x] Fetch blog posts
   - [x] Blog List

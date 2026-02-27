@@ -3,8 +3,8 @@ import { Mukta } from 'next/font/google';
 import localFont from 'next/font/local';
 import './globals.css';
 import Providers from './providers';
-import ThemeSwitch from '@/components/theme-switcher';
 import { ReactLenis } from 'lenis/react';
+import Header from '@/components/header';
 
 const mukta = Mukta({
   weight: ['200', '300', '400', '500', '600', '700'],
@@ -35,7 +35,7 @@ export default function RootLayout({
     <html lang='pt-BR' suppressHydrationWarning>
       <body className={`${mukta.variable} ${baseNeue.variable}`}>
         <Providers>
-          <ThemeSwitch />
+          <Header />
           <ReactLenis root>
             {children}
           </ReactLenis>
