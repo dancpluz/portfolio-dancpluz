@@ -1,6 +1,7 @@
 import { cookies, headers } from 'next/headers';
 import { getRequestConfig } from 'next-intl/server';
 
+// Automatically detects the best language for the user
 export default getRequestConfig(async () => {
   const store = await cookies();
   const cookieLocale = store.get('locale')?.value;
@@ -23,6 +24,6 @@ export default getRequestConfig(async () => {
 
   return {
     locale,
-    messages: (await import(`./${locale}.json`)).default
+    messages: (await import(`./${locale}`)).default
   };
 });

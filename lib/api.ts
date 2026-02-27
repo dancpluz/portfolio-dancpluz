@@ -8,7 +8,7 @@ import {
 import PocketBase from 'pocketbase';
 import { parseApiError } from './utils';
 
-const pb = new PocketBase(process.env.API_URL) as TypedPocketBase;
+const pb = new PocketBase(process.env.PB_API_URL) as TypedPocketBase;
 
 type ApiResponse<T> = {
   data: T | null;
@@ -19,7 +19,7 @@ export function buildImageUrl<T extends Record<string, any>>(
   record: T,
   firstFilename: string
 ): string {
-  return pb.files.getUrl(record, firstFilename);
+  return pb.files.getURL(record, firstFilename);
 }
 
 export type IconsExpand = {

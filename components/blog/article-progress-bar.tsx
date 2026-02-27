@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, useScroll, useSpring } from 'motion/react';
+import { m, useScroll, useSpring } from 'motion/react';
 import React from 'react';
 
 export default function ArticleProgressBar() {
@@ -12,7 +12,7 @@ export default function ArticleProgressBar() {
   });
 
   return (
-    <motion.div
+    <m.div
       className='fixed w-full h-1 bg-accent top-0 left-0 origin-left z-50'
       style={{ scaleX }}
     />

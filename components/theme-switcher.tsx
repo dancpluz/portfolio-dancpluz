@@ -1,7 +1,7 @@
 'use client';
 
 import { Moon, Sun } from 'lucide-react';
-import { motion } from 'motion/react';
+import { m } from 'motion/react';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 
@@ -24,7 +24,7 @@ export default function ThemeSwitcher() {
   };
 
   return (
-    <motion.button
+    <m.button
       aria-label='Toggle Dark Mode'
       type='button'
       whileTap={{
@@ -40,6 +40,6 @@ export default function ThemeSwitcher() {
       ) : (
         <Moon className='size-6 text-foreground' />
       )}
-    </motion.button>
+    </m.button>
   );
-};
+}

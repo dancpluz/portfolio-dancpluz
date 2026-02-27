@@ -11,12 +11,15 @@ const nextConfig = {
   // eslint: {
   //   ignoreDuringBuilds: true,
   // },
+  env: {
+    PB_API_URL: process.env.PB_API_URL,
+  },
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'hub.ruadebaixo.com.br',
-        port: '1002',
+        hostname: 'pb.ruadebaixo.com.br',
+        port: '',
         pathname: '/api/files/**',
       },
       {

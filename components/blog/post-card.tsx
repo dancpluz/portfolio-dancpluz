@@ -3,7 +3,7 @@
 import { categoryEmoji } from '@/lib/const';
 import { formatDateLocal, getFirstParagraphText } from '@/lib/utils';
 import { PostsResponse } from '@/types/pocketbase';
-import { motion } from 'motion/react';
+import { m } from 'motion/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { buildImageUrl } from '@/lib/api';
@@ -21,7 +21,7 @@ export default function PostCard({ post, index }: PostCardProps) {
   const description = long_text || getFirstParagraphText(article);
 
   return (
-    <motion.li
+    <m.li
       key={id}
       className='last:border-b-0 border-b border-foreground/20 transition-colors duration-500 group w-full'
       initial={{ scale: 0.8, opacity: 0, filter: 'blur(2px)' }}
@@ -52,7 +52,7 @@ export default function PostCard({ post, index }: PostCardProps) {
           </div>
         </article>
       </Link>
-    </motion.li>
+    </m.li>
   );
 }
 
