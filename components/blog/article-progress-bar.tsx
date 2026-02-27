@@ -1,7 +1,6 @@
 'use client';
 
 import { m, useScroll, useSpring } from 'motion/react';
-import React from 'react';
 
 export default function ArticleProgressBar() {
   const { scrollYProgress } = useScroll();

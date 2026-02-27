@@ -6,6 +6,7 @@ import ArticleRenderer from '@/components/blog/article-renderer';
 import { processArticleHtml, formatDateLocal } from '@/lib/utils';
 import TableOfContents from '@/components/blog/table-contents';
 import { getLocale, getTranslations } from 'next-intl/server';
+import { ArticlePageSkeleton } from '@/components/blog/skeletons';
 
 export async function generateStaticParams() {
   const { data: posts, error } = await getPosts();
@@ -41,7 +42,7 @@ export default async function Article(props: {
 
   return (
     <>
-      <Suspense>
+      <Suspense fallback={<div className="fixed w-full h-1 bg-accent opacity-30 animate-pulse top-0 left-0 origin-left z-50" />}>
         <ArticleProgressBar />
       </Suspense>
       <Container>
@@ -50,7 +51,7 @@ export default async function Article(props: {
           <time className='text-foreground/70 text-sm'>{formatDateLocal(updated ?? '', locale)}</time>
         </div>
         <div className='mt-6 flex gap-10'>
-          <Suspense>
+          <Suspense fallback={<ArticlePageSkeleton />}>
             <ArticleRenderer dirtyHtml={processedHtml} />
             <TableOfContents headings={headings} />
           </Suspense>

@@ -5,6 +5,7 @@
 - [x] Smooth scroll
 - [ ] Header
 - [ ] Landing Page
+  - [ ] Loading state
   - [ ] Hero
   - [ ] Projects
   - [ ] Tech
@@ -12,13 +13,14 @@
   - [ ] Testimonial
   - [ ] Contact
 - [ ] Project Page
+  - [ ] Loading state
 - [ ] Blog
+  - [x] Loading state
   - [x] Fetch blog posts
   - [x] Blog List
   - [x] Dark theme
   - [x] Article card image
   - [ ] Error state
-  - [ ] Loading state
   - [ ] Autenticação api
   - [x] Categories and Anim
   - [x] Query params

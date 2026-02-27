@@ -9,6 +9,8 @@ import {
 import { PostsCategoryOptions } from '@/types/pocketbase';
 import { getPostCategories } from '@/lib/utils';
 import { getTranslations } from 'next-intl/server';
+import { Suspense } from 'react';
+import { BlogSectionSkeleton } from '@/components/blog/skeletons';
 
 export async function generateMetadata() {
   const t = await getTranslations('blog');
@@ -61,8 +63,10 @@ export default async function Blog({
   const categories = posts ? getPostCategories(posts) : [];
 
   return (
-    <BlogSection posts={filteredPosts} categories={categories}>
-      <PostList posts={filteredPosts} />
-    </BlogSection>
+    <Suspense fallback={<BlogSectionSkeleton />}>
+      <BlogSection posts={filteredPosts} categories={categories}>
+        <PostList posts={filteredPosts} />
+      </BlogSection>
+    </Suspense>
   );
 }

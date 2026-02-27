@@ -4,6 +4,7 @@ import BlogContainer from '@/components/blog/container';
 import CategoriesButtons from './categories-buttons';
 import { Suspense } from 'react';
 import { useTranslations } from 'next-intl';
+import { CategoriesButtonsSkeleton } from './skeletons';
 
 interface BlogSectionProps {
   children: React.ReactNode;
@@ -22,7 +23,7 @@ export default function BlogSection({ children, posts, categories }: BlogSection
             {t('heading')}
           </h1>
           <div className='flex flex-col items-end w-full justify-between'>
-            <Suspense>
+            <Suspense fallback={<CategoriesButtonsSkeleton />}>
               <CategoriesButtons categories={categories ?? []} />
             </Suspense>
             <span className='h-px flex w-full bg-accent' />
