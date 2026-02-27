@@ -4,7 +4,7 @@ import { categoryEmoji } from '@/lib/const';
 import { formatDateLocal, getFirstParagraphText } from '@/lib/utils';
 import { PostsResponse } from '@/types/pocketbase';
 import { m } from 'motion/react';
-import Link from 'next/link';
+import TransitionLink from '@/components/transition-link';
 import Image from 'next/image';
 import { buildImageUrl } from '@/lib/api';
 import { useLocale } from 'next-intl';
@@ -32,7 +32,7 @@ export default function PostCard({ post, index }: PostCardProps) {
       viewport={{ once: true }}
       layout
     >
-      <Link href={`/blog/${id}`} aria-label={`Leia "${title}"`}>
+      <TransitionLink href={`/blog/${id}`} aria-label={`Leia "${title}"`}>
         <article className='py-5 flex gap-4'>
           <div className='aspect-square size-20 bg-accent group-hover:scale-110 group-hover:rotate-3 group-hover:-translate-y-1 ease-spring duration-600 text-xs grid content-center place-items-center border-accent border'>
             <ImageGif post={post} />
@@ -42,7 +42,6 @@ export default function PostCard({ post, index }: PostCardProps) {
               <h2 className='leading-none text-xl font-bold underline-magical-2 group-hover:bg-size-[100%_100%] group-hover:text-background'>
                 {title}
               </h2>
-              {/* <LineReveal className='grow h-px bg-accent self-center'/> */}
               <m.span
                 initial={{ scaleX: 0 }}
                 whileInView={{ scaleX: 1 }}
@@ -60,7 +59,7 @@ export default function PostCard({ post, index }: PostCardProps) {
             </Reveal>
           </div>
         </article>
-      </Link>
+      </TransitionLink>
     </m.li>
   );
 }

@@ -13,6 +13,9 @@ const en = {
     fetching_ideas: "Fetching ideas...",
     please_wait: "Please wait a moment",
     reading_article: "Reading..."
+  },
+  common: {
+    loader: "Loading..."
   }
 };
 

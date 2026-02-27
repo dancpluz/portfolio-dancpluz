@@ -17,6 +17,9 @@ const pt: Translation = {
     please_wait: 'Por favor, aguarde um momento',
     reading_article: 'Lendo...',
   },
+  common: {
+    loader: "Carregando..."
+  }
 };
 
 export default pt;

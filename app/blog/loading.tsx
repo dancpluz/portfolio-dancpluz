@@ -1,5 +1,7 @@
-import { BlogSectionSkeleton } from '@/components/blog/skeletons';
+import LoadingModel from "../loading";
 
 export default function Loading() {
-  return <BlogSectionSkeleton />;
+  return (
+    <LoadingModel />
+  );
 }

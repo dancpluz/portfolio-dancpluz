@@ -152,6 +152,26 @@
       opacity: 1;
     }
   }
+
+  .loading-dots::after {
+    content: '...';
+    animation: loading-dots 1.2s infinite;
+    display: inline-block;
+    width: 3ch;
+    text-align: left;
+  }
+
+  @keyframes loading-dots {
+    0%, 20% {
+      content: '.';
+    }
+    40% {
+      content: '..';
+    }
+    60%, 100% {
+      content: '...';
+    }
+  }
 }
 
 /* @theme {
