@@ -11,6 +11,7 @@
     "copytypes": "npx pocketbase-typegen -o ./types/pocketbase.ts"
   },
   "dependencies": {
+    "@logtape/logtape": "^2.0.4",
     "babel-plugin-react-compiler": "^1.0.0",
     "cheerio": "^1.2.0",
     "date-fns": "^4.1.0",

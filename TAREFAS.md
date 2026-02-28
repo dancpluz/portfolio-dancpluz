@@ -1,5 +1,6 @@
 - [ ] Maintenance Page
 - [ ] 404 Page
+- [x] Logger
 - [x] Internationalization
 - [ ] Error Page
 - [x] Smooth scroll
@@ -26,6 +27,7 @@
   - [x] Query params
   - [ ] Responsive
   - [ ] Article
+    - [ ] Loading state
     - [x] Render Rich Text
     - [ ] Responsive
     - [ ] Header
