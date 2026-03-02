@@ -20,16 +20,40 @@ export default function BackButton({
 
   useEffect(() => {
     // Check if we have history from our own site
-    if (typeof window !== 'undefined' && window.history.length > 1 && document.referrer.includes(window.location.host)) {
-      setCanGoBack(true);
+    if (typeof window !== 'undefined' && window.history.length > 1) {
+      try {
+        const referrerUrl = new URL(document.referrer);
+        // Only set we can go back if the referrer gives us an actual different page path, 
+        // not just a hash change within the exact same pathname
+        if (referrerUrl.hostname === window.location.hostname && referrerUrl.pathname !== window.location.pathname) {
+          setCanGoBack(true);
+        }
+      } catch (e) {
+        // Fallback for invalid URLs in referrer
+        setCanGoBack(false);
+      }
     }
   }, []);
 
   const handleBack = async (e: React.MouseEvent) => {
     e.preventDefault();
     await triggerExitAnimation();
+
     if (canGoBack) {
-      router.back();
+      if (typeof window !== "undefined") {
+         // Because users click on multiple TableOfContents headers (adding `#` to the URL history)
+         // we don't want router.back() to just jump between headings.
+         // We navigate firmly to the fallback if we don't safely know how many headings were clicked.
+         const hasHashInHistory = window.location.hash !== '';
+         
+         if (hasHashInHistory) {
+             router.push(fallbackHref);
+         } else {
+             router.back();
+         }
+      } else {
+        router.back();
+      }
     } else {
       router.push(fallbackHref);
     }

@@ -73,7 +73,7 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
 
   return (
     <nav className=''>
-      <div className='sticky top-24 w-58'>
+      <div className='w-58'>
         <h2 className='text-sm font-semibold mb-3'>Nessa página</h2>
         <ul className='space-y-1 text-sm'>
           {headings.map((heading) => {
@@ -93,7 +93,7 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
                         behavior: 'smooth',
                         block: 'start',
                       });
-                      window.history.pushState(null, '', `#${heading.id}`);
+                      window.history.replaceState(null, '', `#${heading.id}`);
                     }
                   }}
                   className={`group flex items-start gap-2 py-1 transition-all duration-200 ${

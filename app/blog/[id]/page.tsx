@@ -1,10 +1,10 @@
-import ArticleProgressBar from '@/components/blog/article-progress-bar';
+import ArticleProgressBar from '@/components/blog/post/article-progress-bar';
 import PostContainer from '@/components/blog/container';
 import { getPostById, getPosts } from '@/lib/api';
 import { Suspense } from 'react';
-import ArticleRenderer from '@/components/blog/article-renderer';
+import ArticleRenderer from '@/components/blog/post/article-renderer';
 import { processArticleHtml, formatDateLocal } from '@/lib/utils';
-import TableOfContents from '@/components/blog/table-contents';
+import TableOfContents from '@/components/blog/post/table-contents';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { Reveal } from '@/components/motion/reveal';
 import BackButton from '@/components/ui/back-button';
@@ -55,12 +55,14 @@ export default async function Article(props: {
           <time className='text-foreground/70 text-sm'>{formatDateLocal(updated ?? '', locale)}</time>
         </Reveal>
         <div className='mt-6 flex gap-10 relative z-10'>
-          <Reveal direction='up' delay={0.2} duration={0.8}>
+          <Reveal direction='up' delay={0.2} duration={0.8} className="flex-1 min-w-0">
             <ArticleRenderer dirtyHtml={processedHtml} />
           </Reveal>
-          <Reveal direction='right' delay={0.4} className='hidden md:block'>
-            <TableOfContents headings={headings} />
-          </Reveal>
+          <div className='hidden md:block sticky top-24 self-start'>
+            <Reveal direction='left' duration={1.4} delay={0.4}>
+              <TableOfContents headings={headings} />
+            </Reveal>
+          </div>
         </div>
       </PostContainer>
     </>
