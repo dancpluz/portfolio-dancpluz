@@ -50,7 +50,7 @@ export function Reveal({
       initial={getInitial()}
       whileInView={getAnimate()}
       viewport={{ once, margin: margin as any }}
-      transition={{ duration, delay, ease: [0.25, 0.25, 0, 1] }} 
+      transition={{ duration, delay, ease: [0.25, 0.25, 0, 1] }}
       className={className}
       {...props}
     >
@@ -78,13 +78,13 @@ export function LineReveal({
         hidden: isHorizontal ? { scaleX: 0 } : { scaleY: 0 },
         visible: isHorizontal ? { scaleX: 1 } : { scaleY: 1 },
       }}
-      initial="hidden"
-      whileInView="visible"
+      initial='hidden'
+      whileInView='visible'
       viewport={{ once: true, margin: '-50px' }}
       transition={{ ease: [0.25, 0.25, 0, 1], duration, delay }}
       className={`${
         isHorizontal ? 'h-px w-full origin-right' : 'w-px h-full origin-bottom'
-      } flex bg-accent ${className || ''}`}
+      } flex bg-accent-1 ${className || ''}`}
       {...props}
     />
   );

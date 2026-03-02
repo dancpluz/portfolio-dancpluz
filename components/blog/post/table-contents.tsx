@@ -23,7 +23,7 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
       {
         rootMargin: '-80px 0px -80% 0px',
         threshold: 1,
-      }
+      },
     );
 
     headings.forEach(({ id }) => {
@@ -65,10 +65,10 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
   }
 
   const indentationClasses: { [key: number]: string } = {
-    1: 'ml-0', // h1
-    2: 'ml-3', // h2
-    3: 'ml-6', // h3
-    4: 'ml-9', // h4
+    1: 'ml-0 [&_span:first-child]:text-accent-1', // h1
+    2: 'ml-3 [&_span:first-child]:text-accent-2', // h2
+    3: 'ml-6 [&_span:first-child]:text-accent-3', // h3
+    4: 'ml-9 [&_span:first-child]:text-accent-1/50', // h4
   };
 
   return (
@@ -98,14 +98,14 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
                   }}
                   className={`group flex items-start gap-2 py-1 transition-all duration-200 ${
                     isActive
-                      ? 'text-foreground ml-1' // 
+                      ? 'text-foreground ml-1' //
                       : 'text-foreground/50 hover:text-foreground'
                   }`}
                 >
                   <span
                     className={`text-base transition-all duration-200 group-hover:scale-100 ${
                       isActive
-                        ? 'text-accent scale-100'
+                        ? 'text-accent-1 scale-100'
                         : 'text-foreground/20 scale-0'
                     }`}
                   >

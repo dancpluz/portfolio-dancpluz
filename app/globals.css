@@ -1,12 +1,20 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-background: #080808;
-  --color-foreground: #efefef;
-  --color-accent: #eca400;
-  --color-alternate: #888888;
   --font-text: var(--font-text);
   --font-heading: var(--font-heading);
+
+  --color-background: #080808;
+  --color-foreground: #efefef;
+  --color-surface: #bcbcc3;
+
+  --color-neon-pink: #ff00ff;
+  --color-electric-green: #00891e;
+  --color-cyan-blue: #0064fb;
+
+  --color-accent-1: var(--color-neon-pink);
+  --color-accent-2: var(--color-electric-green);
+  --color-accent-3: var(--color-cyan-blue);
 
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -17,15 +25,21 @@
   }
 
   [data-theme='dark'] {
-    --color-background: #080808;
-    --color-foreground: #efefef;
-    --color-accent: #eca400;
+    --color-background: var(--color-background);
+    --color-foreground: var(--color-foreground);
+    --color-surface: var(--color-surface);
+    --color-accent-1: var(--color-neon-pink);
+    --color-accent-2: var(--color-electric-green);
+    --color-accent-3: var(--color-cyan-blue);
   }
 
   [data-theme='light'] {
-    --color-background: #efefef;
-    --color-foreground: #080808;
-    --color-accent: #eca400;
+    --color-background: #f5f5f5;
+    --color-foreground: #333333;
+    --color-surface: #c0c0c033;
+    --color-accent-1: var(--color-neon-pink);
+    --color-accent-2: var(--color-electric-green);
+    --color-accent-3: var(--color-cyan-blue);
   }
 
   body {
@@ -70,19 +84,27 @@
 
 @layer utilities {
   .underline-magical {
-    @apply bg-linear-to-r from-accent to-accent bg-no-repeat 
-    no-underline bg-position-[0_100%]
-    bg-size-[100%_0.2em] focus:bg-size-[100%_100%] hover:text-background
-    hover:bg-size-[100%_100%] motion-safe:transition-all
+    @apply bg-no-repeat no-underline bg-[position:0_100%]
+    bg-[size:100%_0.2em] focus:bg-[size:100%_100%] hover:text-background
+    hover:bg-[size:100%_100%] motion-safe:transition-all
     motion-safe:duration-300;
+    background-image: linear-gradient(
+      to right,
+      var(--magical-accent, var(--color-accent-1)),
+      var(--magical-accent, var(--color-accent-1))
+    );
   }
 
   .underline-magical-2 {
-    @apply bg-linear-to-r from-accent to-accent bg-no-repeat 
-    no-underline bg-position-[0_100%]
-    bg-size-[100%_0px] focus:bg-size-[100%_100%] hover:text-background
-    hover:bg-size-[100%_100%] motion-safe:transition-all
+    @apply bg-no-repeat no-underline bg-[position:0_100%]
+    bg-[size:100%_0px] focus:bg-[size:100%_100%] hover:text-background
+    hover:bg-[size:100%_100%] motion-safe:transition-all
     motion-safe:duration-300;
+    background-image: linear-gradient(
+      to right,
+      var(--magical-accent, var(--color-accent-1)),
+      var(--magical-accent, var(--color-accent-1))
+    );
   }
 
   :root {
@@ -162,13 +184,15 @@
   }
 
   @keyframes loading-dots {
-    0%, 20% {
+    0%,
+    20% {
       content: '.';
     }
     40% {
       content: '..';
     }
-    60%, 100% {
+    60%,
+    100% {
       content: '...';
     }
   }

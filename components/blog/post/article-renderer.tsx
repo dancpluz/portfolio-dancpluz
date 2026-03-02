@@ -105,7 +105,7 @@ const options: HTMLReactParserOptions = {
 
       if (domNode.name === 'blockquote') {
         return (
-          <blockquote className='border-l-4 border-accent pl-6 py-2 my-6 italic rounded text-foreground/80 bg-accent/5'>
+          <blockquote className='border-l-4 border-accent-1 pl-6 py-2 my-6 italic rounded text-foreground/80 bg-accent-1/5'>
             {/* @ts-expect-error */}
             {domToReact(domNode.children, options)}
           </blockquote>
@@ -114,7 +114,7 @@ const options: HTMLReactParserOptions = {
 
       if (domNode.name === 'ul') {
         return (
-          <ul className='list-disc list-outside marker:text-accent ml-6 mb-4 space-y-1'>
+          <ul className='list-disc list-outside marker:text-accent-1 ml-6 mb-4 space-y-1'>
             {/* @ts-expect-error */}
             {domToReact(domNode.children, options)}
           </ul>
@@ -123,7 +123,7 @@ const options: HTMLReactParserOptions = {
 
       if (domNode.name === 'ol') {
         return (
-          <ol className='list-decimal marker:text-accent list-outside ml-6 mb-4 space-y-1'>
+          <ol className='list-decimal marker:text-accent-1 list-outside ml-6 mb-4 space-y-1'>
             {/* @ts-expect-error */}
             {domToReact(domNode.children, options)}
           </ol>
@@ -138,10 +138,13 @@ const options: HTMLReactParserOptions = {
           </li>
         );
       }
-      
-      if (domNode.name === 'code' && !(domNode.parent instanceof Element && domNode.parent.name === 'pre')) {
+
+      if (
+        domNode.name === 'code' &&
+        !(domNode.parent instanceof Element && domNode.parent.name === 'pre')
+      ) {
         return (
-          <code className='bg-accent/20 px-1.5 py-0.5 rounded text-sm font-mono'>
+          <code className='bg-accent-1/20 px-1.5 py-0.5 rounded text-sm font-mono'>
             {/* @ts-expect-error */}
             {domToReact(domNode.children, options)}
           </code>
@@ -150,7 +153,7 @@ const options: HTMLReactParserOptions = {
 
       if (domNode.name === 'pre') {
         const codeElement = domNode.children?.find(
-          (child) => child instanceof Element && child.name === 'code'
+          (child) => child instanceof Element && child.name === 'code',
         ) as Element | undefined;
 
         if (codeElement) {
@@ -175,7 +178,7 @@ const options: HTMLReactParserOptions = {
 
         // Fallback for pre without code element
         return (
-          <pre className='bg-accent/20 p-4 rounded-lg overflow-x-auto my-6 text-sm'>
+          <pre className='bg-accent-1/20 p-4 rounded-lg overflow-x-auto my-6 text-sm'>
             {/* @ts-expect-error */}
             {domToReact(domNode.children, options)}
           </pre>

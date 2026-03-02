@@ -34,7 +34,7 @@ export default function PostCard({ post, index }: PostCardProps) {
     >
       <TransitionLink href={`/blog/${id}`} aria-label={`Leia "${title}"`}>
         <article className='py-5 flex gap-4'>
-          <div className='aspect-square size-20 bg-accent group-hover:scale-110 group-hover:rotate-3 group-hover:-translate-y-1 ease-spring duration-600 text-xs grid content-center place-items-center border-accent border'>
+          <div className='aspect-square size-20 bg-surface group-hover:scale-110 group-hover:rotate-3 group-hover:-translate-y-1 ease-spring duration-600 text-xs grid content-center place-items-center border-foreground border'>
             <ImageGif post={post} />
           </div>
           <div className='space-y-1 transition-[padding] group-hover:px-2 w-full'>
@@ -46,7 +46,7 @@ export default function PostCard({ post, index }: PostCardProps) {
                 initial={{ scaleX: 0 }}
                 whileInView={{ scaleX: 1 }}
                 transition={{ duration: 0.6, delay: 0.5 + index * 0.4 }}
-                className='flex grow h-px bg-accent self-center origin-left'
+                className='flex grow h-px bg-accent-1 self-center origin-left'
               />
               <time className='w-max whitespace-nowrap text-sm text-foreground/60'>
                 {formatDateLocal(created, locale)}

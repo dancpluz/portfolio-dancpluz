@@ -4,6 +4,7 @@
 - [x] Internationalization
 - [ ] Error Page
 - [x] Smooth scroll
+- [ ] Logo
 - [ ] Header
 - [ ] Landing Page
   - [ ] Loading state

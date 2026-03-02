@@ -1,19 +1,19 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import { triggerExitAnimation } from "@/components/motion/events";
-import { ArrowLeft } from "lucide-react";
-import { useEffect, useState } from "react";
-import { m } from "motion/react";
+import { useRouter } from 'next/navigation';
+import { triggerExitAnimation } from '@/components/motion/events';
+import { ArrowLeft } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { m } from 'motion/react';
 
 interface BackButtonProps {
   fallbackHref?: string;
   className?: string;
 }
 
-export default function BackButton({ 
-  fallbackHref = "/blog", 
-  className = "", 
+export default function BackButton({
+  fallbackHref = '/blog',
+  className = '',
 }: BackButtonProps) {
   const router = useRouter();
   const [canGoBack, setCanGoBack] = useState(false);
@@ -23,9 +23,12 @@ export default function BackButton({
     if (typeof window !== 'undefined' && window.history.length > 1) {
       try {
         const referrerUrl = new URL(document.referrer);
-        // Only set we can go back if the referrer gives us an actual different page path, 
+        // Only set we can go back if the referrer gives us an actual different page path,
         // not just a hash change within the exact same pathname
-        if (referrerUrl.hostname === window.location.hostname && referrerUrl.pathname !== window.location.pathname) {
+        if (
+          referrerUrl.hostname === window.location.hostname &&
+          referrerUrl.pathname !== window.location.pathname
+        ) {
           setCanGoBack(true);
         }
       } catch (e) {
@@ -40,17 +43,17 @@ export default function BackButton({
     await triggerExitAnimation();
 
     if (canGoBack) {
-      if (typeof window !== "undefined") {
-         // Because users click on multiple TableOfContents headers (adding `#` to the URL history)
-         // we don't want router.back() to just jump between headings.
-         // We navigate firmly to the fallback if we don't safely know how many headings were clicked.
-         const hasHashInHistory = window.location.hash !== '';
-         
-         if (hasHashInHistory) {
-             router.push(fallbackHref);
-         } else {
-             router.back();
-         }
+      if (typeof window !== 'undefined') {
+        // Because users click on multiple TableOfContents headers (adding `#` to the URL history)
+        // we don't want router.back() to just jump between headings.
+        // We navigate firmly to the fallback if we don't safely know how many headings were clicked.
+        const hasHashInHistory = window.location.hash !== '';
+
+        if (hasHashInHistory) {
+          router.push(fallbackHref);
+        } else {
+          router.back();
+        }
       } else {
         router.back();
       }
@@ -60,10 +63,10 @@ export default function BackButton({
   };
 
   return (
-    <m.button 
+    <m.button
       onClick={handleBack}
-      className={`group flex p-6 -m-6 items-center gap-2 hover:text-accent duration-800 transition-colors ${className}`}
-      whileHover="hover"
+      className={`group flex p-6 -m-6 items-center gap-2 hover:text-accent-1 duration-800 transition-colors ${className}`}
+      whileHover='hover'
       whileTap={{ scale: 0.95 }}
       variants={{
         hover: {
@@ -71,12 +74,15 @@ export default function BackButton({
           transition: {
             repeat: Infinity,
             duration: 1.2,
-            ease: "easeInOut",
+            ease: 'easeInOut',
           },
         },
       }}
     >
-      <ArrowLeft size={32} className="transition-transform group-hover:-translate-x-1" />
+      <ArrowLeft
+        size={32}
+        className='transition-transform group-hover:-translate-x-1'
+      />
     </m.button>
   );
 }

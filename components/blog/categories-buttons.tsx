@@ -14,8 +14,8 @@ export default function CategoriesButtons({
   const [selectedCategory, setSelectedCategory] = useQueryState(
     'categoria',
     parseAsStringEnum<PostsCategoryOptions>(
-      Object.values(PostsCategoryOptions)
-    ).withOptions({ shallow: false })
+      Object.values(PostsCategoryOptions),
+    ).withOptions({ shallow: false }),
   );
 
   return (
@@ -23,18 +23,14 @@ export default function CategoriesButtons({
       {categories.map((category, i) => (
         <React.Fragment key={category}>
           <button
-            className={`bg-linear-to-r from-accent to-accent bg-no-repeat 
-              no-underline bg-position-[0_100%]
-              bg-size-[100%_0px] hover:text-background
-              hover:bg-size-[100%_100%] motion-safe:transition-all
-              motion-safe:duration-300 ${
-                selectedCategory === category
-                  ? 'text-background bg-size-[100%_100%]'
-                  : ''
-              }`}
+            className={`underline-magical-2 ${
+              selectedCategory === category
+                ? 'text-background bg-size-[100%_100%]'
+                : ''
+            }`}
             onClick={() =>
               setSelectedCategory(
-                category === selectedCategory ? null : category
+                category === selectedCategory ? null : category,
               )
             }
           >

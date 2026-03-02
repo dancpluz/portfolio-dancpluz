@@ -27,7 +27,7 @@ export default function CodeRenderer({ code, language }: CodeRendererProps) {
         aria-label='Copy code'
       >
         {copied ? (
-          <Check className='w-4 h-4 text-accent' />
+          <Check className='w-4 h-4 text-accent-1' />
         ) : (
           <Copy className='w-4 h-4 text-white' />
         )}
