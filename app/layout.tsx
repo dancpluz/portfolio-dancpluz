@@ -12,7 +12,7 @@ const mukta = Mukta({
   variable: '--font-text',
   subsets: ['latin'],
   display: 'swap',
-  preload: true,
+  preload: false,
 });
 
 const baseNeue = localFont({

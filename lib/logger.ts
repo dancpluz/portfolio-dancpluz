@@ -21,10 +21,10 @@ await configure({
   },
   loggers: [
     { category: ["logtape", "meta"], lowestLevel: "warning", sinks: ["console"] },
-    { category: ["portfolio"], lowestLevel: "debug", sinks: ["console"] }
+    { category: ["client"], lowestLevel: "debug", sinks: ["console"] },
+    { category: ["server"], lowestLevel: "debug", sinks: ["console"] }
   ]
 });
 
-const logger = getLogger(["portfolio"]);
-
-export default logger;
+export const clientLogger = getLogger(["client"]);
+export const serverLogger = getLogger(["server"]);

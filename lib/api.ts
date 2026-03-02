@@ -7,7 +7,7 @@ import {
 } from '@/types/pocketbase';
 import PocketBase from 'pocketbase';
 import { parseApiError } from './utils';
-import logger from './logger';
+import { serverLogger } from './logger';
 
 const pb = new PocketBase(process.env.PB_API_URL) as TypedPocketBase;
 
@@ -21,10 +21,10 @@ export function buildImageUrl<T extends Record<string, any>>(
   firstFilename: string
 ): string {
   try {
-    logger.info(`[buildImageUrl] Building image URL: ${record.id} ${firstFilename}`);
+    serverLogger.info(`[buildImageUrl] Building image URL: ${record.id} ${firstFilename}`);
     return pb.files.getURL(record, firstFilename);
   } catch (error) {
-    logger.error(`[buildImageUrl] Error building image URL: ${error}`);
+    serverLogger.error(`[buildImageUrl] Error building image URL: ${error}`);
     throw error;
   }
 }
@@ -33,33 +33,35 @@ export type IconsExpand = {
   icon_refs: IconsResponse[];
 };
 
-export async function getProjects() {
+export async function getProjects(): Promise<ApiResponse<ProjectsResponse<IconsExpand>[]>> {
   try {
-    logger.info("[getProjects] Fetching projects");
+    serverLogger.info("[getProjects] Fetching projects");
     const records = await pb
       .collection('projects')
       .getFullList<ProjectsResponse<IconsExpand>>({
         expand: 'icon_refs',
       });
-    logger.info(`[getProjects] Fetched ${records.length} projects`);
-    return records;
-  } catch (error) {
-    logger.error(`[getProjects] Error fetching projects: ${error}`);
-    throw error;
+    serverLogger.info(`[getProjects] Fetched ${records.length} projects`);
+    return { data: records, error: null };
+  } catch (err) {
+    serverLogger.error(`[getProjects] Error fetching projects: ${err}`);
+    const errorMessage = parseApiError(err, 'projects');
+    return { data: null, error: errorMessage };
   }
 }
 
-export async function getTechnologies() {
+export async function getTechnologies(): Promise<ApiResponse<IconsResponse[]>> {
   try {
-    logger.info("[getTechnologies] Fetching technologies");
+    serverLogger.info("[getTechnologies] Fetching technologies");
     const records = await pb.collection('icons').getFullList({
       filter: 'technology = true',
     });
-    logger.info(`[getTechnologies] Fetched ${records.length} technologies`);
-    return records;
-  } catch (error) {
-    logger.error(`[getTechnologies] Error fetching technologies: ${error}`);
-    throw error;
+    serverLogger.info(`[getTechnologies] Fetched ${records.length} technologies`);
+    return { data: records, error: null };
+  } catch (err) {
+    serverLogger.error(`[getTechnologies] Error fetching technologies: ${err}`);
+    const errorMessage = parseApiError(err, 'technologies');
+    return { data: null, error: errorMessage };
   }
 }
 
@@ -67,32 +69,33 @@ export type IconExpand = {
   icon_ref: IconsResponse;
 };
 
-export async function getExperience() {
+export async function getExperience(): Promise<ApiResponse<ExperienceResponse<IconExpand>[]>> {
   try {
-    logger.info("[getExperience] Fetching experiences");
+    serverLogger.info("[getExperience] Fetching experiences");
     const records = await pb
       .collection('experience')
       .getFullList<ExperienceResponse<IconExpand>>({
         sort: '+start_date',
         expand: 'icon_ref',
       });
-    logger.info(`[getExperience] Fetched ${records.length} experiences`);
-    return records;
-  } catch (error) {
-    logger.error(`[getExperience] Error fetching experiences: ${error}`);
-    throw error;
+    serverLogger.info(`[getExperience] Fetched ${records.length} experiences`);
+    return { data: records, error: null };
+  } catch (err) {
+    serverLogger.error(`[getExperience] Error fetching experiences: ${err}`);
+    const errorMessage = parseApiError(err, 'experiences');
+    return { data: null, error: errorMessage };
   }
 }
 
 // export async function getContact() {
 //   try {
-//     logger.info('Fetching contact');
+//     serverLogger.info('Fetching contact');
 //     const records = await pb.collection('icons').getFullList({
 //       filter: 'contact = true',
 //     });
 //     return records;
 //   } catch (error) {
-//     logger.error('Error fetching contact: ', error);
+//     serverLogger.error('Error fetching contact: ', error);
 //     throw error;
 //   }
 // }
@@ -101,15 +104,15 @@ export async function getPosts(
   category?: string
 ): Promise<ApiResponse<PostsResponse[]>> {
   try {
-    logger.info(`[getPosts] Fetching posts ${category ? `from category ${category}` : ''}`);
+    serverLogger.info(`[getPosts] Fetching posts ${category ? `from category ${category}` : ''}`);
     const records = await pb.collection('posts').getFullList<PostsResponse>({
       sort: '-updated',
       filter: category ? `category = "${category}"` : '',
     });
-    logger.info(`[getPosts] Fetched ${records.length} posts ${category ? `from category ${category}` : ''}`);
+    serverLogger.info(`[getPosts] Fetched ${records.length} posts ${category ? `from category ${category}` : ''}`);
     return { data: records, error: null };
   } catch (err) {
-    logger.error(`[getPosts] Error fetching posts: ${err}`);
+    serverLogger.error(`[getPosts] Error fetching posts: ${err}`);
     const errorMessage = parseApiError(err, 'posts');
 
     return { data: null, error: errorMessage };
@@ -120,13 +123,14 @@ export async function getPostById(
   id: string
 ): Promise<ApiResponse<PostsResponse>> {
   try {
-    logger.info(`[getPostById] Fetching post by Id: ${id}`);
+    serverLogger.info(`[getPostById] Fetching post by Id: ${id}`);
     const record = await pb.collection('posts').getOne<PostsResponse>(id);
-    logger.info(`[getPostById] Fetched post by Id: ${id}`);
+    serverLogger.info(`[getPostById] Fetched post by Id: ${id}`);
     return { data: record, error: null };
   } catch (err) {
-    logger.error(`[getPostById] Error fetching post by Id: ${err}`);
+    serverLogger.error(`[getPostById] Error fetching post by Id: ${err}`);
     const errorMessage = parseApiError(err, 'post');
+    
     return { data: null, error: errorMessage };
   }
 }

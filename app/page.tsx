@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { Reveal } from '@/components/motion/reveal';
+import Technologies from '@/components/landing/technologies';
 
 export default async function HomePage() {
   const t = await getTranslations('home');
@@ -12,6 +13,7 @@ export default async function HomePage() {
             {t('part1')} <br /> {t('part2')}
           </h1>
         </Reveal>
+        <Technologies />
       </main>
     </div>
   );

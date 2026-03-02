@@ -5,10 +5,6 @@ import * as cheerio from 'cheerio';
 import { Heading } from '@/types/utils';
 import slugify from 'slugify';
 
-export const angleToRadians = (angle: number) => {
-  return angle * (Math.PI / 180);
-};
-
 export function formatDate(
   startDateString: string,
   endDateString: string | null = null
@@ -176,3 +172,12 @@ export function getFirstParagraphText(htmlString: string): string {
 
   return firstText;
 }
+
+export const shuffleArray = <T>(array: T[]): T[] => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
