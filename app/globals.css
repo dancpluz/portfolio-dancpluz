@@ -9,8 +9,8 @@
   --color-surface: #bcbcc3;
 
   --color-neon-pink: #ff00ff;
-  --color-electric-green: #00891e;
-  --color-cyan-blue: #0064fb;
+  --color-electric-green: #00f248;
+  --color-cyan-blue: #00fbfe;
 
   --color-accent-1: var(--color-neon-pink);
   --color-accent-2: var(--color-electric-green);
@@ -46,7 +46,7 @@
     background: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-text);
-    /* transition: background 0.3s ease-in-out, color 0.3s ease-in-out; */
+    transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
   }
 
   /* ViewTransition API Animations for Theme Toggle */
@@ -197,35 +197,3 @@
     }
   }
 }
-
-/* @theme {
-
-  --animate-infinite-scroll-h: infinite-scroll-h 40s linear infinite;
-  --animate-infinite-scroll-v: infinite-scroll-v 5s linear infinite;
-  --animate-text-reveal: text-reveal 1s cubic-bezier(0.77, 0, 0.175, 1) 0.5s;
-
-  @keyframes infinite-scroll-h {
-    0% {
-      transform: translateX(calc(-100% - 32px));
-    }
-    100% {
-      transform: translateX(0);
-    }
-  }
-  @keyframes infinite-scroll-v {
-    0% {
-      transform: translateY(calc(-100% - 32px));
-    }
-    100% {
-      transform: translateY(0);
-    }
-  }
-  @keyframes text-reveal {
-    0% {
-      transform: translate(0, 100%);
-    }
-    100% {
-      transform: translate(0, 0);
-    }
-  }
-} */

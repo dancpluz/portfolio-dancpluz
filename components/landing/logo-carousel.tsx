@@ -12,6 +12,7 @@ import { shuffleArray } from '@/lib/utils';
 import { IconsResponse } from '@/types/pocketbase';
 import { buildImageUrl } from '@/lib/api';
 import Image from 'next/image';
+import { useTheme } from 'next-themes';
 
 export interface ProcessedIcon extends IconsResponse {
   imageUrl: string;
@@ -52,6 +53,7 @@ const LogoColumn: React.FC<LogoColumnProps> = React.memo(
       () => logos[currentIndex],
       [logos, currentIndex],
     );
+    const { theme } = useTheme();
 
     return (
       <m.div
@@ -99,7 +101,7 @@ const LogoColumn: React.FC<LogoColumnProps> = React.memo(
               width={128}
               height={128}
               loading="lazy"
-              style={{ width: 'auto', height: 'auto' }}
+              style={{ width: 'auto', height: 'auto', filter: theme === 'dark' ? 'invert(0)' : 'invert(1)' }}
               className='pointer-events-none h-20 w-20 max-h-[80%] max-w-[80%] object-contain md:h-32 md:w-32'
             />
           </m.div>

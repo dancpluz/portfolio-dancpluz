@@ -78,6 +78,7 @@ function ImageGif({ post }: { post: PostsResponse }) {
         width={100}
         height={100}
         className='size-full object-fill'
+        unoptimized
       />
     );
   }
