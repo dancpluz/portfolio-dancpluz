@@ -3,7 +3,7 @@ import BlogContainer from '@/components/blog/container';
 import CategoriesButtons from './categories-buttons';
 import { useTranslations } from 'next-intl';
 import { LineReveal, Reveal } from '../motion/reveal';
-import BackButton from '../ui/back-button';
+import BackButton from './back-button';
 
 interface BlogSectionProps {
   children: React.ReactNode;
@@ -11,14 +11,18 @@ interface BlogSectionProps {
   categories?: PostsCategoryOptions[];
 }
 
-export default function BlogSection({ children, posts, categories }: BlogSectionProps) {
+export default function BlogSection({
+  children,
+  posts,
+  categories,
+}: BlogSectionProps) {
   const t = useTranslations('blog');
 
   return (
     <BlogContainer>
       <section className='space-y-8'>
-        <div className="mb-6">
-          <BackButton fallbackHref="/" />
+        <div className='mb-6'>
+          <BackButton fallbackHref='/' />
         </div>
         <div className='flex w-full items-center gap-6'>
           <Reveal direction='down' className='flex items-center gap-6'>

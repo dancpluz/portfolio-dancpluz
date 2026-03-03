@@ -69,7 +69,7 @@ const LogoColumn: React.FC<LogoColumnProps> = React.memo(
         <AnimatePresence mode='wait'>
           <m.div
             key={`${currentLogo.id}-${currentIndex}`}
-            className='absolute inset-0 flex items-center justify-center'
+            className='absolute inset-0 flex items-center justify-center will-change-transform'
             initial={{ y: '10%', opacity: 0, filter: 'blur(8px)' }}
             animate={{
               y: '0%',
@@ -100,8 +100,12 @@ const LogoColumn: React.FC<LogoColumnProps> = React.memo(
               alt={currentLogo.alt}
               width={128}
               height={128}
-              loading="lazy"
-              style={{ width: 'auto', height: 'auto', filter: theme === 'dark' ? 'invert(0)' : 'invert(1)' }}
+              loading='lazy'
+              style={{
+                width: 'auto',
+                height: 'auto',
+                filter: theme === 'dark' ? 'invert(0)' : 'invert(1)',
+              }}
               className='pointer-events-none h-20 w-20 max-h-[80%] max-w-[80%] object-contain md:h-32 md:w-32'
             />
           </m.div>
@@ -141,7 +145,7 @@ export default function LogoCarousel({ columnCount = 2, logos }: LogoCarouselPro
   }, [logos, columnCount]);
 
   return (
-    <div className='flex space-x-4'>
+    <div className='flex space-x-4 w-full'>
       {logoSets.map((logos, index) => (
         <LogoColumn
           key={index}

@@ -9,7 +9,7 @@ export default async function Technologies() {
   }
 
   return (
-    <div className='w-screen'>
+    <div className='w-full'>
       <LogoCarousel logos={technologies} columnCount={5} />
     </div>
   );

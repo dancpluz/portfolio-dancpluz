@@ -7,7 +7,7 @@ import { processArticleHtml, formatDateLocal } from '@/lib/utils';
 import TableOfContents from '@/components/blog/post/table-contents';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { Reveal } from '@/components/motion/reveal';
-import BackButton from '@/components/ui/back-button';
+import BackButton from '@/components/blog/back-button';
 
 export async function generateStaticParams() {
   const { data: posts, error } = await getPosts();
