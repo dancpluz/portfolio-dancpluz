@@ -113,6 +113,7 @@ export type IconsRecord = {
 	id: string
 	link?: string
 	technology?: boolean
+	text?: string
 	updated: IsoAutoDateString
 }
 
