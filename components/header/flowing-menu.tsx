@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useRef, useEffect, useState } from 'react';
-import { animate } from 'motion/react';
+import { animate, m } from 'motion/react';
 import Link from 'next/link';
+
+const MotionLink = m.create(Link);
 
 export interface MenuItemData {
   link: string;
@@ -18,7 +20,6 @@ interface FlowingMenuProps {
 
 interface MenuItemProps extends MenuItemData {
   speed: number;
-  isFirst: boolean;
   onClick?: () => void;
 }
 
@@ -35,7 +36,6 @@ const FlowingMenu: React.FC<FlowingMenuProps> = ({
             key={idx}
             {...item}
             speed={speed}
-            isFirst={idx === 0}
             onClick={onItemClick}
           />
         ))}
@@ -49,7 +49,6 @@ const MenuItem: React.FC<MenuItemProps> = ({
   text,
   image,
   speed,
-  isFirst,
   onClick,
 }) => {
   const itemRef = useRef<HTMLDivElement>(null);
@@ -167,18 +166,22 @@ const MenuItem: React.FC<MenuItemProps> = ({
 
   return (
     <div
-      className={`flex-1 relative overflow-hidden text-center ${isFirst ? '' : 'border-t border-foreground'}`}
+      className={`flex-1 relative overflow-hidden text-center border-t border-foreground`}
       ref={itemRef}
     >
-      <Link
+      <MotionLink
         className='flex items-center justify-center h-full relative cursor-pointer uppercase no-underline font-heading text-5xl text-foreground'
         href={link}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onClick={onClick}
+        initial={{ x: -800 }}
+        animate={{ x: 0 }}
+        exit={{ x: -800 }}
+        transition={{ delay: 0.2, duration: 1, ease: 'circInOut' }}
       >
         {text}
-      </Link>
+      </MotionLink>
 
       <div
         className='absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none bg-foreground'

@@ -1,5 +1,4 @@
 import PostList from '@/components/blog/post-list';
-import { getPosts } from '@/lib/api';
 import BlogSection from '@/components/blog/blog-section';
 import {
   createLoader,
@@ -9,6 +8,7 @@ import {
 import { PostsCategoryOptions } from '@/types/pocketbase';
 import { getPostCategories } from '@/lib/utils';
 import { getTranslations } from 'next-intl/server';
+import { getPosts } from '@/actions/posts';
 
 export async function generateMetadata() {
   const t = await getTranslations('blog');

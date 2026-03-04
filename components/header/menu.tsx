@@ -3,6 +3,10 @@
 import { AnimatePresence, m } from 'motion/react';
 import FlowingMenu, { type MenuItemData } from './flowing-menu';
 import { useMenu } from '@/hooks/use-menu';
+import Link from 'next/link';
+import Image from 'next/image';
+import { buildImageUrl } from '@/lib/api';
+import Socials from './socials';
 
 const demoItems: MenuItemData[] = [
   {
@@ -33,7 +37,7 @@ const demoItems: MenuItemData[] = [
 ];
 
 export default function Nav() {
-  const { isOpen, closeMenu } = useMenu();
+  const { isOpen, closeMenu, contacts } = useMenu();
 
   return (
     <AnimatePresence>
@@ -45,8 +49,13 @@ export default function Nav() {
           exit={{ scaleY: 0 }}
           transition={{ duration: 1.2, ease: 'circInOut' }}
         >
-          <div className='w-full lg:w-1/2 relative h-full border-r border-foreground'>
-            <FlowingMenu items={demoItems} onItemClick={closeMenu} />
+          <div className='w-full lg:w-1/2 relative border-r border-foreground pt-26'>
+            <div className='w-full h-4/5'>
+              <FlowingMenu items={demoItems} onItemClick={closeMenu} />
+            </div>
+            <div className='w-full h-1/5'>
+              <Socials />
+            </div>
           </div>
           <div className='hidden lg:flex w-full lg:w-1/2 items-center justify-center text-9xl'>
             IMAGE

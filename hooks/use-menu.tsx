@@ -1,5 +1,6 @@
 'use client';
 
+import { IconsResponse } from '@/types/pocketbase';
 import { createContext, useContext, useState, ReactNode } from 'react';
 
 interface MenuContextType {
@@ -7,11 +8,12 @@ interface MenuContextType {
   toggleMenu: () => void;
   closeMenu: () => void;
   openMenu: () => void;
+  contacts: IconsResponse[];
 }
 
 const MenuContext = createContext<MenuContextType | undefined>(undefined);
 
-export function MenuProvider({ children }: { children: ReactNode }) {
+export function MenuProvider({ children, contacts }: { children: ReactNode, contacts: IconsResponse[] }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => setIsOpen((prev) => !prev);
@@ -19,7 +21,7 @@ export function MenuProvider({ children }: { children: ReactNode }) {
   const openMenu = () => setIsOpen(true);
 
   return (
-    <MenuContext.Provider value={{ isOpen, toggleMenu, closeMenu, openMenu }}>
+    <MenuContext.Provider value={{ isOpen, toggleMenu, closeMenu, openMenu, contacts }}>
       {children}
     </MenuContext.Provider>
   );

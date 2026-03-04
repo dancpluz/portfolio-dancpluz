@@ -1,6 +1,5 @@
 import ArticleProgressBar from '@/components/blog/post/article-progress-bar';
 import PostContainer from '@/components/blog/container';
-import { getPostById, getPosts } from '@/lib/api';
 import { Suspense } from 'react';
 import ArticleRenderer from '@/components/blog/post/article-renderer';
 import { processArticleHtml, formatDateLocal } from '@/lib/utils';
@@ -8,6 +7,7 @@ import TableOfContents from '@/components/blog/post/table-contents';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { Reveal } from '@/components/motion/reveal';
 import BackButton from '@/components/blog/back-button';
+import { getPosts, getPostById } from '@/actions/posts';
 
 export async function generateStaticParams() {
   const { data: posts, error } = await getPosts();
