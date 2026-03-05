@@ -3,41 +3,38 @@
 import { AnimatePresence, m } from 'motion/react';
 import FlowingMenu, { type MenuItemData } from './flowing-menu';
 import { useMenu } from '@/hooks/use-menu';
-import Link from 'next/link';
-import Image from 'next/image';
-import { buildImageUrl } from '@/lib/api';
 import Socials from './socials';
 
 const demoItems: MenuItemData[] = [
   {
-    link: '#',
+    link: '/',
     text: 'Início',
     image: 'https://picsum.photos/600/400?random=1',
   },
   {
-    link: '#',
+    link: '/blog',
     text: 'Blog',
     image: 'https://picsum.photos/600/400?random=4',
   },
   {
-    link: '#',
+    link: '#about',
     text: 'Sobre',
     image: 'https://picsum.photos/600/400?random=2',
   },
   {
-    link: '#',
+    link: '#projects',
     text: 'Projetos',
     image: 'https://picsum.photos/600/400?random=3',
   },
   {
-    link: '#',
+    link: '#contact',
     text: 'Contato',
     image: 'https://picsum.photos/600/400?random=4',
   },
 ];
 
 export default function Nav() {
-  const { isOpen, closeMenu, contacts } = useMenu();
+  const { isOpen, closeMenu } = useMenu();
 
   return (
     <AnimatePresence>

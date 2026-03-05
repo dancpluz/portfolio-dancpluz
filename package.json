@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "copytypes": "npx pocketbase-typegen -o ./types/pocketbase.ts"
+    "copytypes": "dotenv -- npx pocketbase-typegen -o ./types/pocketbase.ts",
+    "sonar": "dotenv -- sonar"
   },
   "dependencies": {
     "@logtape/logtape": "^2.0.4",
@@ -40,6 +41,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@types/react-syntax-highlighter": "^15.5.13",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9.39.3",
     "eslint-config-next": "^16.1.6",
     "postcss": "^8.5.6",

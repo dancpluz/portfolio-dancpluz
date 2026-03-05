@@ -31,9 +31,9 @@ const FlowingMenu: React.FC<FlowingMenuProps> = ({
   return (
     <div className='w-full h-full overflow-hidden'>
       <nav className='flex flex-col h-full m-0 p-0'>
-        {items.map((item, idx) => (
+        {items.map((item) => (
           <MenuItem
-            key={idx}
+            key={item.link}
             {...item}
             speed={speed}
             onClick={onItemClick}
@@ -191,10 +191,10 @@ const MenuItem: React.FC<MenuItemProps> = ({
         }}
       >
         <div className='h-full w-fit flex' ref={marqueeInnerRef}>
-          {[...Array(repetitions)].map((_, idx) => (
+          {Array.from({ length: repetitions }).map((_, idx) => (
             <div
               className='marquee-part flex items-center flex-shrink-0 text-background'
-              key={idx}
+              key={`${link}-${idx}`}
             >
               <span className='whitespace-nowrap uppercase font-heading text-5xl leading-[1] px-[1vw]'>
                 {text}
