@@ -8,7 +8,7 @@ interface TableOfContentsProps {
   headings: Heading[];
 }
 
-export default function TableOfContents({ headings }: TableOfContentsProps) {
+export default function TableOfContents({ headings }: Readonly<TableOfContentsProps>) {
   const [activeId, setActiveId] = useState<string>('');
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
       const clientHeight = document.documentElement.clientHeight;
 
       if (scrollHeight - scrollTop - clientHeight < 10) {
-        const lastHeading = headings[headings.length - 1];
+        const lastHeading = headings.at(-1);
         if (lastHeading) {
           setActiveId(lastHeading.id);
         }
@@ -93,7 +93,7 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
                         behavior: 'smooth',
                         block: 'start',
                       });
-                      window.history.replaceState(null, '', `#${heading.id}`);
+                      globalThis.history.replaceState(null, '', `#${heading.id}`);
                     }
                   }}
                   className={`group flex items-start gap-2 py-1 transition-all duration-200 ${

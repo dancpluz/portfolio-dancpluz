@@ -20,9 +20,10 @@ const renderPre = (domNode: Element, children: React.ReactNode) => {
     const preClassName = domNode.attribs?.class || '';
     const codeClassName = codeElement.attribs?.class || '';
 
+    const languageRegex = /language-(\w+)/;
     const languageMatch =
-      preClassName.match(/language-(\w+)/) ||
-      codeClassName.match(/language-(\w+)/);
+      languageRegex.exec(preClassName) ||
+      languageRegex.exec(codeClassName);
     const language = languageMatch ? languageMatch[1] : 'text';
 
     const codeContent =

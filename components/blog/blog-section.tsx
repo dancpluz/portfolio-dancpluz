@@ -15,7 +15,7 @@ export default function BlogSection({
   children,
   posts,
   categories,
-}: BlogSectionProps) {
+}: Readonly<BlogSectionProps>) {
   const t = useTranslations('blog');
 
   return (

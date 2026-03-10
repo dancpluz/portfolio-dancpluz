@@ -21,9 +21,9 @@ export async function generateStaticParams() {
 
 export const revalidate = 30;
 
-export default async function Article(props: {
+export default async function Article(props: Readonly<{
   params: Promise<{ id: string }>;
-}) {
+}>) {
   const { id } = await props.params;
   const { data: post, error } = await getPostById(id);
   const t = await getTranslations('blog');
@@ -39,7 +39,7 @@ export default async function Article(props: {
     );
   }
 
-  const { article, title, updated } = post || {};
+  const { article, title, updated } = post ?? {};
 
   const { headings, processedHtml } = article
     ? processArticleHtml(article)

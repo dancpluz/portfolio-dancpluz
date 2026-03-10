@@ -88,7 +88,7 @@ export default function Loader() {
         width='1'
         height='1'
         shapeRendering='crispEdges'
-        {...glow('#005010', '#00F248', 0, 1.0)}
+        {...glow('#005010', '#00F248', 0, 1)}
       />
 
       {/* Green polygon */}

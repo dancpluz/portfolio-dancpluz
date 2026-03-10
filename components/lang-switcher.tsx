@@ -9,7 +9,7 @@ export default function LanguageSwitcher() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const match = document.cookie.match(/(^| )locale=([^;]+)/);
+    const match = new RegExp(/(^| )locale=([^;]+)/).exec(document.cookie);
     if (match) {
       setLocale(match[2] as 'en' | 'pt');
     } else {

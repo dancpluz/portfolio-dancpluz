@@ -1,14 +1,12 @@
 'use client';
 
-import { PostsResponse } from '@/types/pocketbase';
 import PostCard from './post-card';
 import { AnimatePresence } from 'motion/react';
+import { PostsResponse } from '@/types/pocketbase';
 
-interface PostListProps {
-  posts: PostsResponse[];
-}
-
-export default function PostList({ posts }: PostListProps) {
+export default function PostList({
+  posts,
+}: Readonly<{ posts: PostsResponse[] }>) {
   return (
     <AnimatePresence mode='popLayout'>
       <ul>

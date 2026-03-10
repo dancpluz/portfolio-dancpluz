@@ -1,5 +1,5 @@
+import { getTechnologies } from '@/actions/icons';
 import LogoCarousel from './logo-carousel';
-import { getTechnologies } from '@/lib/api';
 
 export default async function Technologies() {
   const { data: technologies, error } = await getTechnologies();

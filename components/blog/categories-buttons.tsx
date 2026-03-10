@@ -10,7 +10,7 @@ interface CategoriesButtonsProps {
 
 export default function CategoriesButtons({
   categories,
-}: CategoriesButtonsProps) {
+}: Readonly<CategoriesButtonsProps>) {
   const [selectedCategory, setSelectedCategory] = useQueryState(
     'categoria',
     parseAsStringEnum<PostsCategoryOptions>(

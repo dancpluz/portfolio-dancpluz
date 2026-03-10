@@ -128,7 +128,7 @@ export function plural<T>(array: T[]): string {
 }
 
 export function getPostCategories(posts: PostsResponse[]) {
-  const categories = posts.map((post) => post.category).flat();
+  const categories = posts.flatMap((post) => post.category);
   return Array.from(new Set(categories));
 }
 
@@ -140,7 +140,7 @@ export function processArticleHtml(htmlString: string): {
   const $ = cheerio.load(htmlString);
 
   $('h1, h2, h3, h4').each((_, element) => {
-    const level = parseInt(element.tagName.replace('h', ''), 10);
+    const level = Number.parseInt(element.tagName.replace('h', ''), 10);
     const text = $(element).text();
     const id = slugify(text);
 

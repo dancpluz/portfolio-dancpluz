@@ -8,14 +8,15 @@ import TransitionLink from '@/components/transition-link';
 import Image from 'next/image';
 import { buildImageUrl } from '@/lib/api';
 import { useLocale } from 'next-intl';
-import { LineReveal, Reveal } from '../motion/reveal';
+import { Reveal } from '../motion/reveal';
 
-interface PostCardProps {
+export default function PostCard({
+  post,
+  index,
+}: Readonly<{
   post: PostsResponse;
   index: number;
-}
-
-export default function PostCard({ post, index }: PostCardProps) {
+}>) {
   const locale = useLocale();
   const { title, id, long_text, article, created } = post;
 
@@ -64,7 +65,7 @@ export default function PostCard({ post, index }: PostCardProps) {
   );
 }
 
-function ImageGif({ post }: { post: PostsResponse }) {
+function ImageGif({ post }: Readonly<{ post: PostsResponse }>) {
   const { gifs, images, category, title } = post;
 
   const firstGif = gifs?.[0] ?? null;

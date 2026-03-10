@@ -20,7 +20,7 @@ export default function Magnet({
   wrapperClassName = '',
   innerClassName = '',
   ...props
-}: MagnetProps) {
+}: Readonly<MagnetProps>) {
   const [isActive, setIsActive] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const magnetRef = useRef<HTMLDivElement>(null);
@@ -55,9 +55,9 @@ export default function Magnet({
       }
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
+    globalThis.addEventListener('mousemove', handleMouseMove);
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
+      globalThis.removeEventListener('mousemove', handleMouseMove);
     };
   }, [padding, disabled, magnetStrength]);
 

@@ -29,9 +29,9 @@ const loadCategoryParams = createLoader({
 
 export default async function Blog({
   searchParams,
-}: {
+}: Readonly<{
   searchParams: Promise<SearchParams>;
-}) {
+}>) {
   const { categoria } = await loadCategoryParams(searchParams);
   const t = await getTranslations('blog');
 

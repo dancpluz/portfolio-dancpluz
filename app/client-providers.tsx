@@ -6,9 +6,9 @@ import { useMagicalUnderline } from '@/hooks/use-magical-underline';
 
 export default function ClientProviders({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   useMagicalUnderline();
 
   return (

@@ -1,10 +1,18 @@
-"use client";
+'use client';
 
-import { m } from "motion/react";
-import { useEffect, useState } from "react";
-import { pageTransitionEvent } from "@/components/motion/events";
+import { m } from 'motion/react';
+import { useEffect, useState } from 'react';
+import { pageTransitionEvent } from '@/components/motion/events';
 
-export default function Container({ children, divClassName='', mainClassName='' }: { children: React.ReactNode, divClassName?: string, mainClassName?: string }) {
+export default function Container({
+  children,
+  divClassName = '',
+  mainClassName = '',
+}: Readonly<{
+  children: React.ReactNode;
+  divClassName?: string;
+  mainClassName?: string;
+}>) {
   const [isExiting, setIsExiting] = useState(false);
 
   useEffect(() => {

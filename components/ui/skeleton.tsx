@@ -1,9 +1,7 @@
-import * as React from "react"
-
-function Skeleton({
+export default function Skeleton({
   className,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+}: Readonly<React.HTMLAttributes<HTMLDivElement>>) {
   return (
     <div
       className={`animate-pulse rounded-md bg-foreground/10 ${className || ''}`}
@@ -11,5 +9,3 @@ function Skeleton({
     />
   )
 }
-
-export { Skeleton }

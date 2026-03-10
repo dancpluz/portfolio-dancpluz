@@ -9,15 +9,16 @@ export async function getPosts(
   category?: string,
 ): Promise<ApiResponse<PostsResponse[]>> {
   try {
+    const filter = category ? `category = "${category}"` : '';
     serverLogger.info(
-      `[getPosts] Fetching posts ${category ? `from category ${category}` : ''}`,
+      `[getPosts] Fetching posts ${filter}`,
     );
     const records = await pb.collection('posts').getFullList<PostsResponse>({
       sort: '-updated',
-      filter: category ? `category = "${category}"` : '',
+      filter,
     });
     serverLogger.info(
-      `[getPosts] Fetched ${records.length} posts ${category ? `from category ${category}` : ''}`,
+      `[getPosts] Fetched ${records.length} posts ${filter}`,
     );
     return { data: records, error: null };
   } catch (err) {

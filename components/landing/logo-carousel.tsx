@@ -120,8 +120,8 @@ interface LogoCarouselProps {
   logos: IconsResponse[];
 }
 
-export default function LogoCarousel({ columnCount = 2, logos }: LogoCarouselProps) {
-  const [logoSets, setLogoSets] = useState<ProcessedIcon[][]>([]);
+export default function LogoCarousel({ columnCount = 2, logos }: Readonly<LogoCarouselProps>) {
+  const [logoSets, setLogoSets] = useState<{ id: string; items: ProcessedIcon[] }[]>([]);
   const [currentTime, setCurrentTime] = useState(0);
 
   const updateTime = useCallback(() => {
@@ -141,15 +141,20 @@ export default function LogoCarousel({ columnCount = 2, logos }: LogoCarouselPro
     }));
 
     const distributedLogos = distributeLogos(processedLogos, columnCount);
-    setLogoSets(distributedLogos);
+    const columnsWithIds = distributedLogos.map((items, i) => ({
+      // Generate a unique ID for the column layout from its contents
+      id: `column-${i}-${items.map((l) => l.id).join('-')}`,
+      items,
+    }));
+    setLogoSets(columnsWithIds);
   }, [logos, columnCount]);
 
   return (
     <div className='flex space-x-4 w-full'>
-      {logoSets.map((logos, index) => (
+      {logoSets.map((column, index) => (
         <LogoColumn
-          key={index}
-          logos={logos}
+          key={column.id}
+          logos={column.items}
           index={index}
           currentTime={currentTime}
         />

@@ -5,6 +5,7 @@ import { triggerExitAnimation } from '@/components/motion/events';
 import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { m } from 'motion/react';
+import { clientLogger } from '@/lib/logger';
 
 interface BackButtonProps {
   fallbackHref?: string;
@@ -14,26 +15,28 @@ interface BackButtonProps {
 export default function BackButton({
   fallbackHref = '/blog',
   className = '',
-}: BackButtonProps) {
+}: Readonly<BackButtonProps>) {
   const router = useRouter();
   const [canGoBack, setCanGoBack] = useState(false);
 
   useEffect(() => {
     // Check if we have history from our own site
-    if (typeof window !== 'undefined' && window.history.length > 1) {
+    if (globalThis.window !== undefined && globalThis.window.history.length > 1) {
       try {
-        const referrerUrl = new URL(document.referrer);
+        const referrerUrl = new URL(globalThis.window.document.referrer);
         // Only set we can go back if the referrer gives us an actual different page path,
         // not just a hash change within the exact same pathname
         if (
-          referrerUrl.hostname === window.location.hostname &&
-          referrerUrl.pathname !== window.location.pathname
+          referrerUrl.hostname === globalThis.window.location.hostname &&
+          referrerUrl.pathname !== globalThis.window.location.pathname
         ) {
           setCanGoBack(true);
+          clientLogger.debug(`[BackButton] Can go back`);
         }
       } catch (e) {
         // Fallback for invalid URLs in referrer
         setCanGoBack(false);
+        clientLogger.debug(`[BackButton] Error getting referrer: ${e}`);
       }
     }
   }, []);
@@ -43,19 +46,19 @@ export default function BackButton({
     await triggerExitAnimation();
 
     if (canGoBack) {
-      if (typeof window !== 'undefined') {
+      if (globalThis.window === undefined) {
+        router.back();
+      } else {
         // Because users click on multiple TableOfContents headers (adding `#` to the URL history)
         // we don't want router.back() to just jump between headings.
         // We navigate firmly to the fallback if we don't safely know how many headings were clicked.
-        const hasHashInHistory = window.location.hash !== '';
+        const hasHashInHistory = globalThis.window.location.hash !== '';
 
         if (hasHashInHistory) {
           router.push(fallbackHref);
         } else {
           router.back();
         }
-      } else {
-        router.back();
       }
     } else {
       router.push(fallbackHref);

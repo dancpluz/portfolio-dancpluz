@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server';
-import { Reveal } from '@/components/motion/reveal';
-import Technologies from '@/components/landing/technologies';
-import Loading from '@/app/loading';
+// import { Reveal } from '@/components/motion/reveal';
+// import Technologies from '@/components/landing/technologies';
+// import Loading from '@/app/loading';
 import { getContacts } from '@/actions/icons';
 
 export default async function HomePage() {
