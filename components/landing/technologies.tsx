@@ -9,8 +9,8 @@ export default async function Technologies() {
   }
 
   return (
-    <div className='w-full'>
+    <section className='w-full'>
       <LogoCarousel logos={technologies} columnCount={5} />
-    </div>
+    </section>
   );
 }

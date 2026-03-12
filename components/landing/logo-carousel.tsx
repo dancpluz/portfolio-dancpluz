@@ -1,16 +1,11 @@
 'use client';
 
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, m } from 'motion/react';
 import { shuffleArray } from '@/lib/utils';
 
 import { IconsResponse } from '@/types/pocketbase';
-import { buildImageUrl } from '@/lib/api';
+import { buildImageUrl } from '@/lib/pocketbase';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
 
@@ -18,9 +13,15 @@ export interface ProcessedIcon extends IconsResponse {
   imageUrl: string;
 }
 
-const distributeLogos = (allLogos: ProcessedIcon[], columnCount: number): ProcessedIcon[][] => {
+const distributeLogos = (
+  allLogos: ProcessedIcon[],
+  columnCount: number,
+): ProcessedIcon[][] => {
   const shuffled = shuffleArray(allLogos);
-  const columns: ProcessedIcon[][] = Array.from({ length: columnCount }, () => []);
+  const columns: ProcessedIcon[][] = Array.from(
+    { length: columnCount },
+    () => [],
+  );
 
   shuffled.forEach((logo, index) => {
     columns[index % columnCount].push(logo);
@@ -120,8 +121,13 @@ interface LogoCarouselProps {
   logos: IconsResponse[];
 }
 
-export default function LogoCarousel({ columnCount = 2, logos }: Readonly<LogoCarouselProps>) {
-  const [logoSets, setLogoSets] = useState<{ id: string; items: ProcessedIcon[] }[]>([]);
+export default function LogoCarousel({
+  columnCount = 2,
+  logos,
+}: Readonly<LogoCarouselProps>) {
+  const [logoSets, setLogoSets] = useState<
+    { id: string; items: ProcessedIcon[] }[]
+  >([]);
   const [currentTime, setCurrentTime] = useState(0);
 
   const updateTime = useCallback(() => {
@@ -135,9 +141,9 @@ export default function LogoCarousel({ columnCount = 2, logos }: Readonly<LogoCa
 
   useEffect(() => {
     // Process logos once to compute image URLs upfront
-    const processedLogos: ProcessedIcon[] = logos.map(logo => ({
+    const processedLogos: ProcessedIcon[] = logos.map((logo) => ({
       ...logo,
-      imageUrl: buildImageUrl(logo, logo.icon)
+      imageUrl: buildImageUrl(logo, logo.icon),
     }));
 
     const distributedLogos = distributeLogos(processedLogos, columnCount);

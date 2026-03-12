@@ -3,7 +3,7 @@
 import { useMenu } from '@/hooks/use-menu';
 import Link from 'next/link';
 import Image from 'next/image';
-import { buildImageUrl } from '@/lib/api';
+import { buildImageUrl } from '@/lib/pocketbase';
 import { useTheme } from 'next-themes';
 import { m } from 'motion/react';
 import { Reveal } from '../motion/reveal';

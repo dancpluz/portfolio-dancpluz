@@ -142,16 +142,38 @@ export type PostsRecord<Tkeywords = unknown> = {
 	video_caption?: string
 }
 
+export enum ProjectsProjectTypeOptions {
+	"web_app" = "web_app",
+	"mobile_app" = "mobile_app",
+	"landing_page" = "landing_page",
+	"e_commerce" = "e_commerce",
+	"api" = "api",
+	"open_source" = "open_source",
+	"saas" = "saas",
+	"videos" = "videos",
+}
+
+export enum ProjectsCategoriesOptions {
+	"frontend" = "frontend",
+	"backend" = "backend",
+	"fullstack" = "fullstack",
+	"ui_ux" = "ui_ux",
+	"cloud" = "cloud",
+	"mobile" = "mobile",
+	"game" = "game",
+}
 export type ProjectsRecord = {
+	categories?: ProjectsCategoriesOptions[]
+	client?: string
 	cover?: FileNameString
 	created: IsoAutoDateString
-	end_date?: IsoDateString
+	date?: IsoDateString
 	icon_refs?: RecordIdString[]
 	id: string
 	link?: string
-	start_date: IsoDateString
-	subtitle?: string
-	text?: string
+	medias?: FileNameString[]
+	project_summary: string
+	project_type: ProjectsProjectTypeOptions
 	title: string
 	updated: IsoAutoDateString
 }

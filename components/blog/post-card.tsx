@@ -6,7 +6,7 @@ import { PostsResponse } from '@/types/pocketbase';
 import { m } from 'motion/react';
 import TransitionLink from '@/components/transition-link';
 import Image from 'next/image';
-import { buildImageUrl } from '@/lib/api';
+import { buildImageUrl } from '@/lib/pocketbase';
 import { useLocale } from 'next-intl';
 import { Reveal } from '../motion/reveal';
 

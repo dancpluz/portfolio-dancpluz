@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server';
 // import Technologies from '@/components/landing/technologies';
 // import Loading from '@/app/loading';
 import { getContacts } from '@/actions/icons';
+import Projects from '@/components/landing/projects';
 
 export default async function HomePage() {
   const t = await getTranslations('home');
@@ -18,6 +19,7 @@ export default async function HomePage() {
       <Technologies /> */}
       {/* <Loading /> */}
       <pre>{JSON.stringify(contacts, null, 2)}</pre>
+      <Projects />
     </main>
   );
 }
