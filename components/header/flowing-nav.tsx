@@ -2,7 +2,8 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import { animate } from 'motion/react';
-import MotionLink from '../motion/motion-link';
+import { useMenu } from '@/hooks/use-menu';
+import TransitionLink from '../transition-link';
 
 export interface MenuItemData {
   link: string;
@@ -58,6 +59,8 @@ function MenuItem({
 
   const EXPO_EASE: [number, number, number, number] = [0.19, 1, 0.22, 1];
   const HOVER_DURATION = 0.6;
+
+  const { setImageHovering } = useMenu();
 
   const findClosestEdge = (
     mouseX: number,
@@ -117,6 +120,8 @@ function MenuItem({
   }, [contentWidth, speed]);
 
   const handleMouseEnter = (ev: React.MouseEvent<HTMLAnchorElement>) => {
+    setImageHovering(image);
+
     if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current)
       return;
     const rect = itemRef.current.getBoundingClientRect();
@@ -167,7 +172,7 @@ function MenuItem({
       className={`flex-1 relative overflow-hidden text-center border-t border-foreground`}
       ref={itemRef}
     >
-      <MotionLink
+      <TransitionLink
         className='flex items-center justify-center h-full relative cursor-pointer uppercase no-underline font-heading text-5xl text-foreground'
         href={link}
         onMouseEnter={handleMouseEnter}
@@ -179,7 +184,7 @@ function MenuItem({
         transition={{ delay: 0.2, duration: 1, ease: 'circInOut' }}
       >
         {text}
-      </MotionLink>
+      </TransitionLink>
 
       <div
         className='absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none bg-foreground'
