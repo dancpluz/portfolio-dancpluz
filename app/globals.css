@@ -6,7 +6,7 @@
 
   --color-background: #080808;
   --color-foreground: #efefef;
-  --color-surface: #bcbcc3;
+  --color-surface: #181818;
 
   --color-neon-pink: #ff00ff;
   --color-electric-green: #00f248;
@@ -27,7 +27,7 @@
   [data-theme='dark'] {
     --color-background: #080808;
     --color-foreground: #efefef;
-    --color-surface: #242424;
+    --color-surface: #181818;
     --color-accent-1: var(--color-neon-pink);
     --color-accent-2: var(--color-electric-green);
     --color-accent-3: var(--color-cyan-blue);

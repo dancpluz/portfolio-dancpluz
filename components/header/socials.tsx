@@ -2,14 +2,12 @@
 
 import { useMenu } from '@/hooks/use-menu';
 import Link from 'next/link';
-import Image from 'next/image';
 import { buildImageUrl } from '@/lib/pocketbase';
 import { useTheme } from 'next-themes';
 import { m } from 'motion/react';
 import { Reveal } from '../motion/reveal';
 import { useState, useEffect } from 'react';
-
-const MotionImage = m.create(Image);
+import MotionImage from '../motion/motion-image';
 
 export default function Socials() {
   const { contacts, isOpen } = useMenu();
@@ -51,7 +49,10 @@ export default function Socials() {
                 height={24}
                 src={buildImageUrl(contact, contact.icon)}
                 style={{
-                  filter: mounted && theme === 'dark' ? '' : 'invert(1)',
+                  filter:
+                    mounted && theme === 'dark'
+                      ? 'drop-shadow(0 0 8px var(--color-foreground))'
+                      : 'invert(1) drop-shadow(0 0 8px var(--color-foreground))',
                 }}
                 alt={contact.alt}
               />

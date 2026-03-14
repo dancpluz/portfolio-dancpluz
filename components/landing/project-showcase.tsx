@@ -118,7 +118,7 @@ export default function ProjectShowcase({
       </h2>
 
       <div
-        className='pointer-events-none fixed z-50 overflow-hidden rounded-xl shadow-2xl'
+        className='pointer-events-none fixed z-20 overflow-hidden rounded-xl shadow-2xl'
         style={{
           left: containerRef.current?.getBoundingClientRect().left ?? 0,
           top: containerRef.current?.getBoundingClientRect().top ?? 0,

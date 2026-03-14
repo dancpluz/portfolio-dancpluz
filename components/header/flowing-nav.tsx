@@ -1,10 +1,8 @@
 'use client';
 
 import React, { useRef, useEffect, useState } from 'react';
-import { animate, m } from 'motion/react';
-import Link from 'next/link';
-
-const MotionLink = m.create(Link);
+import { animate } from 'motion/react';
+import MotionLink from '../motion/motion-link';
 
 export interface MenuItemData {
   link: string;
@@ -23,11 +21,11 @@ interface MenuItemProps extends MenuItemData {
   onClick?: () => void;
 }
 
-const FlowingMenu: React.FC<FlowingMenuProps> = ({
+export default function FlowingNav({
   items = [],
   speed = 15,
   onItemClick,
-}) => {
+}: Readonly<FlowingMenuProps>) {
   return (
     <div className='w-full h-full overflow-hidden'>
       <nav className='flex flex-col h-full m-0 p-0'>
@@ -42,15 +40,15 @@ const FlowingMenu: React.FC<FlowingMenuProps> = ({
       </nav>
     </div>
   );
-};
+}
 
-const MenuItem: React.FC<MenuItemProps> = ({
+function MenuItem({
   link,
   text,
   image,
   speed,
   onClick,
-}) => {
+}: Readonly<MenuItemProps>) {
   const itemRef = useRef<HTMLDivElement>(null);
   const marqueeRef = useRef<HTMLDivElement>(null);
   const marqueeInnerRef = useRef<HTMLDivElement>(null);
@@ -210,5 +208,3 @@ const MenuItem: React.FC<MenuItemProps> = ({
     </div>
   );
 };
-
-export default FlowingMenu;
