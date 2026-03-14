@@ -173,7 +173,7 @@ function MenuItem({
       ref={itemRef}
     >
       <TransitionLink
-        className='flex items-center justify-center h-full relative cursor-pointer uppercase no-underline font-heading text-5xl text-foreground'
+        className='flex items-center justify-center h-full relative cursor-pointer uppercase no-underline font-heading font-bold text-5xl text-foreground'
         href={link}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}

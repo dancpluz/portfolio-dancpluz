@@ -22,7 +22,7 @@ export default function Socials() {
 
   return (
     <div className='px-6 py-4 border-t border-foreground text-foreground flex flex-col items-center justify-center h-full'>
-      <ul className='w-full flex items-center justify-between gap-2 h-full flex'>
+      <ul className='w-full flex items-center justify-between gap-2 h-full'>
         {contacts.map((contact) => (
           <m.li
             key={contact.id}
@@ -51,8 +51,8 @@ export default function Socials() {
                 style={{
                   filter:
                     mounted && theme === 'dark'
-                      ? 'drop-shadow(0 0 8px var(--color-foreground))'
-                      : 'invert(1) drop-shadow(0 0 8px var(--color-foreground))',
+                      ? 'drop-shadow(0 0 8px black)'
+                      : 'invert(1) drop-shadow(0 0 8px black)',
                 }}
                 alt={contact.alt}
               />
@@ -62,7 +62,9 @@ export default function Socials() {
                 direction='up'
                 exit={{ opacity: 0, y: 40 }}
               >
-                <p className='underline-magical'>{contact.text}</p>
+                <p className='underline-magical font-heading text-lg'>
+                  {contact.text}
+                </p>
               </Reveal>
             </Link>
           </m.li>

@@ -40,7 +40,7 @@ export default function PostCard({
           </div>
           <div className='space-y-1 transition-[padding] group-hover:px-2 w-full'>
             <div className='flex gap-4 w-full justify-between'>
-              <h2 className='leading-none text-xl font-bold underline-magical-2 group-hover:bg-size-[100%_100%] group-hover:text-background'>
+              <h2 className='leading-none text-xl font-bold font-heading underline-magical-2 group-hover:bg-size-[100%_100%] group-hover:text-background'>
                 {title}
               </h2>
               <m.span

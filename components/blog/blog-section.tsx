@@ -26,7 +26,7 @@ export default function BlogSection({
         </div>
         <div className='flex w-full items-center gap-6'>
           <Reveal direction='down' className='flex items-center gap-6'>
-            <h1 className='text-7xl font-heading uppercase underline-magical-2 bg-size-[100%_0.1em]'>
+            <h1 className='text-7xl font-heading font-bold uppercase underline-magical-2 bg-size-[100%_0.1em]'>
               {t('heading')}
             </h1>
           </Reveal>

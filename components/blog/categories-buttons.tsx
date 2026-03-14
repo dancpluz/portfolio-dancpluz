@@ -23,7 +23,7 @@ export default function CategoriesButtons({
       {categories.map((category, i) => (
         <React.Fragment key={category}>
           <button
-            className={`underline-magical-2 ${
+            className={`underline-magical-2 text-lg font-heading ${
               selectedCategory === category
                 ? 'text-background bg-size-[100%_100%]'
                 : ''

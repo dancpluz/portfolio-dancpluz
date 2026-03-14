@@ -22,8 +22,7 @@ const renderPre = (domNode: Element, children: React.ReactNode) => {
 
     const languageRegex = /language-(\w+)/;
     const languageMatch =
-      languageRegex.exec(preClassName) ||
-      languageRegex.exec(codeClassName);
+      languageRegex.exec(preClassName) || languageRegex.exec(codeClassName);
     const language = languageMatch ? languageMatch[1] : 'text';
 
     const codeContent =
@@ -78,7 +77,7 @@ const tagHandlers: Record<
   h1: (node, children) => (
     <h1
       id={node.attribs.id}
-      className='text-4xl md:text-5xl font-bold leading-tight text-balance mt-6 mb-5'
+      className='text-4xl md:text-5xl font-heading font-bold leading-tight text-balance mt-6 mb-5'
     >
       {children}
     </h1>
@@ -86,7 +85,7 @@ const tagHandlers: Record<
   h2: (node, children) => (
     <h2
       id={node.attribs.id}
-      className='text-3xl md:text-4xl font-bold leading-tight text-balance mt-10 mb-3 scroll-mt-20'
+      className='text-3xl md:text-4xl font-heading font-bold leading-tight text-balance mt-10 mb-3 scroll-mt-20'
     >
       {children}
     </h2>
@@ -94,7 +93,7 @@ const tagHandlers: Record<
   h3: (node, children) => (
     <h3
       id={node.attribs.id}
-      className='text-2xl md:text-3xl font-semibold leading-tight text-balance mt-8 mb-2 scroll-mt-20'
+      className='text-2xl md:text-3xl font-heading font-semibold leading-tight text-balance mt-8 mb-2 scroll-mt-20'
     >
       {children}
     </h3>
@@ -102,7 +101,7 @@ const tagHandlers: Record<
   h4: (node, children) => (
     <h4
       id={node.attribs.id}
-      className='text-xl md:text-2xl font-semibold leading-snug text-balance mt-8 mb-2 scroll-mt-20'
+      className='text-xl md:text-2xl font-heading font-semibold leading-snug text-balance mt-8 mb-2 scroll-mt-20'
     >
       {children}
     </h4>

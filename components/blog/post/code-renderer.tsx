@@ -10,7 +10,10 @@ type CodeRendererProps = {
   language: string;
 };
 
-export default function CodeRenderer({ code, language }: Readonly<CodeRendererProps>) {
+export default function CodeRenderer({
+  code,
+  language,
+}: Readonly<CodeRendererProps>) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {

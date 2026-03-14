@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { triggerExitAnimation } from '@/components/motion/events';
 import React, { forwardRef, type ComponentProps } from 'react';
 import { m } from 'motion/react';
@@ -11,10 +11,18 @@ type LinkProps = ComponentProps<typeof Link>;
 const TransitionLinkInner = forwardRef<HTMLAnchorElement, LinkProps>(
   ({ href, children, onClick, ...props }, ref) => {
     const router = useRouter();
+    const currentPathname = usePathname();
 
     const handleClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
-      // Let default behavior handle modifier keys (ctrl+click, etc)
-      if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) {
+      const url = typeof href === 'string' ? href : href.pathname || '';
+      const isExternal = url.startsWith('http') || url.startsWith('mailto:') || url.startsWith('tel:');
+      const isHash = url.startsWith('#');
+      
+      // Check if we're navigating to the same URL or just a hash on the same page
+      const isSamePage = !isHash && !isExternal && (url === currentPathname || (url === '/' && (currentPathname === '/' || currentPathname === '')));
+
+      // Let default behavior handle modifier keys (ctrl+click, etc) or external links
+      if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey || isExternal) {
         if (onClick) onClick(e as any);
         return;
       }
@@ -26,20 +34,20 @@ const TransitionLinkInner = forwardRef<HTMLAnchorElement, LinkProps>(
         onClick(e as any);
       }
 
-      // Trigger exit animation with a safety fallback timeout (800ms)
-      // This prevents the application from hanging on pages without a transiton listener
-      try {
-        await Promise.race([
-          triggerExitAnimation(),
-          new Promise((resolve) => setTimeout(resolve, 800)),
-        ]);
-      } catch (error) {
-        console.error('Exit animation failed:', error);
+      // Only animate if it's a new internal page
+      if (!isHash && !isSamePage) {
+        try {
+          await Promise.race([
+            triggerExitAnimation(),
+            new Promise((resolve) => setTimeout(resolve, 800)),
+          ]);
+        } catch (error) {
+          console.error('Exit animation failed:', error);
+        }
       }
       
       // Finally perform the navigation
       if (href) {
-        const url = typeof href === 'string' ? href : (href.pathname || href.href || '');
         router.push(url.toString());
       }
     };

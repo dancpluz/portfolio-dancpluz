@@ -8,7 +8,9 @@ interface TableOfContentsProps {
   headings: Heading[];
 }
 
-export default function TableOfContents({ headings }: Readonly<TableOfContentsProps>) {
+export default function TableOfContents({
+  headings,
+}: Readonly<TableOfContentsProps>) {
   const [activeId, setActiveId] = useState<string>('');
 
   useEffect(() => {
@@ -93,7 +95,11 @@ export default function TableOfContents({ headings }: Readonly<TableOfContentsPr
                         behavior: 'smooth',
                         block: 'start',
                       });
-                      globalThis.history.replaceState(null, '', `#${heading.id}`);
+                      globalThis.history.replaceState(
+                        null,
+                        '',
+                        `#${heading.id}`,
+                      );
                     }
                   }}
                   className={`group flex items-start gap-2 py-1 transition-all duration-200 ${

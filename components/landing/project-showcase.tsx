@@ -4,8 +4,9 @@ import type React from 'react';
 import { useState, useRef, useEffect } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import Image from 'next/image';
-import { lerp } from '@/lib/utils';
 import Link from 'next/link';
+import { lerp } from '@/lib/utils';
+import FlipText from './flip-text';
 
 interface Project {
   title: string;
@@ -59,6 +60,7 @@ export default function ProjectShowcase({
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [smoothPosition, setSmoothPosition] = useState({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number | null>(null);
 
@@ -72,11 +74,8 @@ export default function ProjectShowcase({
     };
 
     animationRef.current = requestAnimationFrame(animate);
-
     return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
   }, [mousePosition]);
 
@@ -98,24 +97,9 @@ export default function ProjectShowcase({
     }
   }, []);
 
-  const handleMouseEnter = (index: number) => {
-    setHoveredIndex(index);
-    setIsVisible(true);
-  };
-
-  const handleMouseLeave = () => {
-    setHoveredIndex(null);
-    setIsVisible(false);
-  };
-
   return (
-    <div
-      ref={containerRef}
-      className='relative w-full max-w-2xl mx-auto px-6 py-16'
-    >
-      <h2 className='text-muted-foreground text-sm font-medium tracking-wide uppercase mb-8'>
-        Selected Work
-      </h2>
+    <div ref={containerRef} className='relative w-full mx-auto px-6 py-16'>
+      <FlipText className='text-8xl font-heading' text='Projects' />
 
       <div
         className='pointer-events-none fixed z-20 overflow-hidden rounded-xl shadow-2xl'
@@ -132,7 +116,7 @@ export default function ProjectShowcase({
         <div className='relative w-[280px] h-[180px] bg-secondary rounded-xl overflow-hidden'>
           {projects.map((project, index) => (
             <Image
-              key={project.title}
+              key={`img-${project.title}`}
               src={project.image || '/placeholder.svg'}
               alt={project.title}
               fill
@@ -144,92 +128,90 @@ export default function ProjectShowcase({
               }}
             />
           ))}
-          {/* Subtle gradient overlay */}
-          <div className='absolute inset-0 bg-gradient-to-t from-background/20 to-transparent' />
+          <div className='absolute inset-0 bg-linear-to-t from-background/20 to-transparent' />
         </div>
       </div>
 
       <div className='space-y-0'>
         {projects.map((project, index) => (
-          <Link
+          <ProjectRow
             key={project.title}
-            href={project.link}
-            className='group block'
-            onMouseEnter={() => handleMouseEnter(index)}
-            onMouseLeave={handleMouseLeave}
-          >
-            <div className='relative py-5 border-t border-border transition-all duration-300 ease-out'>
-              {/* Background highlight on hover */}
-              <div
-                className={`
-                  absolute inset-0 -mx-4 px-4 bg-secondary/50 rounded-lg
-                  transition-all duration-300 ease-out
-                  ${hoveredIndex === index ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}
-                `}
-              />
-
-              <div className='relative flex items-start justify-between gap-4'>
-                <div className='flex-1 min-w-0'>
-                  {/* Title with animated underline */}
-                  <div className='inline-flex items-center gap-2'>
-                    <h3 className='text-foreground font-medium text-lg tracking-tight'>
-                      <span className='relative'>
-                        {project.title}
-                        {/* Animated underline */}
-                        <span
-                          className={`
-                            absolute left-0 -bottom-0.5 h-px bg-foreground
-                            transition-all duration-300 ease-out
-                            ${hoveredIndex === index ? 'w-full' : 'w-0'}
-                          `}
-                        />
-                      </span>
-                    </h3>
-
-                    {/* Arrow that slides in */}
-                    <ArrowUpRight
-                      className={`
-                        w-4 h-4 text-muted-foreground
-                        transition-all duration-300 ease-out
-                        ${
-                          hoveredIndex === index
-                            ? 'opacity-100 translate-x-0 translate-y-0'
-                            : 'opacity-0 -translate-x-2 translate-y-2'
-                        }
-                      `}
-                    />
-                  </div>
-
-                  {/* Description with fade effect */}
-                  <p
-                    className={`
-                      text-muted-foreground text-sm mt-1 leading-relaxed
-                      transition-all duration-300 ease-out
-                      ${hoveredIndex === index ? 'text-foreground/70' : 'text-muted-foreground'}
-                    `}
-                  >
-                    {project.description}
-                  </p>
-                </div>
-
-                {/* Year badge */}
-                <span
-                  className={`
-                    text-xs font-mono text-muted-foreground tabular-nums
-                    transition-all duration-300 ease-out
-                    ${hoveredIndex === index ? 'text-foreground/60' : ''}
-                  `}
-                >
-                  {project.year}
-                </span>
-              </div>
-            </div>
-          </Link>
+            project={project}
+            isHovered={hoveredIndex === index}
+            onMouseEnter={() => {
+              setHoveredIndex(index);
+              setIsVisible(true);
+            }}
+            onMouseLeave={() => {
+              setHoveredIndex(null);
+              setIsVisible(false);
+            }}
+          />
         ))}
-
-        {/* Bottom border for last item */}
         <div className='border-t border-border' />
       </div>
     </div>
+  );
+}
+
+function ProjectRow({
+  project,
+  isHovered,
+  onMouseEnter,
+  onMouseLeave,
+}: {
+  project: Project;
+  isHovered: boolean;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+}) {
+  return (
+    <Link
+      href={project.link}
+      className='group block'
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
+      <div className='relative py-5 border-t border-border transition-all duration-300 ease-out'>
+        <div
+          className={`absolute inset-0 -mx-4 px-4 bg-secondary/50 rounded-lg transition-all duration-300 ease-out ${
+            isHovered ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+          }`}
+        />
+
+        <div className='relative flex items-start justify-between gap-4'>
+          <div className='flex-1 min-w-0'>
+            <div className='inline-flex items-center gap-2'>
+              <FlipText
+                text={project.title}
+                className='font-heading font-bold text-md'
+                isHovered={isHovered}
+              />
+              <ArrowUpRight
+                className={`w-4 h-4 text-muted-foreground transition-all duration-300 ease-out ${
+                  isHovered
+                    ? 'opacity-100 translate-x-0 translate-y-0'
+                    : 'opacity-0 -translate-x-2 translate-y-2'
+                }`}
+              />
+            </div>
+            <p
+              className={`text-sm mt-1 leading-relaxed transition-all duration-300 ease-out ${
+                isHovered ? 'text-foreground/70' : 'text-muted-foreground'
+              }`}
+            >
+              {project.description}
+            </p>
+          </div>
+          <span
+            className={`text-xs font-mono tabular-nums transition-all duration-300 ease-out ${
+              isHovered ? 'text-foreground/60' : 'text-muted-foreground'
+            }`}
+          >
+            {project.year}
+          </span>
+        </div>
+      </div>
+    </Link>
   );
 }
