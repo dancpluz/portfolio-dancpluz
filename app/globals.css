@@ -47,8 +47,8 @@
     color: var(--color-foreground);
     font-family: var(--font-text);
     transition:
-      background 0.3s ease-in-out,
-      color 0.3s ease-in-out;
+      background 0.6s ease-in-out,
+      color 0.6s ease-in-out;
   }
 
   /* ViewTransition API Animations for Theme Toggle */
@@ -200,6 +200,88 @@
     100% {
       content: '...';
     }
+  }
+
+  .pixel-corners-big {
+    clip-path: polygon(
+      0px calc(100% - 40px),
+      8px calc(100% - 40px),
+      8px calc(100% - 24px),
+      16px calc(100% - 24px),
+      16px calc(100% - 16px),
+      24px calc(100% - 16px),
+      24px calc(100% - 8px),
+      40px calc(100% - 8px),
+      40px 100%,
+      calc(100% - 40px) 100%,
+      calc(100% - 40px) calc(100% - 8px),
+      calc(100% - 24px) calc(100% - 8px),
+      calc(100% - 24px) calc(100% - 16px),
+      calc(100% - 16px) calc(100% - 16px),
+      calc(100% - 16px) calc(100% - 24px),
+      calc(100% - 8px) calc(100% - 24px),
+      calc(100% - 8px) calc(100% - 40px),
+      100% calc(100% - 40px),
+      100% 40px,
+      calc(100% - 8px) 40px,
+      calc(100% - 8px) 24px,
+      calc(100% - 16px) 24px,
+      calc(100% - 16px) 16px,
+      calc(100% - 24px) 16px,
+      calc(100% - 24px) 8px,
+      calc(100% - 40px) 8px,
+      calc(100% - 40px) 0px,
+      40px 0px,
+      40px 8px,
+      24px 8px,
+      24px 16px,
+      16px 16px,
+      16px 24px,
+      8px 24px,
+      8px 40px,
+      0px 40px
+    );
+  }
+
+  .pixel-corners-small {
+    clip-path: polygon(
+      0px calc(100% - 20px),
+      4px calc(100% - 20px),
+      4px calc(100% - 12px),
+      8px calc(100% - 12px),
+      8px calc(100% - 8px),
+      12px calc(100% - 8px),
+      12px calc(100% - 4px),
+      20px calc(100% - 4px),
+      20px 100%,
+      calc(100% - 20px) 100%,
+      calc(100% - 20px) calc(100% - 4px),
+      calc(100% - 12px) calc(100% - 4px),
+      calc(100% - 12px) calc(100% - 8px),
+      calc(100% - 8px) calc(100% - 8px),
+      calc(100% - 8px) calc(100% - 12px),
+      calc(100% - 4px) calc(100% - 12px),
+      calc(100% - 4px) calc(100% - 20px),
+      100% calc(100% - 20px),
+      100% 20px,
+      calc(100% - 4px) 20px,
+      calc(100% - 4px) 12px,
+      calc(100% - 8px) 12px,
+      calc(100% - 8px) 8px,
+      calc(100% - 12px) 8px,
+      calc(100% - 12px) 4px,
+      calc(100% - 20px) 4px,
+      calc(100% - 20px) 0px,
+      20px 0px,
+      20px 4px,
+      12px 4px,
+      12px 8px,
+      8px 8px,
+      8px 12px,
+      4px 12px,
+      4px 20px,
+      0px 20px
+    );
   }
 
   .section-px {

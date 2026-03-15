@@ -17,7 +17,7 @@ export default function Hamburguer() {
     <Magnet padding={50} magnetStrength={2} className='z-50'>
       <button
         type='button'
-        className={`flex flex-col items-center justify-center rounded-full p-2 size-14 pointer-events-auto border-0 cursor-pointer will-change-transform transition-colors duration-1000 delay-300 ${isOpen ? 'bg-background' : ''}`}
+        className={`flex flex-col items-center justify-center pixel-corners-small p-2 size-14 pointer-events-auto border-0 cursor-pointer will-change-transform transition-colors duration-1000 delay-300 ${isOpen ? 'bg-background' : ''}`}
         onClick={toggleMenu}
         aria-label='Toggle menu'
         aria-pressed={isOpen}

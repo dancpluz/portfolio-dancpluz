@@ -74,7 +74,7 @@ export default function ProjectShowcase({
             'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), scale 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         }}
       >
-        <div className='relative aspect-3/2 w-[360px] bg-secondary overflow-hidden'>
+        <div className='relative aspect-3/2 w-[360px] pixel-corners-big bg-secondary overflow-hidden'>
           {sortedProjects.map((project, index) => (
             <Image
               key={`img-${project.id}`}

@@ -2,7 +2,6 @@
 
 import { useRouter } from 'next/navigation';
 import { triggerExitAnimation } from '@/components/motion/events';
-import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { m } from 'motion/react';
 import { clientLogger } from '@/lib/logger';

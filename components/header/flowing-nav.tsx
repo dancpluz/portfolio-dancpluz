@@ -2,6 +2,7 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import { animate } from 'motion/react';
+import Image from 'next/image';
 import { useMenu } from '@/hooks/use-menu';
 import TransitionLink from '../transition-link';
 
@@ -196,20 +197,25 @@ function MenuItem({
         <div className='h-full w-fit flex' ref={marqueeInnerRef}>
           {Array.from({ length: repetitions }).map((_, idx) => (
             <div
-              className='marquee-part flex items-center flex-shrink-0 text-background'
+              className='marquee-part flex items-center shrink-0 text-background'
               key={`${link}-${idx}`}
             >
               <span className='whitespace-nowrap uppercase font-heading text-5xl leading-none px-[1vw]'>
                 {text}
               </span>
-              <div
-                className='w-[200px] h-[7vh] my-[2em] mx-[2vw] py-[1em] rounded-[50px] bg-cover bg-center'
-                style={{ backgroundImage: `url(${image})` }}
-              />
+              <div className='relative w-[200px] h-[7vh] my-[2em] mx-[2vw] py-[1em] pixel-corners-small overflow-hidden shrink-0'>
+                <Image
+                  src={image || '/placeholder.svg'}
+                  alt={text}
+                  fill
+                  sizes='200px'
+                  className='object-cover'
+                />
+              </div>
             </div>
           ))}
         </div>
       </div>
     </div>
   );
-};
+}
