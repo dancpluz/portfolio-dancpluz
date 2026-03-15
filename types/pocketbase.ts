@@ -15,6 +15,8 @@ export enum Collections {
 	Icons = "icons",
 	Posts = "posts",
 	Projects = "projects",
+	Socials = "socials",
+	Technologies = "technologies",
 }
 
 // Alias types for improved usability
@@ -107,13 +109,9 @@ export type ExperienceRecord = {
 
 export type IconsRecord = {
 	alt: string
-	contact?: boolean
 	created: IsoAutoDateString
 	icon: FileNameString
 	id: string
-	link?: string
-	technology?: boolean
-	text?: string
 	updated: IsoAutoDateString
 }
 
@@ -165,16 +163,35 @@ export enum ProjectsCategoriesOptions {
 export type ProjectsRecord = {
 	categories?: ProjectsCategoriesOptions[]
 	client?: string
-	cover?: FileNameString
+	cover: FileNameString
 	created: IsoAutoDateString
 	date?: IsoDateString
-	icon_refs?: RecordIdString[]
 	id: string
 	link?: string
 	medias?: FileNameString[]
 	project_summary: string
 	project_type: ProjectsProjectTypeOptions
+	social_refs?: RecordIdString[]
 	title: string
+	updated: IsoAutoDateString
+}
+
+export type SocialsRecord = {
+	created: IsoAutoDateString
+	icon_ref: RecordIdString
+	id: string
+	main?: boolean
+	text?: string
+	updated: IsoAutoDateString
+	url?: string
+}
+
+export type TechnologiesRecord = {
+	created: IsoAutoDateString
+	icon_ref: RecordIdString
+	id: string
+	tooltip_en?: string
+	tooltip_pt?: string
 	updated: IsoAutoDateString
 }
 
@@ -188,6 +205,8 @@ export type ExperienceResponse<Texpand = unknown> = Required<ExperienceRecord> &
 export type IconsResponse<Texpand = unknown> = Required<IconsRecord> & BaseSystemFields<Texpand>
 export type PostsResponse<Tkeywords = unknown, Texpand = unknown> = Required<PostsRecord<Tkeywords>> & BaseSystemFields<Texpand>
 export type ProjectsResponse<Texpand = unknown> = Required<ProjectsRecord> & BaseSystemFields<Texpand>
+export type SocialsResponse<Texpand = unknown> = Required<SocialsRecord> & BaseSystemFields<Texpand>
+export type TechnologiesResponse<Texpand = unknown> = Required<TechnologiesRecord> & BaseSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
 
@@ -201,6 +220,8 @@ export type CollectionRecords = {
 	icons: IconsRecord
 	posts: PostsRecord
 	projects: ProjectsRecord
+	socials: SocialsRecord
+	technologies: TechnologiesRecord
 }
 
 export type CollectionResponses = {
@@ -213,6 +234,8 @@ export type CollectionResponses = {
 	icons: IconsResponse
 	posts: PostsResponse
 	projects: ProjectsResponse
+	socials: SocialsResponse
+	technologies: TechnologiesResponse
 }
 
 // Utility types for create/update operations
