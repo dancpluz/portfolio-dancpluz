@@ -49,7 +49,7 @@ export default function PostCard({
                 transition={{ duration: 0.6, delay: 0.5 + index * 0.4 }}
                 className='flex grow h-px bg-accent-1 self-center origin-left'
               />
-              <time className='w-max whitespace-nowrap text-sm text-foreground/60'>
+              <time className='w-max whitespace-nowrap text-sm font-heading text-foreground/60'>
                 {formatDateLocal(created, locale)}
               </time>
             </div>

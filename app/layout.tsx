@@ -7,38 +7,12 @@ import Header from '@/components/header/header';
 import ClientProviders from './client-providers';
 import ServerProviders from './server-providers';
 
-// const mukta = Share_Tech({
-//   weight: ['400', '500', '600', '700'],
-//   variable: '--font-text',
-//   subsets: ['latin'],
-//   display: 'swap',
-//   preload: false,
-// });
-
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-text',
   preload: true,
 });
-
-// const offBitDot = localFont({
-//   src: [
-//     {
-//       path: '../public/fonts/OffBit-Dot.ttf',
-//       weight: '400',
-//       style: 'normal',
-//     },
-//     {
-//       path: '../public/fonts/OffBit-DotBold.ttf',
-//       weight: '700',
-//       style: 'normal',
-//     },
-//   ],
-//   display: 'swap',
-//   variable: '--font-heading',
-//   preload: true,
-// });
 
 const offBit = localFont({
   src: [

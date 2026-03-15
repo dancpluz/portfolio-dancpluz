@@ -31,3 +31,27 @@ export async function getProjects(): Promise<ApiResponse<Project[]>> {
     return { data: null, error: errorMessage };
   }
 }
+
+export async function getProjectById(id: string): Promise<ApiResponse<Project>> {
+  try {
+    serverLogger.info(`[getProjectById] Fetching project ${id}`);
+    const record = await pb.collection('projects').getOne<ProjectsResponse<ProjectExpand>>(id, {
+      expand: 'social_refs, social_refs.icon_ref',
+      requestKey: null,
+    });
+
+    const transformed = transformProject(record);
+
+    serverLogger.info(`[getProjectById] Fetched project ${id}`);
+    return { data: transformed, error: null };
+  } catch (err: any) {
+    if (err?.isAbort) {
+      serverLogger.info('[getProjectById] Request auto-cancelled, ignoring');
+      return { data: null, error: null };
+    }
+    serverLogger.error(`[getProjectById] Error fetching project ${id}: ${err}`);
+    const errorMessage = parseApiError(err, 'project');
+    return { data: null, error: errorMessage };
+  }
+}
+

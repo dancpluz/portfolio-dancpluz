@@ -12,7 +12,7 @@ export default async function Header() {
 
   return (
     <MenuProvider socials={socials.data || []}>
-      <nav className='fixed inset-x-0 top-0 p-6 grid grid-cols-3 items-center justify-between gap-4 z-50'>
+      <nav className='fixed inset-x-0 top-0 py-6 grid grid-cols-3 items-center justify-between gap-4 z-50'>
         <div className='flex items-center justify-start'>
           <Logo />
         </div>

@@ -15,8 +15,8 @@ import Image from 'next/image';
 import { useTheme } from 'next-themes';
 import Tooltip from '../ui/tooltip';
 
-const CYCLE_INTERVAL = 2000;
-const COLUMN_DELAY = 200;
+const CYCLE_INTERVAL = 3000;
+const COLUMN_DELAY = 300;
 
 const distributeLogos = (
   allLogos: Technology[],
@@ -168,7 +168,7 @@ export default function LogoShowcase({
   }, [logos, columnCount]);
 
   return (
-    <div className='flex space-x-4 w-full'>
+    <div className='flex w-full justify-center'>
       {logoSets.map((column, index) => (
         <LogoColumn
           key={column.id}

@@ -6,6 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { m } from 'motion/react';
 import { clientLogger } from '@/lib/logger';
+import { ArrowRight } from '../ui/svg';
 
 interface BackButtonProps {
   fallbackHref?: string;
@@ -68,7 +69,7 @@ export default function BackButton({
   return (
     <m.button
       onClick={handleBack}
-      className={`group flex p-6 -m-6 items-center gap-2 hover:text-accent-1 duration-800 transition-colors ${className}`}
+      className={`group flex p-6 -m-6 items-center gap-2 ${className}`}
       whileHover='hover'
       whileTap={{ scale: 0.95 }}
       variants={{
@@ -82,10 +83,7 @@ export default function BackButton({
         },
       }}
     >
-      <ArrowLeft
-        size={32}
-        className='transition-transform group-hover:-translate-x-1'
-      />
+      <ArrowRight className='text-foreground rotate-180 group-hover:text-accent-1 duration-800 transition-colors size-5 image-rendering-[pixelated] group-hover:-translate-x-1' />
     </m.button>
   );
 }

@@ -9,7 +9,7 @@ export default async function Technologies() {
   }
 
   return (
-    <section className='w-full'>
+    <section id='tecnologias' className='w-full'>
       <LogoShowcase logos={technologies} columnCount={5} />
     </section>
   );

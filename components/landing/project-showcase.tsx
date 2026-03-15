@@ -1,60 +1,28 @@
 'use client';
 
-import { useState, useRef, useEffect, Fragment } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 import { lerp } from '@/lib/utils';
 import FlipText from './flip-text';
+import { Project } from '@/types/api';
 import { LineReveal } from '../motion/reveal';
 import { AnimatePresence, m } from 'motion/react';
 import { ArrowRight } from '../ui/svg';
-
-interface Project {
-  title: string;
-  description: string;
-  year: string;
-  link: string;
-  image: string;
-}
-
-const tempProjects: Project[] = [
-  {
-    title: 'Lumina',
-    description: 'AI-powered design system generator.',
-    year: '2024',
-    link: '#',
-    image:
-      'https://plus.unsplash.com/premium_photo-1723489242223-865b4a8cf7b8?q=80&w=2670&auto=format&fit=crop',
-  },
-  {
-    title: 'Flux',
-    description: 'Real-time collaboration for creative teams.',
-    year: '2024',
-    link: '#',
-    image:
-      'https://images.unsplash.com/photo-1530435460869-d13625c69bbf?q=80&w=2670&auto=format&fit=crop',
-  },
-  {
-    title: 'Prism',
-    description: 'Color palette extraction from any image.',
-    year: '2023',
-    link: '#',
-    image:
-      'https://i.pinimg.com/1200x/99/ca/5c/99ca5cf82cf12df8801f7b2bef38d325.jpg',
-  },
-  {
-    title: 'Vertex',
-    description: '3D modeling toolkit for the web.',
-    year: '2023',
-    link: '#',
-    image:
-      'https://i.pinimg.com/736x/7c/15/39/7c1539cf7ff0207cb49ce0d338de1e5f.jpg',
-  },
-];
+import TransitionLink from '../transition-link';
 
 export default function ProjectShowcase({
-  projects = tempProjects,
-}: Readonly<{ projects?: Project[] }>) {
+  projects = [],
+}: Readonly<{
+  projects?: Project[];
+}>) {
+  const sortedProjects = useMemo(() => {
+    return [...projects].sort((a, b) => {
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+      return dateB - dateA;
+    });
+  }, [projects]);
+
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [smoothPosition, setSmoothPosition] = useState({ x: 0, y: 0 });
@@ -92,11 +60,10 @@ export default function ProjectShowcase({
   }, []);
 
   return (
-    <div ref={containerRef} className='relative w-full mx-auto px-6 py-16'>
-      <FlipText className='text-8xl font-heading' text='Obras' />
-
+    <div ref={containerRef} className='relative w-full mx-auto py-16'>
+      <FlipText className='text-8xl font-heading grow-0' text='Obras' />
       <div
-        className='pointer-events-none fixed z-20 overflow-hidden rounded-xl shadow-2xl'
+        className='pointer-events-none fixed z-20 overflow-hidden shadow-2xl'
         style={{
           left: containerRef.current?.getBoundingClientRect().left ?? 0,
           top: containerRef.current?.getBoundingClientRect().top ?? 0,
@@ -107,11 +74,11 @@ export default function ProjectShowcase({
             'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), scale 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         }}
       >
-        <div className='relative w-[280px] h-[180px] bg-secondary rounded-xl overflow-hidden'>
-          {projects.map((project, index) => (
+        <div className='relative aspect-3/2 w-[360px] bg-secondary overflow-hidden'>
+          {sortedProjects.map((project, index) => (
             <Image
-              key={`img-${project.title}`}
-              src={project.image || '/placeholder.svg'}
+              key={`img-${project.id}`}
+              src={project.coverUrl || '/placeholder.svg'}
               alt={project.title}
               fill
               className='absolute inset-0 w-full h-full object-cover transition-all duration-500 ease-out'
@@ -127,30 +94,26 @@ export default function ProjectShowcase({
       </div>
 
       <div className='space-y-0'>
-        {projects.map((project, index) => (
-          <Fragment key={project.title}>
-            {index === 0 && (
-              <LineReveal className='bg-foreground/50' duration={2.5} />
-            )}
-            <ProjectRow
-              project={project}
-              isHovered={hoveredIndex === index}
-              onMouseEnter={() => {
-                setHoveredIndex(index);
-                setIsVisible(true);
-              }}
-              onMouseLeave={() => {
-                setHoveredIndex(null);
-                setIsVisible(false);
-              }}
-            />
-            <LineReveal
-              className='bg-foreground/50'
-              delay={(index + 1) * 0.3}
-              duration={2.5}
-            />
-          </Fragment>
+        {sortedProjects.map((project, index) => (
+          <ProjectRow
+            key={project.id}
+            project={project}
+            index={index}
+            isHovered={hoveredIndex === index}
+            onMouseEnter={() => {
+              setHoveredIndex(index);
+              setIsVisible(true);
+            }}
+            onMouseLeave={() => {
+              setHoveredIndex(null);
+              setIsVisible(false);
+            }}
+          />
         ))}
+        <LineReveal
+          className='bg-foreground/50 origin-left'
+          delay={sortedProjects.length * 0.1}
+        />
       </div>
     </div>
   );
@@ -158,35 +121,42 @@ export default function ProjectShowcase({
 
 function ProjectRow({
   project,
+  index,
   isHovered,
   onMouseEnter,
   onMouseLeave,
 }: Readonly<{
   project: Project;
+  index: number;
   isHovered: boolean;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
 }>) {
+  const formattedDate = useMemo(() => {
+    const d = new Date(project.date);
+    if (Number.isNaN(d.getTime())) return project.date;
+    const month = (d.getMonth() + 1).toString().padStart(2, '0');
+    return `${month} / ${d.getFullYear()}`;
+  }, [project.date]);
+
+  const accentColor = useMemo(() => {
+    const colors = ['text-accent-1', 'text-accent-2', 'text-accent-3'];
+    return colors[index % colors.length];
+  }, [index]);
+
   return (
-    <Link
-      href={project.link}
+    <TransitionLink
+      href={`/obra/${project.id}`}
       className='group block'
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
+      <LineReveal className='bg-foreground/50' delay={index * 0.1} />
       <div className='relative py-5 transition-all duration-300 ease-out'>
-        <div
-          className='absolute inset-0 -mx-4 px-4 bg-surface/30 transition-all duration-800 ease-out'
-          style={{
-            opacity: isHovered ? 1 : 0,
-            scale: isHovered ? 1 : 0.95,
-          }}
-        />
-
-        <div className='relative flex items-start justify-between gap-4'>
+        <div className='relative flex items-stretch justify-between gap-4'>
           <div className='flex-1 min-w-0'>
             <div className='inline-flex items-center gap-2'>
-              <AnimatePresence>
+              <AnimatePresence mode='wait'>
                 {isHovered && (
                   <m.div
                     initial={{ opacity: 0, width: 0, height: 0 }}
@@ -195,29 +165,46 @@ function ProjectRow({
                     transition={{ duration: 0.6, ease: [0.25, 0.25, 0, 1] }}
                     className='overflow-hidden shrink-0'
                   >
-                    <ArrowRight className='text-accent-1 -rotate-45' />
+                    <ArrowRight className={`${accentColor} -rotate-45`} />
                   </m.div>
                 )}
               </AnimatePresence>
               <FlipText
+                duration={0.2}
+                staggerDelay={0.02}
                 text={project.title}
                 className='font-heading font-bold text-md'
                 isHovered={isHovered}
               />
+              {project.projectType && (
+                <div className='px-2 py-0.5 text-lg font-heading font-bold tracking-wider text-foreground'>
+                  <span className={accentColor}>[</span> {project.projectType}{' '}
+                  <span className={accentColor}>]</span>
+                </div>
+              )}
             </div>
             <p
-              className={`text-sm mt-1 leading-relaxed transition-all duration-300 ease-out`}
+              className={`text-sm leading-relaxed transition-all duration-300 ease-out`}
             >
-              {project.description}
+              {project.subtitle}
             </p>
           </div>
-          <span
-            className={`text-xs font-heading font-bold tabular-nums transition-all duration-300 ease-out`}
-          >
-            {project.year}
-          </span>
+          <div className='flex flex-col justify-between items-end gap-1'>
+            <span
+              className={`text-xs font-heading font-bold tabular-nums transition-all duration-300 ease-out`}
+            >
+              {formattedDate}
+            </span>
+            {project.client && (
+              <span
+                className={`text-xs font-heading font-bold tabular-nums transition-all duration-300 ease-out`}
+              >
+                made for {project.client}
+              </span>
+            )}
+          </div>
         </div>
       </div>
-    </Link>
+    </TransitionLink>
   );
 }

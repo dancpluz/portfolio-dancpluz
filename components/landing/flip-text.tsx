@@ -63,7 +63,7 @@ export default function FlipText({
       animate={animateState}
       whileHover={whileHoverState}
       href={href}
-      className={`relative block whitespace-nowrap text-4xl font-black uppercase ${className}`}
+      className={`relative w-fit whitespace-nowrap text-4xl font-black uppercase ${className}`}
       style={{ lineHeight: 1.2, clipPath: 'inset(0)' }}
     >
       <m.div variants={parentContainerVariants}>

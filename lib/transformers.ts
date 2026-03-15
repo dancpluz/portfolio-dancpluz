@@ -70,7 +70,7 @@ export function transformProject(
     id: record.id,
     title: record.title,
     description: record.description || '',
-    date: record.date ? new Date(record.date).getFullYear().toString() : '',
+    date: record.date || '',
     url: record.url || '#',
     coverUrl: record.cover ? buildImageUrl(record, record.cover) : '',
     socials: record.expand?.social_refs?.map(transformSocial) || [],
