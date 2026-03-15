@@ -48,17 +48,20 @@ export default function FlipText({
 
   const Component = href ? TransitionLink : m.div;
 
+  let animateState: 'hovered' | 'initial' | undefined;
+  let whileHoverState: 'hovered' | undefined;
+
+  if (isHovered === undefined) {
+    whileHoverState = 'hovered';
+  } else {
+    animateState = isHovered ? 'hovered' : 'initial';
+  }
+
   return (
     <Component
       initial='initial'
-      animate={
-        isHovered !== undefined
-          ? isHovered
-            ? 'hovered'
-            : 'initial'
-          : undefined
-      }
-      whileHover={isHovered === undefined ? 'hovered' : undefined}
+      animate={animateState}
+      whileHover={whileHoverState}
       href={href}
       className={`relative block whitespace-nowrap text-4xl font-black uppercase ${className}`}
       style={{ lineHeight: 1.2, clipPath: 'inset(0)' }}

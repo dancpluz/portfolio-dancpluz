@@ -2,7 +2,6 @@
 
 import { useMenu } from '@/hooks/use-menu';
 import Link from 'next/link';
-import { buildImageUrl } from '@/lib/pocketbase';
 import { useTheme } from 'next-themes';
 import { m } from 'motion/react';
 import { Reveal } from '../motion/reveal';
@@ -10,7 +9,7 @@ import { useState, useEffect } from 'react';
 import MotionImage from '../motion/motion-image';
 
 export default function Socials() {
-  const { contacts, isOpen } = useMenu();
+  const { socials, isOpen } = useMenu();
   const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -23,15 +22,15 @@ export default function Socials() {
   return (
     <div className='px-6 py-4 border-t border-foreground text-foreground flex flex-col items-center justify-center h-full'>
       <ul className='w-full flex items-center justify-between gap-2 h-full'>
-        {contacts.map((contact) => (
+        {socials.map((social) => (
           <m.li
-            key={contact.id}
+            key={social.id}
             whileHover={{ scale: 1.2 }}
             transition={{ duration: 0.2, type: 'spring', stiffness: 100 }}
             whileTap={{ scale: 0.9 }}
           >
             <Link
-              href={contact.link}
+              href={social.url}
               target='_blank'
               className='flex items-center justify-center gap-2'
             >
@@ -47,14 +46,11 @@ export default function Socials() {
                 }}
                 width={24}
                 height={24}
-                src={buildImageUrl(contact, contact.icon)}
+                src={social.iconUrl}
                 style={{
-                  filter:
-                    mounted && theme === 'dark'
-                      ? 'drop-shadow(0 0 8px black)'
-                      : 'invert(1) drop-shadow(0 0 8px black)',
+                  filter: mounted && theme === 'dark' ? 'invert(1)' : '',
                 }}
-                alt={contact.alt}
+                alt={social.iconAlt}
               />
               <Reveal
                 delay={delay}
@@ -63,7 +59,7 @@ export default function Socials() {
                 exit={{ opacity: 0, y: 40 }}
               >
                 <p className='underline-magical font-heading text-lg'>
-                  {contact.text}
+                  {social.text}
                 </p>
               </Reveal>
             </Link>
@@ -77,7 +73,7 @@ export default function Socials() {
           direction='up'
           exit={{ opacity: 0, y: 40 }}
         >
-          <p className='text-sm align-bottom w-full text-center'>
+          <p className='text-sm font-heading align-bottom w-full text-center'>
             Todos os direitos reservados Daniel Luz &copy;{' '}
             {new Date().getFullYear()}
           </p>

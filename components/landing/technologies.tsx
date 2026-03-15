@@ -1,5 +1,5 @@
-import { getTechnologies } from '@/actions/icons';
-import LogoCarousel from './logo-carousel';
+import { getTechnologies } from '@/actions/technologies';
+import LogoShowcase from './logo-showcase';
 
 export default async function Technologies() {
   const { data: technologies, error } = await getTechnologies();
@@ -10,7 +10,7 @@ export default async function Technologies() {
 
   return (
     <section className='w-full'>
-      <LogoCarousel logos={technologies} columnCount={5} />
+      <LogoShowcase logos={technologies} columnCount={5} />
     </section>
   );
 }

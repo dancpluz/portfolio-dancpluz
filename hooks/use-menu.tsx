@@ -1,7 +1,7 @@
 'use client';
 
 import { MenuItemData } from '@/components/header/flowing-nav';
-import { IconsResponse } from '@/types/pocketbase';
+import { Social } from '@/types/api';
 import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 
 interface MenuContextType {
@@ -9,14 +9,17 @@ interface MenuContextType {
   toggleMenu: () => void;
   closeMenu: () => void;
   openMenu: () => void;
-  contacts: IconsResponse[];
+  socials: Social[];
   imageHovering: MenuItemData['image'];
   setImageHovering: (image: MenuItemData['image']) => void;
 }
 
 const MenuContext = createContext<MenuContextType | undefined>(undefined);
 
-export function MenuProvider({ children, contacts }: Readonly<{ children: ReactNode, contacts: IconsResponse[] }>) {
+export function MenuProvider({
+  children,
+  socials,
+}: Readonly<{ children: ReactNode; socials: Social[] }>) {
   const [isOpen, setIsOpen] = useState<MenuContextType['isOpen']>(false);
   const [imageHovering, setImageHovering] = useState<MenuContextType['imageHovering']>('https://picsum.photos/600/400?random=1'); // TODO: Change Later
 
@@ -30,10 +33,10 @@ export function MenuProvider({ children, contacts }: Readonly<{ children: ReactN
       toggleMenu,
       closeMenu,
       openMenu,
-      contacts,
+      socials,
       imageHovering,
       setImageHovering
-    }), [isOpen, toggleMenu, closeMenu, openMenu, contacts, imageHovering, setImageHovering])}>
+    }), [isOpen, toggleMenu, closeMenu, openMenu, socials, imageHovering, setImageHovering])}>
       {children}
     </MenuContext.Provider>
   );

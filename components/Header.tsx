@@ -3,15 +3,15 @@ import ThemeSwitcher from './theme-switcher';
 import Hamburguer from './header/hamburguer';
 import Logo from './header/logo';
 import { MenuProvider } from '@/hooks/use-menu';
-import { getContacts } from '@/actions/icons';
+import { getSocials } from '@/actions/socials';
 import MenuOverlay from './header/menu-overlay';
 
 export default async function Header() {
-  const contacts = await getContacts();
+  const socials = await getSocials(true);
   // TODO: Handle error
 
   return (
-    <MenuProvider contacts={contacts.data || []}>
+    <MenuProvider socials={socials.data || []}>
       <nav className='fixed inset-x-0 top-0 p-6 grid grid-cols-3 items-center justify-between gap-4 z-50'>
         <div className='flex items-center justify-start'>
           <Logo />

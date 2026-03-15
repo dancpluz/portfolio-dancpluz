@@ -1,6 +1,6 @@
 'use client';
 
-import { categoryEmoji } from '@/lib/const';
+import { categoryEmoji } from '@/lib/constant';
 import { formatDateLocal, getFirstParagraphText } from '@/lib/utils';
 import { PostsResponse } from '@/types/pocketbase';
 import { m } from 'motion/react';

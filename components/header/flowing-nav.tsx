@@ -199,7 +199,7 @@ function MenuItem({
               className='marquee-part flex items-center flex-shrink-0 text-background'
               key={`${link}-${idx}`}
             >
-              <span className='whitespace-nowrap uppercase font-heading text-5xl leading-[1] px-[1vw]'>
+              <span className='whitespace-nowrap uppercase font-heading text-5xl leading-none px-[1vw]'>
                 {text}
               </span>
               <div

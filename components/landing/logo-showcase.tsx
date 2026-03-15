@@ -1,27 +1,29 @@
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { AnimatePresence, m } from 'motion/react';
 import { shuffleArray } from '@/lib/utils';
 
-import { IconsResponse } from '@/types/pocketbase';
-import { buildImageUrl } from '@/lib/pocketbase';
+import { Technology } from '@/types/api';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
+import Tooltip from '../ui/tooltip';
 
-export interface ProcessedIcon extends IconsResponse {
-  imageUrl: string;
-}
+const CYCLE_INTERVAL = 2000;
+const COLUMN_DELAY = 200;
 
 const distributeLogos = (
-  allLogos: ProcessedIcon[],
+  allLogos: Technology[],
   columnCount: number,
-): ProcessedIcon[][] => {
+): Technology[][] => {
   const shuffled = shuffleArray(allLogos);
-  const columns: ProcessedIcon[][] = Array.from(
-    { length: columnCount },
-    () => [],
-  );
+  const columns: Technology[][] = Array.from({ length: columnCount }, () => []);
 
   shuffled.forEach((logo, index) => {
     columns[index % columnCount].push(logo);
@@ -38,61 +40,61 @@ const distributeLogos = (
 };
 
 interface LogoColumnProps {
-  logos: ProcessedIcon[];
+  logos: Technology[];
   index: number;
   currentTime: number;
 }
 
+const ENTER_DURATION = 0.45;
+const EXIT_DURATION = 0.35;
+
 const LogoColumn: React.FC<LogoColumnProps> = React.memo(
   ({ logos, index, currentTime }) => {
-    const cycleInterval = 2000;
-    const columnDelay = index * 200;
+    const columnDelay = index * COLUMN_DELAY;
     const adjustedTime =
-      (currentTime + columnDelay) % (cycleInterval * logos.length);
-    const currentIndex = Math.floor(adjustedTime / cycleInterval);
+      (currentTime + columnDelay) % (CYCLE_INTERVAL * logos.length);
+    const currentIndex = Math.floor(adjustedTime / CYCLE_INTERVAL);
     const currentLogo = useMemo(
       () => logos[currentIndex],
       [logos, currentIndex],
     );
     const { theme } = useTheme();
 
-    return (
+    if (!currentLogo) return null;
+
+    const innerContent = (
       <m.div
         className='relative h-14 w-24 overflow-hidden md:h-24 md:w-48'
-        initial={{ opacity: 0, y: 50 }}
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{
-          delay: index * 0.1,
-          duration: 0.5,
-          ease: 'easeOut',
+          delay: index * 0.08,
+          duration: 0.4,
+          ease: [0.25, 0.46, 0.45, 0.94], // easeOutQuad — smooth settle
         }}
       >
-        <AnimatePresence mode='wait'>
+        <AnimatePresence mode='popLayout'>
           <m.div
             key={`${currentLogo.id}-${currentIndex}`}
             className='absolute inset-0 flex items-center justify-center will-change-transform'
-            initial={{ y: '10%', opacity: 0, filter: 'blur(8px)' }}
+            initial={{ y: '18%', opacity: 0, filter: 'blur(6px)' }}
             animate={{
               y: '0%',
               opacity: 1,
               filter: 'blur(0px)',
               transition: {
-                type: 'spring',
-                stiffness: 300,
-                damping: 20,
-                mass: 1,
-                bounce: 0.2,
-                duration: 0.5,
+                delay: 0.5,
+                duration: ENTER_DURATION,
+                ease: [0.22, 1, 0.36, 1], // easeOutExpo — fast settle, no bounce
               },
             }}
             exit={{
-              y: '-20%',
+              y: '-18%',
               opacity: 0,
               filter: 'blur(6px)',
               transition: {
-                type: 'tween',
-                ease: 'easeIn',
-                duration: 0.3,
+                duration: EXIT_DURATION,
+                ease: [0.55, 0, 1, 0.45], // easeInExpo — snappy exit
               },
             }}
           >
@@ -113,42 +115,52 @@ const LogoColumn: React.FC<LogoColumnProps> = React.memo(
         </AnimatePresence>
       </m.div>
     );
+
+    return currentLogo.tooltipEn ? (
+      <Tooltip name={currentLogo.tooltipEn}>{innerContent}</Tooltip>
+    ) : (
+      innerContent
+    );
   },
 );
 
-interface LogoCarouselProps {
+LogoColumn.displayName = 'LogoColumn';
+
+interface LogoShowcaseProps {
   columnCount?: number;
-  logos: IconsResponse[];
+  logos: Technology[];
 }
 
-export default function LogoCarousel({
+export default function LogoShowcase({
   columnCount = 2,
   logos,
-}: Readonly<LogoCarouselProps>) {
+}: Readonly<LogoShowcaseProps>) {
   const [logoSets, setLogoSets] = useState<
-    { id: string; items: ProcessedIcon[] }[]
+    { id: string; items: Technology[] }[]
   >([]);
   const [currentTime, setCurrentTime] = useState(0);
+  const rafRef = useRef<number | null>(null);
+  const startTimeRef = useRef<number | null>(null);
 
-  const updateTime = useCallback(() => {
-    setCurrentTime((prevTime) => prevTime + 100);
+  const tick = useCallback((timestamp: number) => {
+    startTimeRef.current ??= timestamp;
+    const elapsed = timestamp - startTimeRef.current;
+    setCurrentTime(elapsed);
+    rafRef.current = requestAnimationFrame(tick);
   }, []);
 
   useEffect(() => {
-    const intervalId = setInterval(updateTime, 100);
-    return () => clearInterval(intervalId);
-  }, [updateTime]);
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+    };
+  }, [tick]);
 
   useEffect(() => {
-    // Process logos once to compute image URLs upfront
-    const processedLogos: ProcessedIcon[] = logos.map((logo) => ({
-      ...logo,
-      imageUrl: buildImageUrl(logo, logo.icon),
-    }));
+    if (!logos || logos.length === 0) return;
 
-    const distributedLogos = distributeLogos(processedLogos, columnCount);
+    const distributedLogos = distributeLogos(logos, columnCount);
     const columnsWithIds = distributedLogos.map((items, i) => ({
-      // Generate a unique ID for the column layout from its contents
       id: `column-${i}-${items.map((l) => l.id).join('-')}`,
       items,
     }));
@@ -168,5 +180,3 @@ export default function LogoCarousel({
     </div>
   );
 }
-
-export { LogoColumn };
