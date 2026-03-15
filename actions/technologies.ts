@@ -1,9 +1,10 @@
 'use server';
 
-import { ApiResponse, IconExpand, pb, buildImageUrl } from '@/lib/pocketbase';
+import { ApiResponse, IconExpand, pb } from '@/lib/pocketbase';
 import { serverLogger } from '@/lib/logger';
 import { TechnologiesResponse } from '@/types/pocketbase';
 import { Technology } from '@/types/api';
+import { transformTechnology } from '@/lib/transformers';
 
 export async function getTechnologies(): Promise<ApiResponse<Technology[]>> {
   try {
@@ -15,15 +16,7 @@ export async function getTechnologies(): Promise<ApiResponse<Technology[]>> {
         expand: 'icon_ref',
       });
 
-    const transformed: Technology[] = records.map((record) => ({
-      id: record.id,
-      imageUrl: record.expand?.icon_ref
-        ? buildImageUrl(record.expand.icon_ref, record.expand.icon_ref.icon)
-        : '',
-      tooltipEn: record.tooltip_en || '',
-      tooltipPt: record.tooltip_pt || '',
-      alt: record.expand?.icon_ref?.alt || '',
-    }));
+    const transformed: Technology[] = records.map(transformTechnology);
 
     serverLogger.info(
       `[getTechnologies] Fetched ${records.length} technologies`,

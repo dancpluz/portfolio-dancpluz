@@ -1,9 +1,10 @@
 'use server';
 
-import { ApiResponse, pb, IconExpand, buildImageUrl } from '@/lib/pocketbase';
+import { ApiResponse, pb, IconExpand } from '@/lib/pocketbase';
 import { serverLogger } from '@/lib/logger';
 import { SocialsResponse } from '@/types/pocketbase';
 import { Social } from '@/types/api';
+import { transformSocial } from '@/lib/transformers';
 import { DEFAULT_SOCIALS } from '@/lib/constant';
 
 export async function getSocials(
@@ -22,15 +23,7 @@ export async function getSocials(
         filter,
       });
 
-    const transformed: Social[] = records.map((record) => ({
-      id: record.id,
-      url: record.url || '#',
-      text: record.text || '',
-      iconUrl: record.expand?.icon_ref
-        ? buildImageUrl(record.expand.icon_ref, record.expand.icon_ref.icon)
-        : '',
-      iconAlt: record.expand?.icon_ref?.alt || record.text || '',
-    }));
+    const transformed: Social[] = records.map(transformSocial);
 
     serverLogger.info(`[getSocials] Fetched ${records.length} socials`);
     return { data: transformed, error: null };

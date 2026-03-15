@@ -13,3 +13,13 @@ export interface Technology {
   tooltipPt: string;
   alt: string;
 }
+
+export interface Project {
+  id: string;
+  title: string;
+  description: string;
+  year: string;
+  link: string;
+  image: string;
+  socials: Social[];
+}

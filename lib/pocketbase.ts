@@ -1,5 +1,6 @@
 import {
   IconsResponse,
+  SocialsResponse,
   TypedPocketBase,
 } from '@/types/pocketbase';
 import PocketBase from 'pocketbase';
@@ -18,6 +19,10 @@ export type IconsExpand = {
 
 export type IconExpand = {
   icon_ref: IconsResponse;
+};
+
+export type ProjectExpand = {
+  social_refs: SocialsResponse<IconExpand>[];
 };
 
 export function buildImageUrl<T extends Record<string, any>>(
