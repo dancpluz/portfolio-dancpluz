@@ -1,7 +1,7 @@
 'use client';
 
-import { m, type HTMLMotionProps } from 'motion/react';
-import type { ReactNode } from 'react';
+import { m, useInView, type HTMLMotionProps } from 'motion/react';
+import { useRef, type ReactNode } from 'react';
 
 interface RevealProps extends HTMLMotionProps<'div'> {
   children: ReactNode;
@@ -65,27 +65,34 @@ export function LineReveal({
   duration = 0.5,
   className,
   ...props
-}: HTMLMotionProps<'span'> & {
+}: HTMLMotionProps<'div'> & {
   direction?: 'horizontal' | 'vertical';
   delay?: number;
   duration?: number;
 }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true });
   const isHorizontal = direction === 'horizontal';
+  const animationState = isHorizontal
+    ? { scaleX: isInView ? 1 : 0 }
+    : { scaleY: isInView ? 1 : 0 };
 
   return (
-    <m.span
-      variants={{
-        hidden: isHorizontal ? { scaleX: 0 } : { scaleY: 0 },
-        visible: isHorizontal ? { scaleX: 1 } : { scaleY: 1 },
-      }}
-      initial='hidden'
-      whileInView='visible'
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ ease: [0.25, 0.25, 0, 1], duration, delay }}
-      className={`${
-        isHorizontal ? 'h-px w-full origin-right' : 'w-px h-full origin-bottom'
-      } flex bg-accent-1 ${className || ''}`}
-      {...props}
-    />
+    <div
+      ref={ref}
+      className={
+        isHorizontal
+          ? 'h-px w-full overflow-hidden'
+          : 'w-px h-full overflow-hidden'
+      }
+    >
+      <m.div
+        className={`bg-accent-1 ${isHorizontal ? 'h-full w-full origin-left' : 'h-full w-full origin-top'} ${className || ''}`}
+        initial={isHorizontal ? { scaleX: 0 } : { scaleY: 0 }}
+        animate={animationState}
+        transition={{ ease: [0.25, 0.25, 0, 1], duration, delay }}
+        {...props}
+      />
+    </div>
   );
 }

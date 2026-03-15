@@ -1,12 +1,13 @@
 'use client';
 
-import type React from 'react';
-import { useState, useRef, useEffect } from 'react';
-import { ArrowUpRight } from 'lucide-react';
+import { useState, useRef, useEffect, Fragment } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { lerp } from '@/lib/utils';
 import FlipText from './flip-text';
+import { LineReveal } from '../motion/reveal';
+import { AnimatePresence, m } from 'motion/react';
+import { ArrowRight } from '../ui/svg';
 
 interface Project {
   title: string;
@@ -23,7 +24,7 @@ const tempProjects: Project[] = [
     year: '2024',
     link: '#',
     image:
-      'https://plus.unsplash.com/premium_photo-1723489242223-865b4a8cf7b8?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D$0',
+      'https://plus.unsplash.com/premium_photo-1723489242223-865b4a8cf7b8?q=80&w=2670&auto=format&fit=crop',
   },
   {
     title: 'Flux',
@@ -31,7 +32,7 @@ const tempProjects: Project[] = [
     year: '2024',
     link: '#',
     image:
-      'https://images.unsplash.com/photo-1530435460869-d13625c69bbf?q=80&w=2670&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D$0',
+      'https://images.unsplash.com/photo-1530435460869-d13625c69bbf?q=80&w=2670&auto=format&fit=crop',
   },
   {
     title: 'Prism',
@@ -53,9 +54,7 @@ const tempProjects: Project[] = [
 
 export default function ProjectShowcase({
   projects = tempProjects,
-}: Readonly<{
-  projects?: Project[];
-}>) {
+}: Readonly<{ projects?: Project[] }>) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [smoothPosition, setSmoothPosition] = useState({ x: 0, y: 0 });
@@ -72,7 +71,6 @@ export default function ProjectShowcase({
       }));
       animationRef.current = requestAnimationFrame(animate);
     };
-
     animationRef.current = requestAnimationFrame(animate);
     return () => {
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
@@ -83,13 +81,9 @@ export default function ProjectShowcase({
     const handleMouseMove = (e: MouseEvent) => {
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
-        setMousePosition({
-          x: e.clientX - rect.left,
-          y: e.clientY - rect.top,
-        });
+        setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
       }
     };
-
     const container = containerRef.current;
     if (container) {
       container.addEventListener('mousemove', handleMouseMove);
@@ -134,21 +128,29 @@ export default function ProjectShowcase({
 
       <div className='space-y-0'>
         {projects.map((project, index) => (
-          <ProjectRow
-            key={project.title}
-            project={project}
-            isHovered={hoveredIndex === index}
-            onMouseEnter={() => {
-              setHoveredIndex(index);
-              setIsVisible(true);
-            }}
-            onMouseLeave={() => {
-              setHoveredIndex(null);
-              setIsVisible(false);
-            }}
-          />
+          <Fragment key={project.title}>
+            {index === 0 && (
+              <LineReveal className='bg-foreground/50' duration={2.5} />
+            )}
+            <ProjectRow
+              project={project}
+              isHovered={hoveredIndex === index}
+              onMouseEnter={() => {
+                setHoveredIndex(index);
+                setIsVisible(true);
+              }}
+              onMouseLeave={() => {
+                setHoveredIndex(null);
+                setIsVisible(false);
+              }}
+            />
+            <LineReveal
+              className='bg-foreground/50'
+              delay={(index + 1) * 0.3}
+              duration={2.5}
+            />
+          </Fragment>
         ))}
-        <div className='border-t border-border' />
       </div>
     </div>
   );
@@ -159,12 +161,12 @@ function ProjectRow({
   isHovered,
   onMouseEnter,
   onMouseLeave,
-}: {
+}: Readonly<{
   project: Project;
   isHovered: boolean;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
-}) {
+}>) {
   return (
     <Link
       href={project.link}
@@ -172,41 +174,45 @@ function ProjectRow({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <div className='relative py-5 border-t border-border transition-all duration-300 ease-out'>
+      <div className='relative py-5 transition-all duration-300 ease-out'>
         <div
-          className={`absolute inset-0 -mx-4 px-4 bg-secondary/50 rounded-lg transition-all duration-300 ease-out ${
-            isHovered ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-          }`}
+          className='absolute inset-0 -mx-4 px-4 bg-surface/30 transition-all duration-800 ease-out'
+          style={{
+            opacity: isHovered ? 1 : 0,
+            scale: isHovered ? 1 : 0.95,
+          }}
         />
 
         <div className='relative flex items-start justify-between gap-4'>
           <div className='flex-1 min-w-0'>
             <div className='inline-flex items-center gap-2'>
+              <AnimatePresence>
+                {isHovered && (
+                  <m.div
+                    initial={{ opacity: 0, width: 0, height: 0 }}
+                    animate={{ opacity: 1, width: 24, height: 24 }}
+                    exit={{ opacity: 0, width: 0, height: 0 }}
+                    transition={{ duration: 0.6, ease: [0.25, 0.25, 0, 1] }}
+                    className='overflow-hidden shrink-0'
+                  >
+                    <ArrowRight className='text-accent-1 -rotate-45' />
+                  </m.div>
+                )}
+              </AnimatePresence>
               <FlipText
                 text={project.title}
                 className='font-heading font-bold text-md'
                 isHovered={isHovered}
               />
-              <ArrowUpRight
-                className={`w-4 h-4 text-muted-foreground transition-all duration-300 ease-out ${
-                  isHovered
-                    ? 'opacity-100 translate-x-0 translate-y-0'
-                    : 'opacity-0 -translate-x-2 translate-y-2'
-                }`}
-              />
             </div>
             <p
-              className={`text-sm mt-1 leading-relaxed transition-all duration-300 ease-out ${
-                isHovered ? 'text-foreground/70' : 'text-muted-foreground'
-              }`}
+              className={`text-sm mt-1 leading-relaxed transition-all duration-300 ease-out`}
             >
               {project.description}
             </p>
           </div>
           <span
-            className={`text-xs font-mono tabular-nums transition-all duration-300 ease-out ${
-              isHovered ? 'text-foreground/60' : 'text-muted-foreground'
-            }`}
+            className={`text-xs font-heading font-bold tabular-nums transition-all duration-300 ease-out`}
           >
             {project.year}
           </span>
