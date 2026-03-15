@@ -9,7 +9,7 @@ export default async function HomePage() {
   return (
     <PageTransition
       tag='main'
-      className='flex max-h-screen max-w-screen flex-col gap-4 mt-50 z-10'
+      className='flex max-h-screen max-w-screen flex-col gap-4 mt-50 z-10 section-px'
     >
       <Technologies />
       <Projects projects={projects.data || []} />

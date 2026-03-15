@@ -1,9 +1,9 @@
 'use client';
 
-import { Moon, Sun } from 'lucide-react';
 import { m } from 'motion/react';
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
+import { Moon, Sun } from '@/components/ui/svg';
 
 export default function ThemeSwitcher() {
   const [mounted, setMounted] = useState(false);
