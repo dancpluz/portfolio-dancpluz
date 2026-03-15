@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google';
 import localFont from 'next/font/local';
 import './globals.css';
 import { ReactLenis } from 'lenis/react';
-import Header from '@/components/header';
+import Header from '@/components/header/header';
 import ClientProviders from './client-providers';
 import ServerProviders from './server-providers';
 

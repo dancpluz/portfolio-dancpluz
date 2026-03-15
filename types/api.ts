@@ -1,3 +1,10 @@
+import {
+  HTMLString,
+  IsoDateString,
+  ProjectsCategoriesOptions,
+  ProjectsProjectTypeOptions,
+} from './pocketbase';
+
 export interface Social {
   id: string;
   url: string;
@@ -17,9 +24,14 @@ export interface Technology {
 export interface Project {
   id: string;
   title: string;
-  description: string;
-  year: string;
-  link: string;
-  image: string;
+  subtitle: string;
+  description: HTMLString;
+  projectType: ProjectsProjectTypeOptions;
+  coverUrl: string;
+  url: string;
   socials: Social[];
+  date: IsoDateString;
+  categories: ProjectsCategoriesOptions[];
+  medias: string[];
+  client: string;
 }

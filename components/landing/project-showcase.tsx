@@ -93,7 +93,7 @@ export default function ProjectShowcase({
 
   return (
     <div ref={containerRef} className='relative w-full mx-auto px-6 py-16'>
-      <FlipText className='text-8xl font-heading' text='Projects' />
+      <FlipText className='text-8xl font-heading' text='Obras' />
 
       <div
         className='pointer-events-none fixed z-20 overflow-hidden rounded-xl shadow-2xl'

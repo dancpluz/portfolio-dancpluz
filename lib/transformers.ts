@@ -1,4 +1,8 @@
-import { buildImageUrl, ProjectExpand, type IconExpand } from '@/lib/pocketbase';
+import {
+  buildImageUrl,
+  ProjectExpand,
+  type IconExpand,
+} from '@/lib/pocketbase';
 import { Project, Social, Technology } from '@/types/api';
 import {
   IconsResponse,
@@ -65,10 +69,18 @@ export function transformProject(
   return {
     id: record.id,
     title: record.title,
-    description: record.project_summary || '',
-    year: record.date ? new Date(record.date).getFullYear().toString() : '',
-    link: record.link || '#',
-    image: record.cover ? buildImageUrl(record, record.cover) : '',
+    description: record.description || '',
+    date: record.date ? new Date(record.date).getFullYear().toString() : '',
+    url: record.url || '#',
+    coverUrl: record.cover ? buildImageUrl(record, record.cover) : '',
     socials: record.expand?.social_refs?.map(transformSocial) || [],
+    medias:
+      record.medias && record.medias.length > 0
+        ? record.medias.map((media) => buildImageUrl(record, media))
+        : [],
+    client: record.client || '',
+    subtitle: record.subtitle || '',
+    categories: record.categories || [],
+    projectType: record.project_type || '',
   };
 }

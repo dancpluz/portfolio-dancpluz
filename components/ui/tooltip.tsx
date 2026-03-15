@@ -69,7 +69,7 @@ export default function Tooltip({
 
   return (
     <Component
-      className={`group relative inline-block w-fit cursor-default outline-hidden ${className}`}
+      className={`group relative inline-block w-fit outline-hidden ${className}`}
       aria-describedby={isHovered ? id : undefined}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}
@@ -78,7 +78,7 @@ export default function Tooltip({
       onBlurCapture={handleMouseLeave}
       onKeyDown={handleKeyDown}
       type={as === 'button' ? 'button' : undefined}
-      tabIndex={as !== 'div' ? 0 : undefined}
+      tabIndex={as === 'div' ? undefined : 0}
       aria-label={as === 'button' ? name : undefined}
     >
       <AnimatePresence>

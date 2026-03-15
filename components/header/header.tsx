@@ -1,10 +1,10 @@
-import LanguageSwitcher from './lang-switcher';
-import ThemeSwitcher from './theme-switcher';
-import Hamburguer from './header/hamburguer';
-import Logo from './header/logo';
+import LanguageSwitcher from '../lang-switcher';
+import ThemeSwitcher from '../theme-switcher';
+import Hamburguer from './hamburguer';
+import Logo from './logo';
 import { MenuProvider } from '@/hooks/use-menu';
 import { getSocials } from '@/actions/socials';
-import MenuOverlay from './header/menu-overlay';
+import MenuOverlay from './menu-overlay';
 
 export default async function Header() {
   const socials = await getSocials(true);

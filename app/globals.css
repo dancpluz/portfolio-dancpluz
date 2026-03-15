@@ -122,11 +122,14 @@
     border-color: var(--color-gray-200, currentcolor);
   }
 
-  ::selection,
+  ::selection {
+    background: var(--color-neon-pink);
+    color: var(--color-background);
+  }
+
   ::-moz-selection {
-    background: rgba(var(--color-foreground), 0.9);
-    color: rgb(var(--color-background));
-    text-shadow: none;
+    background: var(--color-neon-pink);
+    color: var(--color-background);
   }
 
   .text-stroke {

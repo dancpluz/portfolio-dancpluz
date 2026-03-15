@@ -165,15 +165,16 @@ export type ProjectsRecord = {
 	client?: string
 	cover: FileNameString
 	created: IsoAutoDateString
-	date?: IsoDateString
+	date: IsoDateString
+	description?: HTMLString
 	id: string
-	link?: string
 	medias?: FileNameString[]
-	project_summary: string
 	project_type: ProjectsProjectTypeOptions
 	social_refs?: RecordIdString[]
+	subtitle: string
 	title: string
 	updated: IsoAutoDateString
+	url?: string
 }
 
 export type SocialsRecord = {

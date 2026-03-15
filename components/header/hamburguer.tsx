@@ -3,9 +3,15 @@
 import { m } from 'motion/react';
 import Magnet from '@/components/extra/magnet';
 import { useMenu } from '@/hooks/use-menu';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 export default function Hamburguer() {
-  const { isOpen, toggleMenu } = useMenu();
+  const { isOpen, toggleMenu, closeMenu } = useMenu();
+
+  useHotkeys('esc', () => closeMenu(), { enabled: isOpen }, [
+    isOpen,
+    closeMenu,
+  ]);
 
   return (
     <Magnet padding={50} magnetStrength={2} className='z-50'>
