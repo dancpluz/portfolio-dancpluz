@@ -4,10 +4,11 @@ import { ptBR, enUS } from 'date-fns/locale';
 import * as cheerio from 'cheerio';
 import { Heading } from '@/types/utils';
 import slugify from 'slugify';
+import { ROUTES } from './constant';
 
 export function formatDate(
   startDateString: string,
-  endDateString: string | null = null
+  endDateString: string | null = null,
 ) {
   const startDate = new Date(startDateString);
 
@@ -45,7 +46,7 @@ export function formatDate(
 
 export function formatTimeDifference(
   startDateString: string,
-  endDateString: string | null = null
+  endDateString: string | null = null,
 ) {
   const startDate = new Date(startDateString);
   const endDate = endDateString ? new Date(endDateString) : new Date();
@@ -54,7 +55,7 @@ export function formatTimeDifference(
 
   const years = Math.floor(diffMs / (1000 * 60 * 60 * 24 * 365.25));
   const months = Math.floor(
-    (diffMs % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24 * 30.44)
+    (diffMs % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24 * 30.44),
   );
 
   if (years > 0) {
@@ -112,14 +113,17 @@ export function parseApiError(err: unknown, objectName: string): string {
   return errorMessage;
 }
 
-export function formatDateLocal(dateInput: string | Date, localeStr: string = 'pt'): string {
+export function formatDateLocal(
+  dateInput: string | Date,
+  localeStr: string = 'pt',
+): string {
   const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
   if (Number.isNaN(date.getTime())) return '';
-  
+
   if (localeStr === 'pt') {
     return format(date, "d 'de' MMMM, yyyy", { locale: ptBR });
   } else {
-    return format(date, "MMMM d, yyyy", { locale: enUS });
+    return format(date, 'MMMM d, yyyy', { locale: enUS });
   }
 }
 
@@ -184,4 +188,10 @@ export const shuffleArray = <T>(array: T[]): T[] => {
 
 export const lerp = (start: number, end: number, factor: number) => {
   return start + (end - start) * factor;
+};
+
+export const getSectionId = (
+  routeItem: (typeof ROUTES)[keyof typeof ROUTES],
+) => {
+  return routeItem.path.replace('#', '').replace('/', '');
 };

@@ -6,16 +6,20 @@
 - [x] Smooth scroll
 - [x] Logo
 - [x] Header
+  - [ ] Images from routes
 - [ ] Landing Page
-  - [ ] Loading state
+  - [x] Loading state
   - [ ] Hero
-  - [ ] Projects
-  - [ ] Tech
-  - [ ] About
+  - [x] Projects
+  - [x] Tech
+  - [x] About
   - [ ] Testimonial
   - [ ] Contact
+  - [ ] Responsive
 - [ ] Project Page
   - [ ] Loading state
+  - [ ] Structure
+  - [ ] Responsive
 - [ ] Blog
   - [x] Loading state
   - [x] Fetch blog posts

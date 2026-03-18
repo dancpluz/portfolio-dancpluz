@@ -1,3 +1,5 @@
+import { ROUTES } from "@/lib/constant";
+
 export type Heading = {
   id: string;
   text: string;
@@ -12,3 +14,5 @@ export type Themes = {
   dark: ThemeConfig;
   light: ThemeConfig;
 };
+
+export type RouteItem = typeof ROUTES[keyof typeof ROUTES];

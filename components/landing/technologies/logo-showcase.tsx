@@ -13,7 +13,7 @@ import { shuffleArray } from '@/lib/utils';
 import { Technology } from '@/types/api';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
-import Tooltip from '../ui/tooltip';
+import Tooltip from '../../ui/tooltip';
 
 const CYCLE_INTERVAL = 3000;
 const COLUMN_DELAY = 300;

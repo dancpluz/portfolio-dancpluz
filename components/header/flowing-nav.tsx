@@ -1,40 +1,37 @@
 'use client';
 
 import React, { useRef, useEffect, useState } from 'react';
-import { animate } from 'motion/react';
+import { animate, motion } from 'motion/react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useMenu } from '@/hooks/use-menu';
+import { useSectionScroll } from '@/hooks/use-section-scroll';
 import TransitionLink from '../transition-link';
+import { ROUTES } from '@/lib/constant';
+import { RouteItem } from '@/types/utils';
 
-export interface MenuItemData {
-  link: string;
-  text: string;
-  image: string;
-}
-
-interface FlowingMenuProps {
-  items?: MenuItemData[];
-  speed?: number;
-  onItemClick?: () => void;
-}
-
-interface MenuItemProps extends MenuItemData {
-  speed: number;
-  onClick?: () => void;
-}
+const MotionLink = motion.create(Link);
 
 export default function FlowingNav({
-  items = [],
   speed = 15,
   onItemClick,
-}: Readonly<FlowingMenuProps>) {
+}: Readonly<{ speed?: number; onItemClick?: () => void }>) {
+  useEffect(() => {
+    Object.values(ROUTES).forEach((item) => {
+      if (typeof globalThis !== 'undefined') {
+        const img = new globalThis.Image();
+        img.src = item.image;
+      }
+    });
+  }, []);
+
   return (
     <div className='w-full h-full overflow-hidden'>
       <nav className='flex flex-col h-full m-0 p-0'>
-        {items.map((item) => (
+        {Object.values(ROUTES).map((item) => (
           <MenuItem
-            key={item.link}
-            {...item}
+            key={item.path}
+            route={item}
             speed={speed}
             onClick={onItemClick}
           />
@@ -45,12 +42,10 @@ export default function FlowingNav({
 }
 
 function MenuItem({
-  link,
-  text,
-  image,
+  route,
   speed,
   onClick,
-}: Readonly<MenuItemProps>) {
+}: Readonly<{ route: RouteItem; speed: number; onClick?: () => void }>) {
   const itemRef = useRef<HTMLDivElement>(null);
   const marqueeRef = useRef<HTMLDivElement>(null);
   const marqueeInnerRef = useRef<HTMLDivElement>(null);
@@ -58,10 +53,14 @@ function MenuItem({
   const [repetitions, setRepetitions] = useState(4);
   const [contentWidth, setContentWidth] = useState(0);
 
+  const { path, text, image } = route;
   const EXPO_EASE: [number, number, number, number] = [0.19, 1, 0.22, 1];
   const HOVER_DURATION = 0.6;
 
   const { setImageHovering } = useMenu();
+  const handleScroll = useSectionScroll();
+
+  const handleLinkClick = handleScroll(path, onClick);
 
   const findClosestEdge = (
     mouseX: number,
@@ -168,24 +167,27 @@ function MenuItem({
     );
   };
 
+  const isSection = path.includes('#');
+  const LinkComponent = isSection ? MotionLink : TransitionLink;
+
   return (
     <div
       className={`flex-1 relative overflow-hidden text-center border-t border-foreground`}
       ref={itemRef}
     >
-      <TransitionLink
+      <LinkComponent
         className='flex items-center justify-center h-full relative cursor-pointer uppercase no-underline font-heading font-bold text-5xl text-foreground'
-        href={link}
+        href={path}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        onClick={onClick}
+        onClick={handleLinkClick}
         initial={{ x: -800 }}
         animate={{ x: 0 }}
         exit={{ x: -800 }}
         transition={{ delay: 0.2, duration: 1, ease: 'circInOut' }}
       >
         {text}
-      </TransitionLink>
+      </LinkComponent>
 
       <div
         className='absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none bg-foreground'
@@ -198,7 +200,7 @@ function MenuItem({
           {Array.from({ length: repetitions }).map((_, idx) => (
             <div
               className='marquee-part flex items-center shrink-0 text-background'
-              key={`${link}-${idx}`}
+              key={`${path}-${idx}`}
             >
               <span className='whitespace-nowrap uppercase font-heading text-5xl leading-none px-[1vw]'>
                 {text}

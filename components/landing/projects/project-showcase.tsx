@@ -3,12 +3,13 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import { lerp } from '@/lib/utils';
-import FlipText from './flip-text';
+import FlipText from '../flip-text';
 import { Project } from '@/types/api';
-import { LineReveal } from '../motion/reveal';
+import { LineReveal } from '../../motion/reveal';
 import { AnimatePresence, m } from 'motion/react';
-import { ArrowRight } from '../ui/svg';
-import TransitionLink from '../transition-link';
+import { ArrowRight } from '../../ui/svg';
+import TransitionLink from '../../transition-link';
+import { ROUTES } from '@/lib/constant';
 
 export default function ProjectShowcase({
   projects = [],
@@ -60,8 +61,7 @@ export default function ProjectShowcase({
   }, []);
 
   return (
-    <div ref={containerRef} className='relative w-full mx-auto py-16'>
-      <FlipText className='text-8xl font-heading grow-0' text='Obras' />
+    <div ref={containerRef} className='relative w-full mx-auto'>
       <div
         className='pointer-events-none fixed z-20 overflow-hidden shadow-2xl'
         style={{
@@ -146,7 +146,7 @@ function ProjectRow({
 
   return (
     <TransitionLink
-      href={`/obra/${project.id}`}
+      href={`obra/${project.id}`}
       className='group block'
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}

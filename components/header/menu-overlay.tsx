@@ -1,51 +1,13 @@
 'use client';
 
-import { useEffect } from 'react';
 import { AnimatePresence, m } from 'motion/react';
-import FlowingNav, { type MenuItemData } from './flowing-nav';
+import FlowingNav from './flowing-nav';
 import { useMenu } from '@/hooks/use-menu';
 import Socials from './socials';
 import Image from 'next/image';
 
-const demoItems: MenuItemData[] = [
-  {
-    link: '/',
-    text: 'Início',
-    image: 'https://picsum.photos/1920/1080?random=1',
-  },
-  {
-    link: '/blog',
-    text: 'Blog',
-    image: 'https://picsum.photos/1920/1080?random=4',
-  },
-  {
-    link: '#about',
-    text: 'Sobre',
-    image: 'https://picsum.photos/1920/1080?random=2',
-  },
-  {
-    link: '#projects',
-    text: 'Projetos',
-    image: 'https://picsum.photos/1920/1080?random=3',
-  },
-  {
-    link: '#contact',
-    text: 'Contato',
-    image: 'https://picsum.photos/1920/1080?random=4',
-  },
-];
-
-export default function Nav() {
+export default function MenuOverlay() {
   const { isOpen, closeMenu, imageHovering } = useMenu();
-
-  useEffect(() => {
-    demoItems.forEach((item) => {
-      if (typeof globalThis !== 'undefined') {
-        const img = new globalThis.Image();
-        img.src = item.image;
-      }
-    });
-  }, []);
 
   return (
     <AnimatePresence>
@@ -59,7 +21,7 @@ export default function Nav() {
         >
           <div className='w-full lg:w-1/2 relative border-r border-foreground pt-26'>
             <div className='w-full h-4/5'>
-              <FlowingNav items={demoItems} onItemClick={closeMenu} />
+              <FlowingNav onItemClick={closeMenu} />
             </div>
             <div className='w-full h-1/5'>
               <Socials />
