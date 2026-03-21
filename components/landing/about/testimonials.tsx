@@ -13,7 +13,7 @@ import { useClickOutside } from '@/hooks/use-click-outside';
 // Spacing between each stacked card (in px)
 const X_STEP = 48;
 const Y_STEP = 12;
-const SM_X_STEP = 96;
+const SM_X_STEP = 128;
 const SM_Y_STEP = 24;
 
 // Extra push distance when a card behind is hovered
@@ -21,6 +21,10 @@ const PUSH_X = 24;
 const PUSH_Y = 16;
 const SM_PUSH_X = 48;
 const SM_PUSH_Y = 32;
+
+// Lift when a card is hovered
+const HOVER_LIFT = 30;
+const SM_HOVER_LIFT = 40;
 
 const SKEW = -8;
 
@@ -201,6 +205,10 @@ export default function Testimonials({
         const distance = index - focusedIndex;
         x += distance * pushXVal;
         y += distance * pushYVal;
+      }
+
+      if (focusedIndex === index) {
+        y -= isSm ? SM_HOVER_LIFT : HOVER_LIFT;
       }
 
       return { x, y };
