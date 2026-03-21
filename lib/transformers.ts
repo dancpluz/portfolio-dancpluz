@@ -3,12 +3,13 @@ import {
   ProjectExpand,
   type IconExpand,
 } from '@/lib/pocketbase';
-import { Project, Social, Technology } from '@/types/api';
+import { Project, Social, Technology, Testimonial } from '@/types/api';
 import {
   IconsResponse,
   ProjectsResponse,
   SocialsResponse,
   TechnologiesResponse,
+  TestimonialsResponse,
 } from '@/types/pocketbase';
 
 /**
@@ -82,5 +83,22 @@ export function transformProject(
     subtitle: record.subtitle || '',
     categories: record.categories || [],
     projectType: record.project_type || '',
+  };
+}
+
+/**
+ * Transforms a PocketBase Testimonial record into the Testimonial interface.
+ */
+export function transformTestimonial(
+  record: TestimonialsResponse,
+): Testimonial {
+  return {
+    id: record.id,
+    title: record.title,
+    subtitle: record.subtitle,
+    content: record.content,
+    profileUrl: record.profile ? buildImageUrl(record, record.profile) : '',
+    url: record.url || '#',
+    date: record.date || '',
   };
 }

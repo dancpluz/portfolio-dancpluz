@@ -13,7 +13,7 @@
   - [x] Projects
   - [x] Tech
   - [ ] About
-  - [ ] Testimonial
+  - [x] Testimonial
   - [ ] Contact
   - [ ] Responsive
 - [ ] Project Page

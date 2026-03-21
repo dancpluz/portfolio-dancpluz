@@ -33,7 +33,7 @@ export default function PostCard({
       viewport={{ once: true }}
       layout
     >
-      <TransitionLink href={`${ROUTES.blog.path}/${id}`} aria-label={`Leia "${title}"`}>
+      {/* <TransitionLink href={`${ROUTES.blog.path}/${id}`} aria-label={`Leia "${title}"`}>
         <article className='py-5 flex gap-4'>
           <div className='aspect-square size-20 bg-surface group-hover:scale-110 group-hover:rotate-3 group-hover:-translate-y-1 ease-spring duration-600 text-xs grid content-center place-items-center border-foreground border'>
             <ImageGif post={post} />
@@ -60,7 +60,7 @@ export default function PostCard({
             </Reveal>
           </div>
         </article>
-      </TransitionLink>
+      </TransitionLink> */}
     </m.li>
   );
 }

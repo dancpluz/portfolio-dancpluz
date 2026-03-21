@@ -4,7 +4,14 @@ import { ptBR, enUS } from 'date-fns/locale';
 import * as cheerio from 'cheerio';
 import { Heading } from '@/types/utils';
 import slugify from 'slugify';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 import { ROUTES } from './constant';
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
 
 export function formatDate(
   startDateString: string,

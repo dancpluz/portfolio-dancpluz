@@ -17,6 +17,7 @@ export enum Collections {
 	Projects = "projects",
 	Socials = "socials",
 	Technologies = "technologies",
+	Testimonials = "testimonials",
 }
 
 // Alias types for improved usability
@@ -196,6 +197,18 @@ export type TechnologiesRecord = {
 	updated: IsoAutoDateString
 }
 
+export type TestimonialsRecord = {
+	content: string
+	created: IsoAutoDateString
+	date?: IsoDateString
+	id: string
+	profile: FileNameString
+	subtitle: string
+	title: string
+	updated: IsoAutoDateString
+	url?: string
+}
+
 // Response types include system fields and match responses from the PocketBase API
 export type AuthoriginsResponse<Texpand = unknown> = Required<AuthoriginsRecord> & BaseSystemFields<Texpand>
 export type ExternalauthsResponse<Texpand = unknown> = Required<ExternalauthsRecord> & BaseSystemFields<Texpand>
@@ -208,6 +221,7 @@ export type PostsResponse<Tkeywords = unknown, Texpand = unknown> = Required<Pos
 export type ProjectsResponse<Texpand = unknown> = Required<ProjectsRecord> & BaseSystemFields<Texpand>
 export type SocialsResponse<Texpand = unknown> = Required<SocialsRecord> & BaseSystemFields<Texpand>
 export type TechnologiesResponse<Texpand = unknown> = Required<TechnologiesRecord> & BaseSystemFields<Texpand>
+export type TestimonialsResponse<Texpand = unknown> = Required<TestimonialsRecord> & BaseSystemFields<Texpand>
 
 // Types containing all Records and Responses, useful for creating typing helper functions
 
@@ -223,6 +237,7 @@ export type CollectionRecords = {
 	projects: ProjectsRecord
 	socials: SocialsRecord
 	technologies: TechnologiesRecord
+	testimonials: TestimonialsRecord
 }
 
 export type CollectionResponses = {
@@ -237,6 +252,7 @@ export type CollectionResponses = {
 	projects: ProjectsResponse
 	socials: SocialsResponse
 	technologies: TechnologiesResponse
+	testimonials: TestimonialsResponse
 }
 
 // Utility types for create/update operations

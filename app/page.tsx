@@ -1,7 +1,6 @@
 import Technologies from '@/components/landing/technologies';
 import Projects from '@/components/landing/projects';
 import PageTransition from '@/components/motion/page-transition';
-import Hero from '@/components/landing/hero';
 import About from '@/components/landing/about';
 import ScrollToHash from '@/components/extra/scroll-to-hash';
 import Contact from '@/components/landing/contact';
@@ -16,8 +15,9 @@ export default async function HomePage() {
       {/* <Hero /> */}
       <Projects />
       <Technologies />
+      <About />
       <Contact />
-      {/* <About /> */}
+
     </PageTransition>
   );
 }

@@ -35,3 +35,13 @@ export interface Project {
   medias: string[];
   client: string;
 }
+
+export interface Testimonial {
+  id: string;
+  title: string;
+  subtitle: string;
+  content: string;
+  profileUrl: string;
+  url: string;
+  date: IsoDateString;
+}
