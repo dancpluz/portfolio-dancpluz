@@ -12,7 +12,7 @@
   - [ ] Hero
   - [x] Projects
   - [x] Tech
-  - [x] About
+  - [ ] About
   - [ ] Testimonial
   - [ ] Contact
   - [ ] Responsive
