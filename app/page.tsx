@@ -4,6 +4,7 @@ import PageTransition from '@/components/motion/page-transition';
 import Hero from '@/components/landing/hero';
 import About from '@/components/landing/about';
 import ScrollToHash from '@/components/extra/scroll-to-hash';
+import Contact from '@/components/landing/contact';
 
 export default async function HomePage() {
   return (
@@ -14,8 +15,9 @@ export default async function HomePage() {
       <ScrollToHash />
       <About />
       <Hero />
-      <Technologies />
       <Projects />
+      <Technologies />
+      <Contact />
     </PageTransition>
   );
 }

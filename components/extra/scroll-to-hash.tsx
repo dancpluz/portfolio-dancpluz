@@ -11,7 +11,7 @@ export default function ScrollToHash() {
     if (hash && lenis) {
       setTimeout(() => {
         lenis.scrollTo(hash, { duration: 3 });
-      }, 600); // Wait for page transition to finish
+      }, 600);
     }
   }, [lenis]);
 

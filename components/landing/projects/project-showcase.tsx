@@ -9,7 +9,6 @@ import { LineReveal } from '../../motion/reveal';
 import { AnimatePresence, m } from 'motion/react';
 import { ArrowRight } from '../../ui/svg';
 import TransitionLink from '../../transition-link';
-import { ROUTES } from '@/lib/constant';
 
 export default function ProjectShowcase({
   projects = [],
