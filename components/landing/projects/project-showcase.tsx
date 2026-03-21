@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect, useMemo, useCallback, memo } from 'react';
 import Image from 'next/image';
 import { lerp } from '@/lib/utils';
 import FlipText from '../flip-text';
@@ -24,49 +24,101 @@ export default function ProjectShowcase({
   }, [projects]);
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [smoothPosition, setSmoothPosition] = useState({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
 
+  const prevHoveredRef = useRef<number | null>(null);
+  useEffect(() => {
+    if (hoveredIndex !== null) {
+      prevHoveredRef.current = hoveredIndex;
+    }
+  }, [hoveredIndex]);
+
   const containerRef = useRef<HTMLDivElement>(null);
+  const cursorRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number | null>(null);
+
+  const mousePos = useRef({ x: 0, y: 0 });
+  const smoothPos = useRef({ x: 0, y: 0 });
+
+  const containerRect = useRef<DOMRect | null>(null);
+
+  const updateContainerRect = useCallback(() => {
+    if (containerRef.current) {
+      containerRect.current = containerRef.current.getBoundingClientRect();
+    }
+  }, []);
 
   useEffect(() => {
     const animate = () => {
-      setSmoothPosition((prev) => ({
-        x: lerp(prev.x, mousePosition.x, 0.15),
-        y: lerp(prev.y, mousePosition.y, 0.15),
-      }));
+      smoothPos.current = {
+        x: lerp(smoothPos.current.x, mousePos.current.x, 0.15),
+        y: lerp(smoothPos.current.y, mousePos.current.y, 0.15),
+      };
+
+      if (cursorRef.current) {
+        cursorRef.current.style.transform = `translate3d(${smoothPos.current.x + 20}px, ${smoothPos.current.y - 100}px, 0)`;
+      }
+
       animationRef.current = requestAnimationFrame(animate);
     };
     animationRef.current = requestAnimationFrame(animate);
     return () => {
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
-  }, [mousePosition]);
+  }, []);
 
   useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
     const handleMouseMove = (e: MouseEvent) => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+      if (containerRect.current) {
+        mousePos.current = {
+          x: e.clientX - containerRect.current.left,
+          y: e.clientY - containerRect.current.top,
+        };
       }
     };
-    const container = containerRef.current;
-    if (container) {
-      container.addEventListener('mousemove', handleMouseMove);
-      return () => container.removeEventListener('mousemove', handleMouseMove);
-    }
+
+    container.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => container.removeEventListener('mousemove', handleMouseMove);
   }, []);
+
+  useEffect(() => {
+    updateContainerRect();
+    window.addEventListener('scroll', updateContainerRect, { passive: true });
+    window.addEventListener('resize', updateContainerRect, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', updateContainerRect);
+      window.removeEventListener('resize', updateContainerRect);
+    };
+  }, [updateContainerRect]);
+
+  const handleMouseEnter = useCallback((index: number) => {
+    setHoveredIndex(index);
+    setIsVisible(true);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    setHoveredIndex(null);
+    setIsVisible(false);
+  }, []);
+
+  const visibleImageIndices = useMemo(() => {
+    const indices = new Set<number>();
+    if (hoveredIndex !== null) indices.add(hoveredIndex);
+    if (prevHoveredRef.current !== null) indices.add(prevHoveredRef.current);
+    return indices;
+  }, [hoveredIndex]);
 
   return (
     <div ref={containerRef} className='relative w-full mx-auto'>
       <div
+        ref={cursorRef}
         className='pointer-events-none fixed z-20 overflow-hidden shadow-2xl'
         style={{
-          left: containerRef.current?.getBoundingClientRect().left ?? 0,
-          top: containerRef.current?.getBoundingClientRect().top ?? 0,
-          transform: `translate3d(${smoothPosition.x + 20}px, ${smoothPosition.y - 100}px, 0)`,
+          left: containerRect.current?.left ?? 0,
+          top: containerRect.current?.top ?? 0,
           opacity: isVisible ? 1 : 0,
           scale: isVisible ? 1 : 0.8,
           transition:
@@ -74,39 +126,36 @@ export default function ProjectShowcase({
         }}
       >
         <div className='relative aspect-3/2 w-[360px] pixel-corners-big bg-secondary overflow-hidden'>
-          {sortedProjects.map((project, index) => (
-            <Image
-              key={`img-${project.id}`}
-              src={project.coverUrl || '/placeholder.svg'}
-              alt={project.title}
-              fill
-              className='absolute inset-0 w-full h-full object-cover transition-all duration-500 ease-out'
-              style={{
-                opacity: hoveredIndex === index ? 1 : 0,
-                scale: hoveredIndex === index ? 1 : 1.1,
-                filter: hoveredIndex === index ? 'none' : 'blur(10px)',
-              }}
-            />
-          ))}
+          {sortedProjects.map((project, index) => {
+            if (!visibleImageIndices.has(index)) return null;
+            return (
+              <Image
+                key={`img-${project.id}`}
+                src={project.coverUrl || '/placeholder.svg'}
+                alt={project.title}
+                fill
+                className='absolute inset-0 w-full h-full object-cover transition-all duration-500 ease-out'
+                style={{
+                  opacity: hoveredIndex === index ? 1 : 0,
+                  scale: hoveredIndex === index ? 1 : 1.1,
+                  filter: hoveredIndex === index ? 'none' : 'blur(10px)',
+                }}
+              />
+            );
+          })}
           <div className='absolute inset-0 bg-linear-to-t from-background/20 to-transparent' />
         </div>
       </div>
 
       <div className='space-y-0'>
         {sortedProjects.map((project, index) => (
-          <ProjectRow
+          <MemoizedProjectRow
             key={project.id}
             project={project}
             index={index}
             isHovered={hoveredIndex === index}
-            onMouseEnter={() => {
-              setHoveredIndex(index);
-              setIsVisible(true);
-            }}
-            onMouseLeave={() => {
-              setHoveredIndex(null);
-              setIsVisible(false);
-            }}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
           />
         ))}
         <LineReveal
@@ -128,7 +177,7 @@ function ProjectRow({
   project: Project;
   index: number;
   isHovered: boolean;
-  onMouseEnter: () => void;
+  onMouseEnter: (index: number) => void;
   onMouseLeave: () => void;
 }>) {
   const formattedDate = useMemo(() => {
@@ -143,11 +192,13 @@ function ProjectRow({
     return colors[index % colors.length];
   }, [index]);
 
+  const handleEnter = useCallback(() => onMouseEnter(index), [onMouseEnter, index]);
+
   return (
     <TransitionLink
       href={`obra/${project.id}`}
       className='group block'
-      onMouseEnter={onMouseEnter}
+      onMouseEnter={handleEnter}
       onMouseLeave={onMouseLeave}
     >
       <LineReveal className='bg-foreground/50' delay={index * 0.1} />
@@ -207,3 +258,5 @@ function ProjectRow({
     </TransitionLink>
   );
 }
+
+const MemoizedProjectRow = memo(ProjectRow);
