@@ -9,6 +9,7 @@ export interface Social {
   id: string;
   url: string;
   text: string;
+  subtext: string;
   iconUrl: string;
   iconAlt: string;
 }

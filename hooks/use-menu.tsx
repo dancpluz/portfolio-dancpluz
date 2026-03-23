@@ -1,6 +1,5 @@
 'use client';
 
-import { MenuItemData } from '@/components/header/flowing-nav';
 import { Social } from '@/types/api';
 import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
 
@@ -10,8 +9,8 @@ interface MenuContextType {
   closeMenu: () => void;
   openMenu: () => void;
   socials: Social[];
-  imageHovering: MenuItemData['image'];
-  setImageHovering: (image: MenuItemData['image']) => void;
+  imageHovering: string;
+  setImageHovering: (image: string) => void;
 }
 
 const MenuContext = createContext<MenuContextType | undefined>(undefined);

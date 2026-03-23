@@ -16,6 +16,7 @@ export const DEFAULT_SOCIALS: Social[] = [
     id: 'linkedin-default',
     url: 'https://www.linkedin.com/in/daniel-cunha-luz/',
     text: 'Daniel Luz',
+    subtext: '"Tenho o prazer de anunciar nossa conexão!"',
     iconUrl:
       'https://pb.ruadebaixo.com.br/api/files/egcnloaglxen3wj/1g1fkm14dcsa1rr/linkedin_rovuzcwol1.svg',
     iconAlt: 'Pixel LinkedIn',
@@ -24,6 +25,7 @@ export const DEFAULT_SOCIALS: Social[] = [
     id: 'github-default',
     url: 'https://github.com/dancpluz',
     text: 'dancpluz',
+    subtext: 'Projetos de verdade que fazem alguma coisa',
     iconUrl:
       'https://pb.ruadebaixo.com.br/api/files/egcnloaglxen3wj/n22fhz1wyzdhat0/github_od1i8p13fq.svg',
     iconAlt: 'Pixel Github',
@@ -32,6 +34,7 @@ export const DEFAULT_SOCIALS: Social[] = [
     id: 'mail-default',
     url: 'mailto:dan08jan@gmail.com',
     text: 'dan08jan@gmail.com',
+    subtext: 'Se mandar spam vai levar um DDOS',
     iconUrl:
       'https://pb.ruadebaixo.com.br/api/files/egcnloaglxen3wj/prb1n38au1mta3m/envelope_az3v8b1bjz.svg',
     iconAlt: 'Pixel Email',
@@ -40,6 +43,7 @@ export const DEFAULT_SOCIALS: Social[] = [
     id: 'instagram-default',
     url: 'https://www.instagram.com/dancpluz/',
     text: 'dancpluz',
+    subtext: 'Pode dar uma olhada, só não stalkeia muito',
     iconUrl:
       'https://pb.ruadebaixo.com.br/api/files/egcnloaglxen3wj/oql1nudbi61l6fo/instagram_7pan57ahig.svg',
     iconAlt: 'Pixel Instagram',

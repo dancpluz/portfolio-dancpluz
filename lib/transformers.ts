@@ -39,6 +39,7 @@ export function transformSocial(record: SocialsResponse<IconExpand>): Social {
     id: record.id,
     url: record.url || '#',
     text: record.text || '',
+    subtext: record.subtext || '',
     iconUrl,
     iconAlt,
   };

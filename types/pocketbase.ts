@@ -183,9 +183,10 @@ export type SocialsRecord = {
 	icon_ref: RecordIdString
 	id: string
 	main?: boolean
-	text?: string
+	subtext?: string
+	text: string
 	updated: IsoAutoDateString
-	url?: string
+	url: string
 }
 
 export type TechnologiesRecord = {

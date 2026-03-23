@@ -11,8 +11,8 @@ export default async function Technologies() {
 
   return (
     <section className='w-full flex flex-col items-center'>
-      <FlipText text='Tecnologias' className='font-heading text-7xl' />
-      <p className='text-xl font-regular mb-10'>Tecnologias que utilizo</p>
+      <FlipText text='Stack' className='font-heading text-7xl' />
+      <p className='text-xl font-regular mb-10'>Brinquedos que uso</p>
       <LogoShowcase logos={technologies} columnCount={5} />
     </section>
   );

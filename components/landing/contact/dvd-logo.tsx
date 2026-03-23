@@ -205,11 +205,16 @@ export default function DvdLogo({
   return (
     <div
       ref={screenRef}
-      className={`relative w-full h-full overflow-hidden ${className}`}
+      className={`relative w-full h-full overflow-hidden flex items-center justify-center ${className}`}
     >
+      {/* Background CTA Text */}
+      <h2 className="absolute font-heading text-5xl md:text-7xl text-foreground select-none pointer-events-none text-center">
+        TA ESPERANDO <br /> OQ? CHAMA AI
+      </h2>
+
       <div
         ref={logoRef}
-        className='absolute top-0 left-0 will-change-transform'
+        className='absolute top-0 left-0 will-change-transform z-10'
         style={{ width: logoW, height: logoH }}
       >
         <m.button
