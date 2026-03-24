@@ -9,18 +9,23 @@ import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { useTheme } from 'next-themes';
 
-const CLASSES = ['accent-1', 'accent-2', 'accent-3'] as const;
 
 const SHIMMER_CLASSES = [
-  `via-${CLASSES[0]}/10`,
-  `via-${CLASSES[1]}/10`,
-  `via-${CLASSES[2]}/10`,
+  `via-accent-1/10`,
+  `via-accent-2/10`,
+  `via-accent-3/10`,
 ] as const;
 
 const ARROW_CLASSES = [
-  `group-hover:text-${CLASSES[0]}`,
-  `group-hover:text-${CLASSES[1]}`,
-  `group-hover:text-${CLASSES[2]}`,
+  `group-hover:text-accent-1`,
+  `group-hover:text-accent-2`,
+  `group-hover:text-accent-3`,
+] as const;
+
+const TEXT_COLORS = [
+  `text-accent-1`,
+  `text-accent-2`,
+  `text-accent-3`,
 ] as const;
 
 interface SocialCardProps {
@@ -29,11 +34,16 @@ interface SocialCardProps {
 }
 
 function SocialCard({ social, index }: Readonly<SocialCardProps>) {
-  const color = CLASSES[index % CLASSES.length];
   const shimmer = SHIMMER_CLASSES[index % SHIMMER_CLASSES.length];
   const arrow = ARROW_CLASSES[index % ARROW_CLASSES.length];
-  const { theme } = useTheme();
+  const color = TEXT_COLORS[index % TEXT_COLORS.length];
+  const   { theme } = useTheme();
   const [copied, setCopied] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleCopy = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -71,11 +81,11 @@ function SocialCard({ social, index }: Readonly<SocialCardProps>) {
             'absolute top-4 right-4 z-20 p-2 rounded-lg transition-all duration-300 hover:bg-foreground/5 active:scale-95',
             copied
               ? `text-${color}`
-              : 'text-foreground/20 hover:text-foreground',
+              : 'text-foreground/50 hover:text-foreground',
           )}
           title='Copy to clipboard'
         >
-          <Copy className='w-5 h-5' />
+          <Copy className='size-5' />
           {copied && (
             <m.span
               initial={{ opacity: 0, y: 5 }}
@@ -97,7 +107,7 @@ function SocialCard({ social, index }: Readonly<SocialCardProps>) {
               height={32}
               className='object-contain'
               style={{
-                filter: theme === 'dark' ? 'invert(1)' : '',
+                filter: mounted && theme === 'dark' ? 'invert(1)' : '',
               }}
             />
           </div>
@@ -122,7 +132,7 @@ function SocialCard({ social, index }: Readonly<SocialCardProps>) {
         {/* Shimmer Effect */}
         <div
           className={cn(
-            'absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-linear-to-r from-transparent to-transparent',
+            'absolute inset-0 pointer-events-none -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-linear-to-r from-transparent to-transparent',
             shimmer,
           )}
         />

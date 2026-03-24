@@ -59,6 +59,11 @@ const LogoColumn: React.FC<LogoColumnProps> = React.memo(
       [logos, currentIndex],
     );
     const { theme } = useTheme();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+      setMounted(true);
+    }, []);
 
     if (!currentLogo) return null;
 
@@ -109,7 +114,7 @@ const LogoColumn: React.FC<LogoColumnProps> = React.memo(
               style={{
                 width: 'auto',
                 height: 'auto',
-                filter: theme === 'dark' ? 'invert(0)' : 'invert(1)',
+                filter: mounted && theme === 'dark' ? 'invert(0)' : 'invert(1)',
               }}
               className='pointer-events-none h-20 w-20 max-h-[80%] max-w-[80%] object-contain md:h-32 md:w-32'
             />

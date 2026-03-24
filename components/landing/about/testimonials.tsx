@@ -1,6 +1,13 @@
 'use client';
 
-import React, { memo, useCallback, useMemo, useState, useRef } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useMemo,
+  useState,
+  useRef,
+  useEffect,
+} from 'react';
 import { cn, formatDateLocal } from '@/lib/utils';
 import { Testimonial } from '@/types/api';
 import Image from 'next/image';
@@ -31,8 +38,13 @@ const SKEW = -8;
 const OVERLAY_CLASSES =
   'before:absolute before:w-full before:h-full before:content-[""] before:bg-blend-overlay before:bg-surface/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-500 hover:grayscale-0 before:left-0 before:top-0';
 
-function randomInRange(min: number, max: number) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function getMockStat(seed: string, min: number, max: number, offset = 0) {
+  let hash = 0;
+  const combinedSeed = seed + offset.toString();
+  for (let i = 0; i < combinedSeed.length; i++) {
+    hash = (combinedSeed.codePointAt(i) ?? 0) + ((hash << 5) - hash);
+  }
+  return (Math.abs(hash) % (max - min + 1)) + min;
 }
 
 interface TestimonialCardProps {
@@ -60,8 +72,14 @@ const TestimonialCard = memo(function TestimonialCard({
   onHover,
   onLeave,
 }: Readonly<TestimonialCardProps>) {
-  const likes = useMemo(() => randomInRange(10, 700), []);
-  const retweets = useMemo(() => randomInRange(1, 150), []);
+  const likes = useMemo(
+    () => getMockStat(testimonial.id, 10, 700, 1),
+    [testimonial.id],
+  );
+  const retweets = useMemo(
+    () => getMockStat(testimonial.id, 1, 150, 2),
+    [testimonial.id],
+  );
   const locale = useLocale();
 
   const handleCardClick = useCallback(
@@ -185,10 +203,16 @@ export default function Testimonials({
   const total = testimonials.length;
   const focusedIndex = selectedIndex === null ? hoveredIndex : null;
 
-  const cardPositions = useMemo(() => {
-    const isSm =
-      globalThis.window !== undefined && globalThis.window.innerWidth >= 640;
+  const [isSm, setIsSm] = useState(false);
 
+  useEffect(() => {
+    const updateSize = () => setIsSm(globalThis.window.innerWidth >= 640);
+    updateSize();
+    globalThis.addEventListener('resize', updateSize);
+    return () => globalThis.removeEventListener('resize', updateSize);
+  }, []);
+
+  const cardPositions = useMemo(() => {
     const xStep = isSm ? SM_X_STEP : X_STEP;
     const yStep = isSm ? SM_Y_STEP : Y_STEP;
     const pushXVal = isSm ? SM_PUSH_X : PUSH_X;
@@ -213,7 +237,7 @@ export default function Testimonials({
 
       return { x, y };
     });
-  }, [testimonials, focusedIndex, total]);
+  }, [testimonials, focusedIndex, total, isSm]);
 
   const handleHover = useCallback(
     (index: number) => setHoveredIndex(index),

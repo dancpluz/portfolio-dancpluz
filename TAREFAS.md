@@ -14,7 +14,7 @@
   - [x] Tech
   - [ ] About
   - [x] Testimonial
-  - [ ] Contact
+  - [x] Contact
   - [ ] Responsive
 - [ ] Project Page
   - [ ] Loading state

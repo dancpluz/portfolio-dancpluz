@@ -1,6 +1,6 @@
 import { ROUTES } from '@/lib/constant';
 import { getSectionId } from '@/lib/utils';
-import FlipText from '../flip-text';
+import FlipText from '../../extra/flip-text';
 
 export default function Hero() {
   return (

@@ -1,7 +1,7 @@
 import { ROUTES, MOCK_TESTIMONIALS } from '@/lib/constant';
 import { getSectionId } from '@/lib/utils';
 import { getTestimonials } from '@/actions/testimonials';
-import FlipText from '../flip-text';
+import FlipText from '../../extra/flip-text';
 import Testimonials from './testimonials';
 
 export default async function About() {

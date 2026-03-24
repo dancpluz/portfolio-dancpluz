@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useMemo, useCallback, memo } from 'react';
 import Image from 'next/image';
 import { lerp } from '@/lib/utils';
-import FlipText from '../flip-text';
+import FlipText from '../../extra/flip-text';
 import { Project } from '@/types/api';
 import { LineReveal } from '../../motion/reveal';
 import { AnimatePresence, m } from 'motion/react';
@@ -192,7 +192,10 @@ function ProjectRow({
     return colors[index % colors.length];
   }, [index]);
 
-  const handleEnter = useCallback(() => onMouseEnter(index), [onMouseEnter, index]);
+  const handleEnter = useCallback(
+    () => onMouseEnter(index),
+    [onMouseEnter, index],
+  );
 
   return (
     <TransitionLink

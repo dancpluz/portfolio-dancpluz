@@ -79,7 +79,7 @@ export default function DvdLogo({
     if (!logoRef.current) return;
     const color = ACCENT_COLORS[colorIndexRef.current];
     logoRef.current.style.color = color;
-    logoRef.current.style.filter = `drop-shadow(0 0 2px ${color})`;
+    logoRef.current.style.filter = `drop-shadow(0 0 12px ${color})`;
   }, []);
 
   const cycleColor = useCallback(() => {

@@ -1,6 +1,6 @@
 import { getTechnologies } from '@/actions/technologies';
 import LogoShowcase from './logo-showcase';
-import FlipText from '../flip-text';
+import FlipText from '../../extra/flip-text';
 
 export default async function Technologies() {
   const { data: technologies, error } = await getTechnologies();

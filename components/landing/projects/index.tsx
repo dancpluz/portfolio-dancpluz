@@ -1,5 +1,5 @@
 import ProjectShowcase from './project-showcase';
-import FlipText from '../flip-text';
+import FlipText from '../../extra/flip-text';
 import { ROUTES } from '@/lib/constant';
 import { getSectionId } from '@/lib/utils';
 import { getProjects } from '@/actions/projects';
