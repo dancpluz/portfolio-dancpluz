@@ -53,6 +53,7 @@ const getOpenTransform = (index: number, total: number) => {
 
 interface PaperItemProps {
   item: React.ReactNode;
+  text?: string;
   index: number;
   total: number;
   open: boolean;
@@ -64,6 +65,7 @@ interface PaperItemProps {
 
 const PaperItem = memo(function PaperItem({
   item,
+  text,
   index,
   total,
   open,
@@ -143,9 +145,16 @@ const PaperItem = memo(function PaperItem({
         pointerEvents: zoomedIndex === index ? 'none' : 'auto',
       }}
     >
-      <div className="w-full aspect-square bg-black overflow-hidden relative flex items-center justify-center shrink-0">
+      <div className="w-full aspect-square bg-black overflow-hidden relative flex items-center justify-center shrink-0 shadow-inner">
         {item}
       </div>
+      {text && (
+        <div className="flex-1 flex items-center justify-center overflow-hidden mt-1 px-[2px]">
+          <span className="text-[6px] text-black leading-tight line-clamp-1 wrap-break-word overflow-hidden text-ellipsis">
+            {text}
+          </span>
+        </div>
+      )}
     </div>
   );
 });
@@ -159,13 +168,14 @@ export default function Folder({
 }: Readonly<FolderProps>) {
   const maxItems = 3;
   const papers = useMemo(() => {
-    let arr: React.ReactNode[] = [];
+    let arr: { node: React.ReactNode; text?: string }[] = [];
     if (polaroids.length > 0) {
-      arr = polaroids.map((p) => (
-        <Image key={p.id} src={p.photoUrl} alt={p.text || 'polaroid'} className="object-cover w-full h-full" fill />
-      ));
+      arr = polaroids.map((p) => ({
+        node: <Image key={p.id} src={p.photoUrl} alt={p.text || 'polaroid'} className="object-cover w-full h-full" fill />,
+        text: p.text
+      }));
     } else {
-      arr = [...items];
+      arr = items.map((item) => ({ node: item }));
     }
     const finalArr = arr.slice(0, maxItems);
     return finalArr;
@@ -239,10 +249,11 @@ export default function Folder({
             className='absolute z-0 bottom-[98%] left-0 w-[30px] h-[10px] rounded-tl-[5px] rounded-tr-[5px] rounded-bl-0 rounded-br-0'
             style={{ backgroundColor: folderBackColor }}
           ></span>
-          {papers.map((item, i) => (
+          {papers.map((paper, i) => (
             <PaperItem
               key={paperIds[i]}
-              item={item}
+              item={paper.node}
+              text={paper.text}
               index={i}
               total={papers.length}
               open={open}
@@ -288,15 +299,23 @@ export default function Folder({
           onClick={(e) => { e.stopPropagation(); setZoomedIndex(null); }}
         >
           <div 
-            className="p-[16px] shadow-2xl aspect-4/5 flex flex-col transition-transform scale-100 hover:scale-[1.02]"
+            className="p-[16px] shadow-2xl flex flex-col transition-transform scale-100 hover:scale-[1.02] max-h-[95vh] overflow-y-auto scrollbar-hide"
             style={{ 
-              height: '400px', 
+              width: '328px',
+              minHeight: '400px', 
               backgroundColor: paperColors[zoomedIndex]
             }}
           >
-            <div className="w-full aspect-square bg-black overflow-hidden relative flex items-center justify-center shrink-0">
-              {papers[zoomedIndex]}
+            <div className="w-full aspect-square bg-black overflow-hidden relative flex items-center justify-center shrink-0 shadow-inner">
+              {papers[zoomedIndex].node}
             </div>
+            {papers[zoomedIndex].text && (
+              <div className="flex-1 flex flex-col items-center justify-center mt-4 pb-2">
+                <span className="text-lg md:text-xl text-black leading-tight text-center wrap-break-word px-2">
+                  {papers[zoomedIndex].text}
+                </span>
+              </div>
+            )}
           </div>
         </div>,
         document.body
