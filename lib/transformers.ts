@@ -3,13 +3,14 @@ import {
   ProjectExpand,
   type IconExpand,
 } from '@/lib/pocketbase';
-import { Project, Social, Technology, Testimonial } from '@/types/api';
+import { Project, Social, Technology, Testimonial, Polaroid } from '@/types/api';
 import {
   IconsResponse,
   ProjectsResponse,
   SocialsResponse,
   TechnologiesResponse,
   TestimonialsResponse,
+  PolaroidsResponse,
 } from '@/types/pocketbase';
 
 /**
@@ -101,5 +102,18 @@ export function transformTestimonial(
     profileUrl: record.profile ? buildImageUrl(record, record.profile) : '',
     url: record.url || '#',
     date: record.date || '',
+  };
+}
+
+/**
+ * Transforms a PocketBase Polaroid record into the Polaroid interface.
+ */
+export function transformPolaroid(
+  record: PolaroidsResponse,
+): Polaroid {
+  return {
+    id: record.id,
+    photoUrl: record.photo ? buildImageUrl(record, record.photo) : '',
+    text: record.text || '',
   };
 }

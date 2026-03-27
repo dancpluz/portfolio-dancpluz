@@ -3,11 +3,14 @@
 import { useState, useEffect, useRef, useMemo, useCallback, memo } from 'react';
 import { createPortal } from 'react-dom';
 import { useClickOutside } from '@/hooks/use-click-outside';
+import { Polaroid } from '@/types/api';
+import Image from 'next/image';
 
 interface FolderProps {
   color?: string;
   size?: number;
   items?: React.ReactNode[];
+  polaroids?: Polaroid[];
   className?: string;
 }
 
@@ -34,7 +37,14 @@ const darkenColor = (hex: string, percent: number): string => {
   );
 };
 
-const getOpenTransform = (index: number) => {
+const getOpenTransform = (index: number, total: number) => {
+  if (total === 1) {
+    if (index === 0) return 'translate(-50%, -90%) rotate(0deg)';
+  }
+  if (total === 2) {
+    if (index === 0) return 'translate(-110%, -80%) rotate(-10deg)';
+    if (index === 1) return 'translate(10%, -80%) rotate(10deg)';
+  }
   if (index === 0) return 'translate(-120%, -70%) rotate(-15deg)';
   if (index === 1) return 'translate(10%, -70%) rotate(15deg)';
   if (index === 2) return 'translate(-50%, -100%) rotate(5deg)';
@@ -44,6 +54,7 @@ const getOpenTransform = (index: number) => {
 interface PaperItemProps {
   item: React.ReactNode;
   index: number;
+  total: number;
   open: boolean;
   paperColor: string;
   zoomedIndex: number | null;
@@ -54,6 +65,7 @@ interface PaperItemProps {
 const PaperItem = memo(function PaperItem({
   item,
   index,
+  total,
   open,
   paperColor,
   zoomedIndex,
@@ -98,7 +110,7 @@ const PaperItem = memo(function PaperItem({
   );
 
   const transformStyle = open
-    ? `${getOpenTransform(index)} translate(${offset.x}px, ${offset.y}px)`
+    ? `${getOpenTransform(index, total)} translate(${offset.x}px, ${offset.y}px)`
     : undefined;
 
   return (
@@ -142,14 +154,22 @@ export default function Folder({
   color = '#5227FF',
   size = 1,
   items = [],
+  polaroids = [],
   className = '',
 }: Readonly<FolderProps>) {
   const maxItems = 3;
   const papers = useMemo(() => {
-    const arr = items.slice(0, maxItems);
-    while (arr.length < maxItems) arr.push(null);
-    return arr;
-  }, [items]);
+    let arr: React.ReactNode[] = [];
+    if (polaroids.length > 0) {
+      arr = polaroids.map((p) => (
+        <Image key={p.id} src={p.photoUrl} alt={p.text || 'polaroid'} className="object-cover w-full h-full" fill />
+      ));
+    } else {
+      arr = [...items];
+    }
+    const finalArr = arr.slice(0, maxItems);
+    return finalArr;
+  }, [items, polaroids]);
 
   const [open, setOpen] = useState(false);
   const [zoomedIndex, setZoomedIndex] = useState<number | null>(null);
@@ -224,6 +244,7 @@ export default function Folder({
               key={paperIds[i]}
               item={item}
               index={i}
+              total={papers.length}
               open={open}
               paperColor={paperColors[i]}
               zoomedIndex={zoomedIndex}
@@ -263,7 +284,7 @@ export default function Folder({
               setZoomedIndex(null);
             }
           }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md cursor-zoom-out animate-in fade-in duration-300 w-full h-full border-none m-0 p-0 focus:outline-none"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md cursor-zoom-out animate-in fade-in duration-300 w-full h-full border-none m-0 p-0 focus:outline-none"
           onClick={(e) => { e.stopPropagation(); setZoomedIndex(null); }}
         >
           <div 

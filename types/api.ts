@@ -46,3 +46,9 @@ export interface Testimonial {
   url: string;
   date: IsoDateString;
 }
+
+export interface Polaroid {
+  id: string;
+  photoUrl: string;
+  text: string;
+}

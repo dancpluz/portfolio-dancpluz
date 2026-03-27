@@ -4,13 +4,17 @@ import { getTestimonials } from '@/actions/testimonials';
 import FlipText from '../../extra/flip-text';
 import Testimonials from './testimonials';
 import Folder from '@/components/landing/about/folder';
+import { getPolaroids } from '@/actions/polaroids';
 
 export default async function About() {
-  const { data: testimonials, error } = await getTestimonials();
+  const [testimonials, polaroids] = await Promise.all([
+    getTestimonials(),
+    getPolaroids(),
+  ]);
 
   const displayTestimonials =
-    !error && testimonials && testimonials.length > 0
-      ? testimonials
+    !testimonials.error && testimonials.data && testimonials.data.length > 0
+      ? testimonials.data
       : MOCK_TESTIMONIALS;
 
   return (
@@ -20,9 +24,9 @@ export default async function About() {
     >
       <FlipText text='Sobre' className='font-heading text-7xl' />
       <Testimonials testimonials={displayTestimonials} />
-      <Folder color='#ff00ff' />
-      <Folder color='#00f248' />
-      <Folder color='#00fbfe' />
+      <Folder color='#ff00ff' polaroids={polaroids.data || []} />
+      <Folder color='#00f248' polaroids={polaroids.data || []} />
+      <Folder color='#00fbfe' polaroids={polaroids.data || []} />
     </section>
   );
 }

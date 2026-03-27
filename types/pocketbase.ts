@@ -13,6 +13,7 @@ export enum Collections {
 	Superusers = "_superusers",
 	Experience = "experience",
 	Icons = "icons",
+	Polaroids = "polaroids",
 	Posts = "posts",
 	Projects = "projects",
 	Socials = "socials",
@@ -113,6 +114,14 @@ export type IconsRecord = {
 	created: IsoAutoDateString
 	icon: FileNameString
 	id: string
+	updated: IsoAutoDateString
+}
+
+export type PolaroidsRecord = {
+	created: IsoAutoDateString
+	id: string
+	photo: FileNameString
+	text?: string
 	updated: IsoAutoDateString
 }
 
@@ -218,6 +227,7 @@ export type OtpsResponse<Texpand = unknown> = Required<OtpsRecord> & BaseSystemF
 export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> & AuthSystemFields<Texpand>
 export type ExperienceResponse<Texpand = unknown> = Required<ExperienceRecord> & BaseSystemFields<Texpand>
 export type IconsResponse<Texpand = unknown> = Required<IconsRecord> & BaseSystemFields<Texpand>
+export type PolaroidsResponse<Texpand = unknown> = Required<PolaroidsRecord> & BaseSystemFields<Texpand>
 export type PostsResponse<Tkeywords = unknown, Texpand = unknown> = Required<PostsRecord<Tkeywords>> & BaseSystemFields<Texpand>
 export type ProjectsResponse<Texpand = unknown> = Required<ProjectsRecord> & BaseSystemFields<Texpand>
 export type SocialsResponse<Texpand = unknown> = Required<SocialsRecord> & BaseSystemFields<Texpand>
@@ -234,6 +244,7 @@ export type CollectionRecords = {
 	_superusers: SuperusersRecord
 	experience: ExperienceRecord
 	icons: IconsRecord
+	polaroids: PolaroidsRecord
 	posts: PostsRecord
 	projects: ProjectsRecord
 	socials: SocialsRecord
@@ -249,6 +260,7 @@ export type CollectionResponses = {
 	_superusers: SuperusersResponse
 	experience: ExperienceResponse
 	icons: IconsResponse
+	polaroids: PolaroidsResponse
 	posts: PostsResponse
 	projects: ProjectsResponse
 	socials: SocialsResponse
