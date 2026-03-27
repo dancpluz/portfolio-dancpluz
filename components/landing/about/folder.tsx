@@ -1,0 +1,285 @@
+'use client';
+
+import { useState, useEffect, useRef, useMemo, useCallback, memo } from 'react';
+import { createPortal } from 'react-dom';
+import { useClickOutside } from '@/hooks/use-click-outside';
+
+interface FolderProps {
+  color?: string;
+  size?: number;
+  items?: React.ReactNode[];
+  className?: string;
+}
+
+const paperIds = ['paper-0', 'paper-1', 'paper-2'];
+
+const darkenColor = (hex: string, percent: number): string => {
+  let color = hex.startsWith('#') ? hex.slice(1) : hex;
+  if (color.length === 3) {
+    color = color
+      .split('')
+      .map((c) => c + c)
+      .join('');
+  }
+  const num = Number.parseInt(color, 16);
+  let r = (num >> 16) & 0xff;
+  let g = (num >> 8) & 0xff;
+  let b = num & 0xff;
+  r = Math.max(0, Math.min(255, Math.floor(r * (1 - percent))));
+  g = Math.max(0, Math.min(255, Math.floor(g * (1 - percent))));
+  b = Math.max(0, Math.min(255, Math.floor(b * (1 - percent))));
+  return (
+    '#' +
+    ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase()
+  );
+};
+
+const getOpenTransform = (index: number) => {
+  if (index === 0) return 'translate(-120%, -70%) rotate(-15deg)';
+  if (index === 1) return 'translate(10%, -70%) rotate(15deg)';
+  if (index === 2) return 'translate(-50%, -100%) rotate(5deg)';
+  return '';
+};
+
+interface PaperItemProps {
+  item: React.ReactNode;
+  index: number;
+  open: boolean;
+  paperColor: string;
+  zoomedIndex: number | null;
+  onZoom: (index: number) => void;
+  onClickFolder: () => void;
+}
+
+const PaperItem = memo(function PaperItem({
+  item,
+  index,
+  open,
+  paperColor,
+  zoomedIndex,
+  onZoom,
+  onClickFolder,
+}: PaperItemProps) {
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    if (!open) {
+      setOffset({ x: 0, y: 0 });
+    }
+  }, [open]);
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (!open) return;
+      const rect = e.currentTarget.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const offsetX = (e.clientX - centerX) * 0.15;
+      const offsetY = (e.clientY - centerY) * 0.15;
+      setOffset({ x: offsetX, y: offsetY });
+    },
+    [open]
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    setOffset({ x: 0, y: 0 });
+  }, []);
+
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      if (open) {
+        onZoom(index);
+      } else {
+        onClickFolder();
+      }
+    },
+    [open, index, onZoom, onClickFolder]
+  );
+
+  const transformStyle = open
+    ? `${getOpenTransform(index)} translate(${offset.x}px, ${offset.y}px)`
+    : undefined;
+
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          e.stopPropagation();
+          if (open) {
+            onZoom(index);
+          } else {
+            onClickFolder();
+          }
+        }
+      }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onClick={handleClick}
+      className={`absolute z-20 bottom-[10%] left-1/2 transition-all duration-300 ease-in-out focus:outline-none ${
+        open
+          ? 'hover:scale-110 hover:z-40 cursor-pointer shadow-md'
+          : 'transform -translate-x-1/2 translate-y-[10%] group-hover:translate-y-0 shadow-sm'
+      } aspect-4/5 w-[60px] p-[4px] flex flex-col`}
+      style={{
+        ...(open ? { transform: transformStyle } : {}),
+        backgroundColor: paperColor,
+        opacity: zoomedIndex === index ? 0 : 1,
+        pointerEvents: zoomedIndex === index ? 'none' : 'auto',
+      }}
+    >
+      <div className="w-full aspect-square bg-black overflow-hidden relative flex items-center justify-center shrink-0">
+        {item}
+      </div>
+    </div>
+  );
+});
+
+export default function Folder({
+  color = '#5227FF',
+  size = 1,
+  items = [],
+  className = '',
+}: Readonly<FolderProps>) {
+  const maxItems = 3;
+  const papers = useMemo(() => {
+    const arr = items.slice(0, maxItems);
+    while (arr.length < maxItems) arr.push(null);
+    return arr;
+  }, [items]);
+
+  const [open, setOpen] = useState(false);
+  const [zoomedIndex, setZoomedIndex] = useState<number | null>(null);
+  const [mounted, setMounted] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useClickOutside(containerRef, () => {
+    setOpen(false);
+  }, open && zoomedIndex === null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const { folderBackColor, paperColors, folderStyle } = useMemo(() => {
+    const backColor = darkenColor(color, 0.08);
+    const pColors = [
+      darkenColor('#ffffff', 0.1),
+      darkenColor('#ffffff', 0.05),
+      '#ffffff',
+    ];
+    return {
+      folderBackColor: backColor,
+      paperColors: pColors,
+      folderStyle: {
+        '--folder-color': color,
+        '--folder-back-color': backColor,
+        '--paper-1': pColors[0],
+        '--paper-2': pColors[1],
+        '--paper-3': pColors[2],
+      } as React.CSSProperties,
+    };
+  }, [color]);
+
+  const scaleStyle = useMemo(() => ({ transform: `scale(${size})` }), [size]);
+
+  const handleClick = useCallback(() => {
+    if (zoomedIndex !== null) return;
+    setOpen((prev) => !prev);
+  }, [zoomedIndex]);
+
+  return (
+    <div ref={containerRef} style={scaleStyle} className={className}>
+      <div
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleClick();
+          }
+        }}
+        className={`group relative transition-all duration-200 ease-in cursor-pointer text-left focus:outline-none ${
+          open ? '' : 'hover:-translate-y-2'
+        }`}
+        style={{
+          ...folderStyle,
+          transform: open ? 'translateY(-8px)' : undefined,
+        }}
+        onClick={handleClick}
+      >
+        <div
+          className='relative w-[100px] h-[80px] rounded-tl-0 rounded-tr-[10px] rounded-br-[10px] rounded-bl-[10px]'
+          style={{ backgroundColor: folderBackColor }}
+        >
+          <span
+            className='absolute z-0 bottom-[98%] left-0 w-[30px] h-[10px] rounded-tl-[5px] rounded-tr-[5px] rounded-bl-0 rounded-br-0'
+            style={{ backgroundColor: folderBackColor }}
+          ></span>
+          {papers.map((item, i) => (
+            <PaperItem
+              key={paperIds[i]}
+              item={item}
+              index={i}
+              open={open}
+              paperColor={paperColors[i]}
+              zoomedIndex={zoomedIndex}
+              onZoom={setZoomedIndex}
+              onClickFolder={handleClick}
+            />
+          ))}
+          <div
+            className={`absolute z-30 w-full h-full origin-bottom transition-all duration-300 ease-in-out ${
+              open ? '' : 'group-hover:transform-[skew(15deg)_scaleY(0.6)]'
+            }`}
+            style={{
+              backgroundColor: color,
+              borderRadius: '5px 10px 10px 10px',
+              ...(open && { transform: 'skew(15deg) scaleY(0.6)' }),
+            }}
+          ></div>
+          <div
+            className={`absolute z-30 w-full h-full origin-bottom transition-all duration-300 ease-in-out ${
+              open ? '' : 'group-hover:transform-[skew(-15deg)_scaleY(0.6)]'
+            }`}
+            style={{
+              backgroundColor: color,
+              borderRadius: '5px 10px 10px 10px',
+              ...(open && { transform: 'skew(-15deg) scaleY(0.6)' }),
+            }}
+          ></div>
+        </div>
+      </div>
+      {mounted && zoomedIndex !== null && createPortal(
+        <div
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === 'Escape') {
+              e.stopPropagation();
+              setZoomedIndex(null);
+            }
+          }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md cursor-zoom-out animate-in fade-in duration-300 w-full h-full border-none m-0 p-0 focus:outline-none"
+          onClick={(e) => { e.stopPropagation(); setZoomedIndex(null); }}
+        >
+          <div 
+            className="p-[16px] shadow-2xl aspect-4/5 flex flex-col transition-transform scale-100 hover:scale-[1.02]"
+            style={{ 
+              height: '400px', 
+              backgroundColor: paperColors[zoomedIndex]
+            }}
+          >
+            <div className="w-full aspect-square bg-black overflow-hidden relative flex items-center justify-center shrink-0">
+              {papers[zoomedIndex]}
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+    </div>
+  );
+}
