@@ -4,6 +4,7 @@ import PageTransition from '@/components/motion/page-transition';
 import About from '@/components/landing/about';
 import ScrollToHash from '@/components/extra/scroll-to-hash';
 import Contact from '@/components/landing/contact';
+import Hero from '@/components/landing/hero';
 
 export default async function HomePage() {
   return (
@@ -12,7 +13,7 @@ export default async function HomePage() {
       className='flex max-w-screen flex-col gap-20 mt-50 z-10 section-px'
     >
       <ScrollToHash />
-      {/* <Hero /> */}
+      <Hero />
       <Projects />
       <Technologies />
       <About />

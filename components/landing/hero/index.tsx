@@ -1,15 +1,11 @@
 import { ROUTES } from '@/lib/constant';
 import { getSectionId } from '@/lib/utils';
-import FlipText from '../../extra/flip-text';
+import PeggleHero from './peggle-hero';
 
 export default function Hero() {
   return (
-    <section id={getSectionId(ROUTES.landing)} className='w-full'>
-      <FlipText
-        text='Portfólio'
-        className='font-heading text-7xl
-        '
-      />
+    <section id={getSectionId(ROUTES.landing)} className='w-full p-4 relative'>
+      <PeggleHero />
     </section>
   );
 }
