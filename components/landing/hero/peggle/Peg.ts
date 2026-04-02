@@ -23,7 +23,8 @@ export class Peg extends GameObject {
     };
 
     if (isRectRow) {
-      const rectWidth = spacingX - 6;
+      // Return relative width to fit the column spacing entirely (gap of 4px)
+      const rectWidth = spacingX - 4; 
       const rectHeight = 22;
       body = Matter.Bodies.rectangle(x, y, rectWidth, rectHeight, {
         ...pegOptions,
@@ -39,7 +40,7 @@ export class Peg extends GameObject {
     
     // Inject self reference safely
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (this.body.plugin as any).gameObject = this;
+    (this.body.plugin).gameObject = this;
   }
 
   public markHit() {

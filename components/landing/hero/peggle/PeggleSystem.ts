@@ -12,6 +12,7 @@ export class PeggleSystem {
   private height: number;
 
   private cannon: Matter.Body | null = null;
+  private cannonImg: HTMLImageElement;
   private mousePos = { x: 0, y: 0 };
   private pegs: Peg[] = [];
 
@@ -35,6 +36,10 @@ export class PeggleSystem {
     });
 
     this.runner = Matter.Runner.create();
+
+    // Cache the image for drawing the cannon
+    this.cannonImg = new Image();
+    this.cannonImg.src = '/cannon.png';
   }
 
   public init() {
@@ -76,11 +81,7 @@ export class PeggleSystem {
     this.cannon = Matter.Bodies.rectangle(cannonPos.x, cannonPos.y, cannonWidth, cannonHeight, {
       isStatic: true,
       label: 'cannon',
-      render: {
-        fillStyle: '#334155',
-        strokeStyle: '#94a3b8',
-        lineWidth: 2,
-      }
+      render: { visible: false } // Hidden for custom 3D parsing
     });
 
     Matter.Composite.add(this.world, this.cannon);
@@ -95,15 +96,18 @@ export class PeggleSystem {
 
     for (let row = 0; row < rows; row++) {
       const isRectRow = row % 3 === 2;
+      // Double the column count for rectangle rows to make them shorter but closer
+      const currentCols = isRectRow ? cols * 2.5 : cols; 
+      const spacingX = this.width / currentCols;
 
-      for (let col = 0; col < cols; col++) {
+      for (let col = 0; col < currentCols; col++) {
         const offsetX = (!isRectRow && row % 2 === 0) ? spacingX / 2 : 0;
         const x = col * spacingX + offsetX + spacingX / 2;
         const y = startY + row * spacingY;
 
         if (x > this.width - 20 || x < 20) continue;
         if (!isRectRow && Math.random() > 0.8) continue;
-        if (isRectRow && col % 4 === 0) continue;
+        if (isRectRow && col % 5 === 0) continue; // Gap every 5 tiny blocks to let ball pass
 
         const peg = new Peg(x, y, isRectRow, this.width, spacingX);
         this.pegs.push(peg);
@@ -131,11 +135,7 @@ export class PeggleSystem {
       frictionAir: 0.001,
       density: 0.05,
       label: 'ball',
-      render: {
-        fillStyle: '#fff',
-        strokeStyle: '#666',
-        lineWidth: 2
-      }
+      render: { visible: false }
     });
 
     const speed = 15;
@@ -225,6 +225,57 @@ export class PeggleSystem {
         if (Matter.Composite.allBodies(this.world).includes(peg.body)) {
           peg.renderCustom(ctx);
         }
+      });
+
+      // Render Custom Cannon
+      ctx.save();
+      ctx.translate(this.cannon.position.x, this.cannon.position.y);
+      ctx.rotate(this.cannon.angle);
+      
+      if (this.cannonImg && this.cannonImg.complete && this.cannonImg.width > 0) {
+        // Apply base rotation of 45 degrees for the image
+        ctx.rotate(45 * Math.PI / 180);
+        
+        // The physics cannon width is 80.
+        // We anchor the left edge at -40 to match the physics rotation pivot.
+        const w = 90; // slightly larger than physics bounds for a solid look
+        const h = w * (this.cannonImg.height / this.cannonImg.width);
+        ctx.drawImage(this.cannonImg, -40, -h / 2, w, h);
+      } else {
+        // Fallback wireframe just in case image is loading
+        const w = 80;
+        const h = 25;
+        ctx.fillStyle = '#334155';
+        ctx.fillRect(-w/2, -h/2, w, h);
+      }
+      
+      ctx.restore();
+
+      // Render Ball Loop
+      const balls = Matter.Composite.allBodies(this.world).filter(b => b.label === 'ball');
+      balls.forEach(ball => {
+        const { x: bx, y: by } = ball.position;
+        const r = 15;
+        
+        ctx.beginPath();
+        ctx.arc(bx, by, r, 0, Math.PI * 2);
+        
+        // CSS converted metallic radial gradient
+        const gradX = bx - r * 0.3; 
+        const gradY = by - r * 0.7; 
+        const grad = ctx.createRadialGradient(gradX, gradY, 1, bx, by, r);
+        
+        grad.addColorStop(0, "white");
+        grad.addColorStop(0.03, "#d1d5db"); // light gray / silver reflection
+        grad.addColorStop(0.6, "#374151");  // dark metallic gray core
+        grad.addColorStop(1, "#9ca3af");    // soft gray rim
+        
+        ctx.fillStyle = grad;
+        ctx.fill();
+        
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = '#000000';
+        ctx.stroke();
       });
 
       // Render Trajectory
