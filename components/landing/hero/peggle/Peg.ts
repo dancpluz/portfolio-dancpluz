@@ -1,13 +1,14 @@
 import Matter from 'matter-js';
 import { GameObject } from './GameObject';
-import { PEG_COLORS } from './constants';
+import { PEG_COLORS, PEG_SCORES, CIRCLE_PEG_RADIUS, RECT_PEG_WIDTH, RECT_PEG_HEIGHT } from './constants';
 
 export class Peg extends GameObject {
   public isHit: boolean = false;
   public baseColor: string;
   public isRectRow: boolean;
+  public scoreValue: number;
 
-  constructor(x: number, y: number, isRectRow: boolean, width: number, spacingX: number) {
+  constructor(x: number, y: number, isRectRow: boolean) {
     const rand = Math.random();
     let color = PEG_COLORS.electricGreen;
     if (rand > 0.85) color = PEG_COLORS.neonPink;
@@ -18,33 +19,35 @@ export class Peg extends GameObject {
     const pegOptions = {
       isStatic: true,
       restitution: 0.6,
-      render: { visible: false }, // Render disabled, drawn via OOP renderCustom()
+      render: { visible: false },
       label: 'peg',
     };
 
     if (isRectRow) {
-      // Return relative width to fit the column spacing entirely (gap of 4px)
-      const rectWidth = spacingX - 4; 
-      const rectHeight = 22;
-      body = Matter.Bodies.rectangle(x, y, rectWidth, rectHeight, {
+      body = Matter.Bodies.rectangle(x, y, RECT_PEG_WIDTH, RECT_PEG_HEIGHT, {
         ...pegOptions,
         chamfer: { radius: 0 }, 
       });
     } else {
-      body = Matter.Bodies.circle(x, y, 14, pegOptions);
+      body = Matter.Bodies.circle(x, y, CIRCLE_PEG_RADIUS, pegOptions);
     }
 
     super(body);
     this.baseColor = color;
     this.isRectRow = isRectRow;
+    this.scoreValue = PEG_SCORES[color] ?? 100;
     
-    // Inject self reference safely
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (this.body.plugin).gameObject = this;
+    (this.body.plugin as Record<string, unknown>).gameObject = this;
   }
 
-  public markHit() {
+  public markHit(): number {
+    if (this.isHit) return 0;
     this.isHit = true;
+    return this.scoreValue;
+  }
+
+  public get isNeonPink(): boolean {
+    return this.baseColor === PEG_COLORS.neonPink;
   }
 
   public renderCustom(ctx: CanvasRenderingContext2D) {
@@ -87,7 +90,7 @@ export class Peg extends GameObject {
       ctx.fillRect(x + 3, y + 3, w - 6, h - 6);
 
     } else {
-      const r = 14;
+      const r = CIRCLE_PEG_RADIUS;
       const x = this.body.position.x;
       const y = this.body.position.y;
 
