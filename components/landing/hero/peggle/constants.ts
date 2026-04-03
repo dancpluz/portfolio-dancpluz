@@ -4,11 +4,11 @@ export const PEG_COLORS = {
   cyanBlue: '#00fbfe',
 };
 
-// Score values per peg color
+// Score values per peg color (Peggle-style base values)
 export const PEG_SCORES: Record<string, number> = {
-  [PEG_COLORS.neonPink]: 500,
-  [PEG_COLORS.electricGreen]: 100,
-  [PEG_COLORS.cyanBlue]: 250,
+  [PEG_COLORS.neonPink]: 100,   // Orange equivalent — objective pegs, high value
+  [PEG_COLORS.electricGreen]: 10, // Filler pegs, low value
+  [PEG_COLORS.cyanBlue]: 10,     // Bonus pegs, low base but multiplier rewards hitting many
 };
 
 // Game config
@@ -28,7 +28,7 @@ export const PEG_ROWS = 8;
 export const PEG_COLS = 8;
 export const PEG_SPACING_Y = 55;
 export const PEG_START_Y = 120;
-export const RECT_COL_MULTIPLIER = 2; // Rectangle rows have cols * this many items
+export const RECT_COL_MULTIPLIER = 2;
 
 // Portrait canvas dimensions (max)
 export const CANVAS_WIDTH = 420;
@@ -36,3 +36,13 @@ export const CANVAS_HEIGHT = 700;
 
 // Font for canvas text rendering (OffBit pixelated font)
 export const HEADING_FONT = '"OffBit", "Courier New", monospace';
+
+// Combo multiplier thresholds (Peggle-style)
+export function getComboMultiplier(comboCount: number): number {
+  if (comboCount < 3) return 1;
+  if (comboCount < 6) return 2;
+  if (comboCount < 10) return 3;
+  if (comboCount < 15) return 5;
+  if (comboCount < 20) return 10;
+  return 25;
+}
