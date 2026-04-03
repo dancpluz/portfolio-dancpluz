@@ -86,7 +86,7 @@ export default function Myself({
             style={{ isolation: 'isolate' }}
           >
             <Image
-              src='/daniel.webp'
+              src='/daniel.png'
               alt='Daniel Luz Developer'
               fill
               className='object-contain'

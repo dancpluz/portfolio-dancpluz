@@ -4,9 +4,27 @@ import { useState, useEffect, useRef, useMemo, useCallback, memo } from 'react';
 import { createPortal } from 'react-dom';
 import { useClickOutside } from '@/hooks/use-click-outside';
 import { Polaroid } from '@/types/api';
-import Image from 'next/image';
 import { useAutoFitText } from '@/hooks/use-auto-fit-text';
-import { isGif } from '@/lib/utils';
+import CanvasImage, { type ImageEffect } from '@/components/extra/canvas-image';
+
+const POLAROID_EFFECTS: ImageEffect[] = [
+  {
+    type: 'pixelate',
+    enabled: true,
+    params: { size: 8, maintainAspect: true },
+  },
+  {
+    type: 'posterize',
+    enabled: true,
+    params: { levels: 12, preserveHue: false },
+  },
+  {
+    type: 'vibrance',
+    enabled: true,
+    params: { vibrance: 0.35, saturation: 0.15 },
+  },
+  { type: 'exposure', enabled: true, params: { exposure: 0, contrast: 0.1 } },
+];
 
 interface FolderProps {
   color?: string;
@@ -73,7 +91,7 @@ const AutoFitText = memo(function AutoFitText({
 
   return (
     <span
-      className="text-black text-center px-1 wrap-break-word w-full"
+      className='text-black text-center px-1 wrap-break-word w-full'
       style={{ fontSize: `${fontSize}px`, lineHeight: 1.25 }}
     >
       {text}
@@ -122,7 +140,7 @@ const PaperItem = memo(function PaperItem({
       const offsetY = (e.clientY - centerY) * 0.15;
       setOffset({ x: offsetX, y: offsetY });
     },
-    [open]
+    [open],
   );
 
   const handleMouseLeave = useCallback(() => {
@@ -138,7 +156,7 @@ const PaperItem = memo(function PaperItem({
         onClickFolder();
       }
     },
-    [open, index, onZoom, onClickFolder]
+    [open, index, onZoom, onClickFolder],
   );
 
   const transformStyle = open
@@ -147,7 +165,7 @@ const PaperItem = memo(function PaperItem({
 
   return (
     <div
-      role="button"
+      role='button'
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
@@ -175,12 +193,12 @@ const PaperItem = memo(function PaperItem({
         pointerEvents: zoomedIndex === index ? 'none' : 'auto',
       }}
     >
-      <div className="w-full aspect-square bg-black overflow-hidden relative flex items-center justify-center shrink-0 shadow-inner">
+      <div className='w-full aspect-square bg-black overflow-hidden relative flex items-center justify-center shrink-0 shadow-inner'>
         {item}
       </div>
       {text && (
-        <div className="flex-1 flex items-center justify-center overflow-hidden mt-1 px-[2px]">
-          <span className="text-[6px] text-black leading-tight line-clamp-1 wrap-break-word overflow-hidden text-ellipsis">
+        <div className='flex-1 flex items-center justify-center overflow-hidden mt-1 px-[2px]'>
+          <span className='text-[6px] text-black leading-tight line-clamp-1 wrap-break-word overflow-hidden text-ellipsis'>
             {text}
           </span>
         </div>
@@ -201,8 +219,15 @@ export default function Folder({
     let arr: { node: React.ReactNode; text?: string }[] = [];
     if (polaroids.length > 0) {
       arr = polaroids.map((p) => ({
-        node: <Image key={p.id} src={p.photoUrl} unoptimized={isGif(p.photoUrl)} alt={p.text || 'polaroid'} className="object-cover w-full h-full" fill />,
-        text: p.text
+        node: (
+          <CanvasImage
+            key={p.id}
+            src={p.photoUrl}
+            alt={p.text || 'polaroid'}
+            effects={POLAROID_EFFECTS}
+          />
+        ),
+        text: p.text,
       }));
     } else {
       arr = items.map((item) => ({ node: item }));
@@ -216,9 +241,13 @@ export default function Folder({
   const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useClickOutside(containerRef, () => {
-    setOpen(false);
-  }, open && zoomedIndex === null);
+  useClickOutside(
+    containerRef,
+    () => {
+      setOpen(false);
+    },
+    open && zoomedIndex === null,
+  );
 
   useEffect(() => {
     setMounted(true);
@@ -254,7 +283,7 @@ export default function Folder({
   return (
     <div ref={containerRef} style={scaleStyle} className={className}>
       <div
-        role="button"
+        role='button'
         tabIndex={0}
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') {
@@ -315,43 +344,48 @@ export default function Folder({
           ></div>
         </div>
       </div>
-      {mounted && zoomedIndex !== null && createPortal(
-        <div
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === 'Escape') {
+      {mounted &&
+        zoomedIndex !== null &&
+        createPortal(
+          <div
+            role='button'
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === 'Escape') {
+                e.stopPropagation();
+                setZoomedIndex(null);
+              }
+            }}
+            className='fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md cursor-zoom-out animate-in fade-in duration-300 w-full h-full border-none m-0 p-0 focus:outline-none'
+            onClick={(e) => {
               e.stopPropagation();
               setZoomedIndex(null);
-            }
-          }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md cursor-zoom-out animate-in fade-in duration-300 w-full h-full border-none m-0 p-0 focus:outline-none"
-          onClick={(e) => { e.stopPropagation(); setZoomedIndex(null); }}
-        >
-          <div 
-            className="p-[16px] shadow-2xl flex flex-col transition-transform scale-100 hover:scale-[1.02] max-h-[95vh] overflow-y-auto scrollbar-hide"
-            style={{ 
-              width: '328px',
-              height: '400px', 
-              backgroundColor: paperColors[zoomedIndex]
             }}
           >
-            <div className="w-full aspect-square bg-black overflow-hidden relative flex items-center justify-center shrink-0 shadow-inner">
-              {papers[zoomedIndex].node}
-            </div>
-            {papers[zoomedIndex].text && (
-              <div className="flex-1 flex flex-col items-center justify-center mt-3 pb-2 w-full overflow-hidden">
-                <AutoFitText 
-                  text={papers[zoomedIndex].text} 
-                  maxWidth={296}
-                  maxHeight={60}
-                />
+            <div
+              className='p-[16px] shadow-2xl flex flex-col transition-transform scale-100 hover:scale-[1.02] max-h-[95vh] overflow-y-auto scrollbar-hide'
+              style={{
+                width: '328px',
+                height: '400px',
+                backgroundColor: paperColors[zoomedIndex],
+              }}
+            >
+              <div className='w-full aspect-square bg-black overflow-hidden relative flex items-center justify-center shrink-0 shadow-inner'>
+                {papers[zoomedIndex].node}
               </div>
-            )}
-          </div>
-        </div>,
-        document.body
-      )}
+              {papers[zoomedIndex].text && (
+                <div className='flex-1 flex flex-col items-center justify-center mt-3 pb-2 w-full overflow-hidden'>
+                  <AutoFitText
+                    text={papers[zoomedIndex].text}
+                    maxWidth={296}
+                    maxHeight={60}
+                  />
+                </div>
+              )}
+            </div>
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }

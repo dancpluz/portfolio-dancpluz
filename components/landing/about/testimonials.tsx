@@ -10,13 +10,32 @@ import React, {
 } from 'react';
 import { cn, formatDateLocal } from '@/lib/utils';
 import { Testimonial } from '@/types/api';
-import Image from 'next/image';
 import Link from 'next/link';
+import CanvasImage, { type ImageEffect } from '@/components/extra/canvas-image';
 import { useAutoFitText } from '@/hooks/use-auto-fit-text';
 import { useLocale } from 'next-intl';
 import { AnimatePresence, m } from 'motion/react';
 import { ExternalLink, Heart, Share } from '@/components/ui/svg';
 import { useClickOutside } from '@/hooks/use-click-outside';
+
+const PROFILE_EFFECTS: ImageEffect[] = [
+  {
+    type: 'pixelate',
+    enabled: true,
+    params: { size: 8, maintainAspect: true },
+  },
+  {
+    type: 'posterize',
+    enabled: true,
+    params: { levels: 12, preserveHue: false },
+  },
+  {
+    type: 'vibrance',
+    enabled: true,
+    params: { vibrance: 0.35, saturation: 0.15 },
+  },
+  { type: 'exposure', enabled: true, params: { exposure: 0, contrast: 0.1 } },
+];
 
 // Spacing between each stacked card (in px)
 const X_STEP = 48;
@@ -181,12 +200,10 @@ const TestimonialCard = memo(function TestimonialCard({
       <div className='flex items-start gap-2 sm:gap-3 mb-2 sm:mb-3'>
         <div className='size-9 sm:size-12 rounded-full bg-linear-to-br from-green-400 via-yellow-400 to-green-500 flex items-center justify-center pixel-corners-small overflow-hidden shrink-0'>
           {testimonial.profileUrl ? (
-            <Image
+            <CanvasImage
               src={testimonial.profileUrl}
               alt={testimonial.title}
-              width={48}
-              height={48}
-              className='w-full h-full object-cover'
+              effects={PROFILE_EFFECTS}
             />
           ) : (
             <span className='text-lg sm:text-2xl'>🐸</span>
