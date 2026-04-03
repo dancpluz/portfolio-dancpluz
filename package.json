@@ -12,6 +12,7 @@
     "sonar": "dotenv -- sonar"
   },
   "dependencies": {
+    "@chenglou/pretext": "^0.0.4",
     "@logtape/logtape": "^2.0.4",
     "babel-plugin-react-compiler": "^1.0.0",
     "cheerio": "^1.2.0",
