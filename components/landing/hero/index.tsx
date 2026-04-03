@@ -4,7 +4,7 @@ import PeggleHero from './peggle-hero';
 
 export default function Hero() {
   return (
-    <section id={getSectionId(ROUTES.landing)} className='w-full p-4 relative'>
+    <section id={getSectionId(ROUTES.landing)} className='w-full relative'>
       <PeggleHero />
     </section>
   );

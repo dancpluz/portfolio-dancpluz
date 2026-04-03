@@ -3,7 +3,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { PeggleSystem, type GameHUDState } from './peggle/PeggleSystem';
 import { CANVAS_HEIGHT, CANVAS_WIDTH, PEG_COLORS } from './peggle/constants';
-import { cn } from '@/lib/utils';
 
 export default function PeggleHero() {
   const sceneRef = useRef<HTMLDivElement>(null);
@@ -108,7 +107,7 @@ export default function PeggleHero() {
               {Array.from({ length: hud.balls }).map((_, i) => (
                 <div
                   key={`ball-${i}`}
-                  className='w-2.5 h-2.5 rounded-full bg-gradient-to-br from-white to-gray-500 border border-black'
+                  className='w-2.5 h-2.5 rounded-full bg-linear-to-br from-white to-gray-500 border border-black'
                 />
               ))}
               {hud.balls === 0 && (
@@ -133,7 +132,7 @@ export default function PeggleHero() {
         role='application'
         tabIndex={0}
         aria-label='Peggle game canvas'
-        className='w-full bg-[#1e1e1e] rounded-xl overflow-hidden cursor-crosshair touch-none outline-none'
+        className='w-full bg-surface pixel-corners-small cursor-crosshair touch-none outline-none'
         style={{ maxWidth: `${CANVAS_WIDTH}px`, aspectRatio: `${CANVAS_WIDTH} / ${CANVAS_HEIGHT}` }}
         onClick={handleClick}
         onKeyDown={(e) => {

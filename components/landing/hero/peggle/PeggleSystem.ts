@@ -221,9 +221,9 @@ export class PeggleSystem {
     const greenCount = total - pinkCount - cyanCount;
 
     const colors: string[] = [
-      ...Array(pinkCount).fill(PEG_COLORS.neonPink),
-      ...Array(cyanCount).fill(PEG_COLORS.cyanBlue),
-      ...Array(greenCount).fill(PEG_COLORS.electricGreen),
+      ...new Array(pinkCount).fill(PEG_COLORS.neonPink),
+      ...new Array(cyanCount).fill(PEG_COLORS.cyanBlue),
+      ...new Array(greenCount).fill(PEG_COLORS.electricGreen),
     ];
 
     // Fisher-Yates shuffle for random placement
@@ -620,10 +620,10 @@ export class PeggleSystem {
   }
 
   public handleClick() {
-    if (this.gameState !== 'playing') {
-      this.resetGame();
-    } else {
+    if (this.gameState === 'playing') {
       this.spawnBall();
+    } else {
+      this.resetGame();
     }
   }
 

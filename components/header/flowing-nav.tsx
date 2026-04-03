@@ -1,16 +1,14 @@
 'use client';
 
 import React, { useRef, useEffect, useState } from 'react';
-import { animate, m } from 'motion/react';
+import { animate } from 'motion/react';
 import Image from 'next/image';
-import Link from 'next/link';
+import MotionLink from '../motion/motion-link';
 import { useMenu } from '@/hooks/use-menu';
 import { useSectionScroll } from '@/hooks/use-section-scroll';
 import TransitionLink from '../transition-link';
 import { ROUTES } from '@/lib/constant';
 import { RouteItem } from '@/types/utils';
-
-const MotionLink = m.create(Link);
 
 export default function FlowingNav({
   speed = 15,
