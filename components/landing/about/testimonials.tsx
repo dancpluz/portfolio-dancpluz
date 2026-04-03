@@ -171,7 +171,7 @@ const TestimonialCard = memo(function TestimonialCard({
               target='_blank'
               rel='noopener noreferrer'
               onClick={handleLinkClick}
-              className='flex items-center justify-center size-8 rounded-full bg-primary text-primary-foreground hover:scale-110 transition-transform'
+              className='flex items-center justify-center size-8 rounded-full bg-primary text-accent-2 hover:scale-110 transition-transform'
             >
               <ExternalLink className='size-4' />
             </Link>
@@ -213,11 +213,11 @@ const TestimonialCard = memo(function TestimonialCard({
         <span>{formatDateLocal(testimonial.date, locale)}</span>
         <div className='flex items-center gap-4'>
           <div className='flex items-center gap-1'>
-            <Heart className='size-4' />
+            <Heart className='size-4 text-accent-1' />
             <span>{likes}</span>
           </div>
           <div className='flex items-center gap-1'>
-            <Share className='size-4' />
+            <Share className='size-4 text-accent-3' />
             <span>{retweets}</span>
           </div>
         </div>

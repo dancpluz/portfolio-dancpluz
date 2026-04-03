@@ -85,7 +85,7 @@ export class PeggleSystem {
     this.runner = Matter.Runner.create();
 
     this.cannonImg = new Image();
-    this.cannonImg.src = '/cannon.png';
+    this.cannonImg.src = '/cannon.webp';
   }
 
   public setStateChangeCallback(cb: (state: GameHUDState) => void) {

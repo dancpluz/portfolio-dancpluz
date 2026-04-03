@@ -3,8 +3,8 @@ import { getSectionId } from '@/lib/utils';
 import { getTestimonials } from '@/actions/testimonials';
 import FlipText from '../../extra/flip-text';
 import Testimonials from './testimonials';
-import Folder from '@/components/landing/about/folder';
 import { getPolaroids } from '@/actions/polaroids';
+import Myself from './myself';
 
 export default async function About() {
   const [testimonials, polaroids] = await Promise.all([
@@ -23,10 +23,8 @@ export default async function About() {
       className='flex w-full flex-col gap-10 md:gap-20'
     >
       <FlipText text='Sobre' className='font-heading text-7xl' />
+      <Myself polaroids={polaroids.data || []} />
       <Testimonials testimonials={displayTestimonials} />
-      <Folder color='#ff00ff' polaroids={polaroids.data || []} />
-      <Folder color='#00f248' polaroids={polaroids.data || []} />
-      <Folder color='#00fbfe' polaroids={polaroids.data || []} />
     </section>
   );
 }

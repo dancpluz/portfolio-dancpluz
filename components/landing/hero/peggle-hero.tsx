@@ -20,7 +20,6 @@ export default function PeggleHero() {
     game.init();
     gameRef.current = game;
 
-    // Mobile touch: drag to aim, release to fire
     const canvas = game.getCanvasElement();
     if (!canvas) return;
 
