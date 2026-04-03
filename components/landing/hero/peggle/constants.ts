@@ -11,9 +11,16 @@ export const PEG_SCORES: Record<string, number> = {
   [PEG_COLORS.cyanBlue]: 10,     // Bonus pegs, low base but multiplier rewards hitting many
 };
 
+// Peg color distribution (must sum to 1.0)
+export const PEG_DISTRIBUTION = {
+  green: 0.80,  // ~80% green
+  pink: 0.10,   // ~10% pink (objective)
+  cyan: 0.10,   // ~10% cyan (bonus)
+};
+
 // Game config
-export const INITIAL_BALLS = 10;
-export const BALL_SPEED = 15;
+export const INITIAL_BALLS = 4;
+export const BALL_SPEED = 12;
 export const BALL_RADIUS = 12;
 export const CANNON_WIDTH = 60;
 export const CANNON_HEIGHT = 18;

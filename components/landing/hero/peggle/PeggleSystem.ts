@@ -5,13 +5,14 @@ import {
   CANNON_WIDTH, CANNON_HEIGHT, HEADING_FONT,
   PEG_ROWS, PEG_COLS, PEG_SPACING_Y, PEG_START_Y,
   RECT_PEG_WIDTH, CANVAS_WIDTH, CANVAS_HEIGHT,
+  PEG_COLORS, PEG_DISTRIBUTION,
   getComboMultiplier,
 } from './constants';
 
 interface ScoreParticle {
   x: number;
   y: number;
-  value: number;
+  text: string;
   color: string;
   age: number;
   maxAge: number;
@@ -52,6 +53,7 @@ export class PeggleSystem {
 
   // Combo state (per shot)
   private comboCount: number = 0;
+  private cyanMultiplierBoost: number = 0;
   private shotBaseScore: number = 0;
 
   private onStateChange?: (state: GameHUDState) => void;
@@ -90,9 +92,13 @@ export class PeggleSystem {
     this.onStateChange = cb;
   }
 
+  private getCurrentMultiplier() {
+    return getComboMultiplier(this.comboCount) + this.cyanMultiplierBoost;
+  }
+
   private notifyStateChange() {
     const pinkLeft = this.pegs.filter(p => p.isNeonPink && !p.isHit).length;
-    const multiplier = getComboMultiplier(this.comboCount);
+    const multiplier = this.getCurrentMultiplier();
     this.onStateChange?.({
       balls: this.ballsRemaining,
       score: this.score,
@@ -177,6 +183,9 @@ export class PeggleSystem {
     const startY = PEG_START_Y;
     const spacingY = PEG_SPACING_Y;
 
+    // Pass 1: collect all valid peg positions
+    const positions: { x: number; y: number; isRectRow: boolean }[] = [];
+
     for (let row = 0; row < rows; row++) {
       const isRectRow = row % 3 === 2;
 
@@ -201,34 +210,55 @@ export class PeggleSystem {
         if (!isRectRow && Math.random() > 0.8) continue;
         if (isRectRow && col % 5 === 0) continue;
 
-        const peg = new Peg(x, y, isRectRow);
-        this.pegs.push(peg);
-        Matter.Composite.add(this.world, peg.body);
+        positions.push({ x, y, isRectRow });
       }
     }
+
+    // Pass 2: build color array with exact distribution
+    const total = positions.length;
+    const pinkCount = Math.round(total * PEG_DISTRIBUTION.pink);
+    const cyanCount = Math.round(total * PEG_DISTRIBUTION.cyan);
+    const greenCount = total - pinkCount - cyanCount;
+
+    const colors: string[] = [
+      ...Array(pinkCount).fill(PEG_COLORS.neonPink),
+      ...Array(cyanCount).fill(PEG_COLORS.cyanBlue),
+      ...Array(greenCount).fill(PEG_COLORS.electricGreen),
+    ];
+
+    // Fisher-Yates shuffle for random placement
+    for (let i = colors.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [colors[i], colors[j]] = [colors[j], colors[i]];
+    }
+
+    // Pass 3: create pegs with assigned colors
+    positions.forEach((pos, i) => {
+      const peg = new Peg(pos.x, pos.y, pos.isRectRow, colors[i]);
+      this.pegs.push(peg);
+      Matter.Composite.add(this.world, peg.body);
+    });
   }
 
   // Called when a new ball is fired — resets combo for the new shot
   private startShot() {
     this.comboCount = 0;
+    this.cyanMultiplierBoost = 0;
     this.shotBaseScore = 0;
   }
 
-  // Called when ball exits the screen — apply multiplier and finalize score
+  // Called when ball exits the screen — finalize shot and clean up
   private endShot() {
-    const multiplier = getComboMultiplier(this.comboCount);
-    const finalShotScore = this.shotBaseScore * multiplier;
-    this.score += finalShotScore;
-
-    // Show a big multiplier particle in the center if combo > 2
-    if (this.comboCount >= 3) {
+    // Show a summary particle in the center if combo > 2 or cyan boost was obtained
+    const multiplier = this.getCurrentMultiplier();
+    if (this.comboCount >= 3 || this.cyanMultiplierBoost > 0) {
       this.scoreParticles.push({
         x: this.width / 2,
         y: this.height / 2,
-        value: finalShotScore,
+        text: `+${this.shotBaseScore * multiplier}`,
         color: '#ffffff',
         age: 0,
-        maxAge: 90, // longer for the big end-of-shot display
+        maxAge: 90,
       });
     }
 
@@ -278,8 +308,47 @@ export class PeggleSystem {
     this.notifyStateChange();
   }
 
-  private spawnScoreParticle(x: number, y: number, value: number, color: string) {
-    this.scoreParticles.push({ x, y, value, color, age: 0, maxAge: 60 });
+  private spawnScoreParticle(x: number, y: number, value: number | string, color: string) {
+    const text = typeof value === 'number' ? `+${value}` : value;
+    this.scoreParticles.push({ x, y, text, color, age: 0, maxAge: 60 });
+  }
+
+  private handlePegHit(pegObj: Peg, pegBody: Matter.Body) {
+    const points = pegObj.markHit();
+    if (points > 0) {
+      // Calculate what the shot score WAS before this hit
+      const prevMultiplier = this.getCurrentMultiplier();
+      const prevShotScore = this.shotBaseScore * prevMultiplier;
+
+      // Update base stats
+      this.comboCount++;
+      this.shotBaseScore += points;
+
+      // Check for cyan boost
+      if (pegObj.baseColor === PEG_COLORS.cyanBlue) {
+        this.cyanMultiplierBoost++;
+        this.scoreParticles.push({
+          x: pegBody.position.x,
+          y: pegBody.position.y - 25,
+          text: 'MULTI UP!',
+          color: pegObj.baseColor,
+          age: 0,
+          maxAge: 70
+        });
+      }
+
+      // Calculate what the shot score IS now
+      const newMultiplier = this.getCurrentMultiplier();
+      const newShotScore = this.shotBaseScore * newMultiplier;
+
+      // The difference is what we just earned, reflecting retroactive multiplier gains!
+      const earnedThisHit = newShotScore - prevShotScore;
+      
+      this.score += earnedThisHit;
+
+      this.spawnScoreParticle(pegBody.position.x, pegBody.position.y, earnedThisHit, pegObj.baseColor);
+      this.notifyStateChange();
+    }
   }
 
   private attachEvents() {
@@ -293,18 +362,7 @@ export class PeggleSystem {
         if (pegBody && ball) {
           const pegObj = (pegBody.plugin as Record<string, unknown>).gameObject as Peg | undefined;
           if (pegObj) {
-            const points = pegObj.markHit();
-            if (points > 0) {
-              // Accumulate base score for end-of-shot multiplier
-              this.comboCount++;
-              this.shotBaseScore += points;
-
-              // Show the base value as a floating particle (real-time feedback)
-              const multiplier = getComboMultiplier(this.comboCount);
-              const displayText = multiplier > 1 ? points * multiplier : points;
-              this.spawnScoreParticle(pegBody.position.x, pegBody.position.y, displayText, pegObj.baseColor);
-              this.notifyStateChange();
-            }
+            this.handlePegHit(pegObj, pegBody);
           }
         }
       });
@@ -322,13 +380,7 @@ export class PeggleSystem {
           if (speed < 0.05) {
             const pegObj = (pegBody.plugin as Record<string, unknown>).gameObject as Peg | undefined;
             if (pegObj) {
-              const points = pegObj.markHit();
-              if (points > 0) {
-                this.comboCount++;
-                this.shotBaseScore += points;
-                this.spawnScoreParticle(pegBody.position.x, pegBody.position.y, points, pegObj.baseColor);
-                this.notifyStateChange();
-              }
+              this.handlePegHit(pegObj, pegBody);
             }
             this.removePeg(pegBody);
           }
@@ -514,10 +566,10 @@ export class PeggleSystem {
 
       ctx.strokeStyle = 'black';
       ctx.lineWidth = 3;
-      ctx.strokeText(`+${particle.value}`, particle.x, particle.y - yOffset);
+      ctx.strokeText(particle.text, particle.x, particle.y - yOffset);
 
       ctx.fillStyle = particle.color;
-      ctx.fillText(`+${particle.value}`, particle.x, particle.y - yOffset);
+      ctx.fillText(particle.text, particle.x, particle.y - yOffset);
       ctx.restore();
     });
   }

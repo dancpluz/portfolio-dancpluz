@@ -8,11 +8,7 @@ export class Peg extends GameObject {
   public isRectRow: boolean;
   public scoreValue: number;
 
-  constructor(x: number, y: number, isRectRow: boolean) {
-    const rand = Math.random();
-    let color = PEG_COLORS.electricGreen;
-    if (rand > 0.85) color = PEG_COLORS.neonPink;
-    else if (rand > 0.7) color = PEG_COLORS.cyanBlue;
+  constructor(x: number, y: number, isRectRow: boolean, color: string) {
 
     let body: Matter.Body;
 
