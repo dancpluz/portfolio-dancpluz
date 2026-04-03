@@ -70,7 +70,7 @@ const AutoFitText = memo(function AutoFitText({
 
   return (
     <p
-      className="text-foreground font-text mb-2 sm:mb-3 leading-relaxed wrap-break-word"
+      className='text-foreground font-text mb-2 sm:mb-3 leading-relaxed wrap-break-word'
       style={{ fontSize: `${fontSize}px` }}
     >
       {text}
@@ -203,11 +203,11 @@ const TestimonialCard = memo(function TestimonialCard({
           </span>
         </div>
       </div>
-      <AutoFitText 
-        text={testimonial.content} 
-        maxWidth={isSm ? 348 : 236} 
-        maxHeight={isSm ? 100 : 60} 
-        baseSize={isSm ? 15 : 12} 
+      <AutoFitText
+        text={testimonial.content}
+        maxWidth={isSm ? 348 : 236}
+        maxHeight={isSm ? 100 : 60}
+        baseSize={isSm ? 15 : 12}
       />
       <div className='flex items-center justify-between text-foreground text-[10px] sm:text-sm mt-auto'>
         <span>{formatDateLocal(testimonial.date, locale)}</span>
@@ -298,7 +298,7 @@ export default function Testimonials({
   return (
     <div
       ref={containerRef}
-      className='grid [grid-template-areas:"stack"] place-items-center opacity-100 animate-in fade-in-0 duration-700 mx-auto w-fit'
+      className='grid [grid-template-areas:"stack"] place-items-center opacity-100 animate-in fade-in-0 duration-700 mx-auto w-fit my-16'
     >
       {testimonials.map((testimonial, index) => (
         <TestimonialCard

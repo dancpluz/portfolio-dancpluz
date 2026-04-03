@@ -20,7 +20,7 @@ export default async function About() {
   return (
     <section
       id={getSectionId(ROUTES.about)}
-      className='flex w-full flex-col gap-10 md:gap-20'
+      className='flex w-full flex-col'
     >
       <FlipText text='Sobre' className='font-heading text-7xl' />
       <Myself polaroids={polaroids.data || []} />

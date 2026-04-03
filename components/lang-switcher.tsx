@@ -41,7 +41,7 @@ export default function LanguageSwitcher() {
       aria-label='Toggle language'
     >
       <div className='relative overflow-hidden'>
-        <Globe className='size-5 text-foreground transition-colors group-hover:text-accent-1' />
+        <Globe className='size-5 text-white transition-colors group-hover:text-accent-1' />
       </div>
 
       <div className='flex flex-col h-4 overflow-hidden relative items-center'>
@@ -56,7 +56,7 @@ export default function LanguageSwitcher() {
               stiffness: 300,
               damping: 30,
             }}
-            className='font-heading font-black text-base uppercase leading-tight tracking-widest text-foreground'
+            className='font-heading font-black text-base uppercase leading-tight tracking-widest text-white'
           >
             {locale}
           </m.span>

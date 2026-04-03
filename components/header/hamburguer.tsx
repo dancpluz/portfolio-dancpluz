@@ -23,7 +23,7 @@ export default function Hamburguer() {
         aria-pressed={isOpen}
       >
         <m.span
-          className={`block w-10 h-[2px] origin-center bg-foreground`}
+          className={`block w-10 h-[2px] origin-center bg-white`}
           animate={{
             translateY: isOpen ? 5 : 0,
             rotate: isOpen ? 45 : 0,
@@ -32,7 +32,7 @@ export default function Hamburguer() {
           transition={{ duration: 0.3, ease: 'easeOut' }}
         />
         <m.span
-          className={`block w-10 h-[2px] origin-center mt-[8px] bg-foreground`}
+          className={`block w-10 h-[2px] origin-center mt-[8px] bg-white`}
           animate={{
             translateY: isOpen ? -5 : 0,
             rotate: isOpen ? -45 : 0,

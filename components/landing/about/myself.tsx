@@ -32,20 +32,20 @@ export default function Myself({
     mouseY.set(0);
   };
 
-  // Depth 1 (closest)
-  const x1 = useTransform(smoothMouseX, [-1, 1], [-10, 10]);
-  const y1 = useTransform(smoothMouseY, [-1, 1], [-10, 10]);
+  // Green
+  const x1 = useTransform(smoothMouseX, [-1, 1], [-20, 20]);
+  const y1 = useTransform(smoothMouseY, [-1, 1], [-20, 20]);
 
-  // Depth 2 (medium)
-  const x2 = useTransform(smoothMouseX, [-1, 1], [-20, 20]);
-  const y2 = useTransform(smoothMouseY, [-1, 1], [-20, 20]);
+  // Pink
+  const x2 = useTransform(smoothMouseX, [-1, 1], [-10, 10]);
+  const y2 = useTransform(smoothMouseY, [-1, 1], [-10, 10]);
 
-  // Depth 3 (farthest)
+  // Cyan
   const x3 = useTransform(smoothMouseX, [-1, 1], [-80, 80]);
   const y3 = useTransform(smoothMouseY, [-1, 1], [-40, 40]);
 
   return (
-    <section className='w-full relative overflow-visible'>
+    <div className='w-full relative overflow-visible mb-16'>
       <div
         ref={ref}
         className='w-full flex justify-center'
@@ -55,20 +55,24 @@ export default function Myself({
       >
         <div className='relative w-110 max-w-full aspect-11/15'>
           {/* Folders with Parallax (Rendered behind the image) */}
+          
+          {/* Green */}
           <m.div
             className='absolute top-1/3 left-[7%] z-0 pointer-events-auto'
-            style={{ x: x2, y: y2 }}
+            style={{ x: x1, y: y1 }}
           >
             <Folder color='#00f248' size={1} polaroids={polaroids || []} />
           </m.div>
 
+          {/* Pink */}
           <m.div
             className='absolute top-1/2 -right-[11%] z-0 pointer-events-auto'
-            style={{ x: x1, y: y1 }}
+            style={{ x: x2, y: y2 }}
           >
             <Folder color='#ff00ff' size={1.1} polaroids={polaroids || []} />
           </m.div>
 
+          {/* Cyan */}
           <m.div
             className='absolute bottom-[4%] -left-[2%] z-15 pointer-events-auto shadow-xl'
             style={{ x: x3, y: y3 }}
@@ -93,6 +97,6 @@ export default function Myself({
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }

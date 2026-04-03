@@ -36,9 +36,9 @@ export default function ThemeSwitcher() {
       onClick={toggleTheme}
     >
       {mounted && (theme === 'dark' || resolvedTheme === 'dark') ? (
-        <Sun className='size-6 text-foreground' />
+        <Sun className='size-6 text-white' />
       ) : (
-        <Moon className='size-6 text-foreground' />
+        <Moon className='size-6 text-white' />
       )}
     </m.button>
   );
