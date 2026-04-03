@@ -12,6 +12,7 @@ import { cn, formatDateLocal } from '@/lib/utils';
 import { Testimonial } from '@/types/api';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useAutoFitText } from '@/hooks/use-auto-fit-text';
 import { useLocale } from 'next-intl';
 import { AnimatePresence, m } from 'motion/react';
 import { ExternalLink, Heart, Share } from '@/components/ui/svg';
@@ -47,6 +48,36 @@ function getMockStat(seed: string, min: number, max: number, offset = 0) {
   return (Math.abs(hash) % (max - min + 1)) + min;
 }
 
+const AutoFitText = memo(function AutoFitText({
+  text,
+  maxWidth,
+  maxHeight,
+  baseSize,
+}: {
+  text: string;
+  maxWidth: number;
+  maxHeight: number;
+  baseSize: number;
+}) {
+  const fontSize = useAutoFitText({
+    text,
+    maxWidth,
+    maxHeight,
+    baseSize,
+    minSize: 8,
+    lineHeightMultiplier: 1.625,
+  });
+
+  return (
+    <p
+      className="text-foreground font-text mb-2 sm:mb-3 leading-relaxed wrap-break-word"
+      style={{ fontSize: `${fontSize}px` }}
+    >
+      {text}
+    </p>
+  );
+});
+
 interface TestimonialCardProps {
   testimonial: Testimonial;
   index: number;
@@ -54,6 +85,7 @@ interface TestimonialCardProps {
   y: number;
   isLast: boolean;
   isSelected: boolean;
+  isSm: boolean;
   onSelect: (index: number) => void;
   onDeselect: () => void;
   onHover: () => void;
@@ -67,6 +99,7 @@ const TestimonialCard = memo(function TestimonialCard({
   y,
   isLast,
   isSelected,
+  isSm,
   onSelect,
   onDeselect,
   onHover,
@@ -170,9 +203,12 @@ const TestimonialCard = memo(function TestimonialCard({
           </span>
         </div>
       </div>
-      <p className='text-foreground font-text text-xs sm:text-[15px] leading-relaxed mb-2 sm:mb-3 line-clamp-3 sm:line-clamp-4'>
-        {testimonial.content}
-      </p>
+      <AutoFitText 
+        text={testimonial.content} 
+        maxWidth={isSm ? 348 : 236} 
+        maxHeight={isSm ? 100 : 60} 
+        baseSize={isSm ? 15 : 12} 
+      />
       <div className='flex items-center justify-between text-foreground text-[10px] sm:text-sm mt-auto'>
         <span>{formatDateLocal(testimonial.date, locale)}</span>
         <div className='flex items-center gap-4'>
@@ -273,6 +309,7 @@ export default function Testimonials({
           y={cardPositions[index].y}
           isLast={index === total - 1}
           isSelected={selectedIndex === index}
+          isSm={isSm}
           onSelect={handleSelect}
           onDeselect={handleDeselect}
           onHover={() => handleHover(index)}

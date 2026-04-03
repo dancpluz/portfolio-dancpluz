@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { useClickOutside } from '@/hooks/use-click-outside';
 import { Polaroid } from '@/types/api';
 import Image from 'next/image';
+import { useAutoFitText } from '@/hooks/use-auto-fit-text';
 
 interface FolderProps {
   color?: string;
@@ -50,6 +51,34 @@ const getOpenTransform = (index: number, total: number) => {
   if (index === 2) return 'translate(-50%, -100%) rotate(5deg)';
   return '';
 };
+
+const AutoFitText = memo(function AutoFitText({
+  text,
+  maxWidth,
+  maxHeight,
+}: {
+  text: string;
+  maxWidth: number;
+  maxHeight: number;
+}) {
+  const fontSize = useAutoFitText({
+    text,
+    maxWidth,
+    maxHeight,
+    baseSize: 32,
+    minSize: 10,
+    lineHeightMultiplier: 1.25,
+  });
+
+  return (
+    <span
+      className="text-black text-center px-1 wrap-break-word w-full"
+      style={{ fontSize: `${fontSize}px`, lineHeight: 1.25 }}
+    >
+      {text}
+    </span>
+  );
+});
 
 interface PaperItemProps {
   item: React.ReactNode;
@@ -302,7 +331,7 @@ export default function Folder({
             className="p-[16px] shadow-2xl flex flex-col transition-transform scale-100 hover:scale-[1.02] max-h-[95vh] overflow-y-auto scrollbar-hide"
             style={{ 
               width: '328px',
-              minHeight: '400px', 
+              height: '400px', 
               backgroundColor: paperColors[zoomedIndex]
             }}
           >
@@ -310,10 +339,12 @@ export default function Folder({
               {papers[zoomedIndex].node}
             </div>
             {papers[zoomedIndex].text && (
-              <div className="flex-1 flex flex-col items-center justify-center mt-4 pb-2">
-                <span className="text-lg md:text-xl text-black leading-tight text-center wrap-break-word px-2">
-                  {papers[zoomedIndex].text}
-                </span>
+              <div className="flex-1 flex flex-col items-center justify-center mt-3 pb-2 w-full overflow-hidden">
+                <AutoFitText 
+                  text={papers[zoomedIndex].text} 
+                  maxWidth={296}
+                  maxHeight={60}
+                />
               </div>
             )}
           </div>
