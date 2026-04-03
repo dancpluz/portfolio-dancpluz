@@ -6,6 +6,7 @@ import parse, {
 import Image from 'next/image';
 import Link from 'next/link';
 import CodeRenderer from './code-renderer';
+import { isGif } from '@/lib/utils';
 
 type ArticleRendererProps = {
   dirtyHtml: string;
@@ -51,6 +52,7 @@ const renderImg = (domNode: Element) => {
       alt={alt || 'Imagem do artigo'}
       width={imgWidth}
       height={imgHeight}
+      unoptimized={isGif(src)}
       className='rounded-lg shadow-md w-full h-auto'
     />
   );

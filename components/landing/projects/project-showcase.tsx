@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useMemo, useCallback, memo } from 'react';
 import Image from 'next/image';
-import { lerp } from '@/lib/utils';
+import { lerp, isGif } from '@/lib/utils';
 import FlipText from '../../extra/flip-text';
 import { Project } from '@/types/api';
 import { LineReveal } from '../../motion/reveal';
@@ -134,6 +134,7 @@ export default function ProjectShowcase({
                 src={project.coverUrl || '/placeholder.svg'}
                 alt={project.title}
                 fill
+                unoptimized={isGif(project.coverUrl)}
                 className='absolute inset-0 w-full h-full object-cover transition-all duration-500 ease-out'
                 style={{
                   opacity: hoveredIndex === index ? 1 : 0,

@@ -1,7 +1,7 @@
 'use client';
 
 import { categoryEmoji, ROUTES } from '@/lib/constant';
-import { formatDateLocal, getFirstParagraphText } from '@/lib/utils';
+import { formatDateLocal, getFirstParagraphText, isGif } from '@/lib/utils';
 import { PostsResponse } from '@/types/pocketbase';
 import { m } from 'motion/react';
 import TransitionLink from '@/components/transition-link';
@@ -76,10 +76,10 @@ function ImageGif({ post }: Readonly<{ post: PostsResponse }>) {
       <Image
         src={buildImageUrl(post, firstGif)}
         alt={title ?? 'gif'}
+        unoptimized={isGif(firstGif)}
         width={100}
         height={100}
         className='size-full object-fill'
-        unoptimized
       />
     );
   }
@@ -89,6 +89,7 @@ function ImageGif({ post }: Readonly<{ post: PostsResponse }>) {
       <Image
         src={buildImageUrl(post, firstImage)}
         alt={title ?? 'image'}
+        unoptimized={isGif(firstImage)}
         width={100}
         height={100}
         className='object-cover'

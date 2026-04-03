@@ -6,6 +6,7 @@ import { useClickOutside } from '@/hooks/use-click-outside';
 import { Polaroid } from '@/types/api';
 import Image from 'next/image';
 import { useAutoFitText } from '@/hooks/use-auto-fit-text';
+import { isGif } from '@/lib/utils';
 
 interface FolderProps {
   color?: string;
@@ -200,7 +201,7 @@ export default function Folder({
     let arr: { node: React.ReactNode; text?: string }[] = [];
     if (polaroids.length > 0) {
       arr = polaroids.map((p) => ({
-        node: <Image key={p.id} src={p.photoUrl} alt={p.text || 'polaroid'} className="object-cover w-full h-full" fill />,
+        node: <Image key={p.id} src={p.photoUrl} unoptimized={isGif(p.photoUrl)} alt={p.text || 'polaroid'} className="object-cover w-full h-full" fill />,
         text: p.text
       }));
     } else {

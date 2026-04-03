@@ -202,3 +202,8 @@ export const getSectionId = (
 ) => {
   return routeItem.path.replace('#', '').replace('/', '');
 };
+
+export function isGif(url: string | null | undefined): boolean {
+  if (!url) return false;
+  return url.toLowerCase().endsWith('.gif');
+}

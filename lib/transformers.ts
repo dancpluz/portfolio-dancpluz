@@ -38,7 +38,7 @@ export function transformSocial(record: SocialsResponse<IconExpand>): Social {
 
   return {
     id: record.id,
-    url: record.url || '#',
+    url: record.url || '',
     text: record.text || '',
     subtext: record.subtext || '',
     iconUrl,
@@ -100,7 +100,7 @@ export function transformTestimonial(
     subtitle: record.subtitle,
     content: record.content,
     profileUrl: record.profile ? buildImageUrl(record, record.profile) : '',
-    url: record.url || '#',
+    url: record.url || '',
     date: record.date || '',
   };
 }
