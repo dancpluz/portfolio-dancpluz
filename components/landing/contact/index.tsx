@@ -5,6 +5,8 @@ import DvdLogo from './dvd-logo';
 import Connect from './connect';
 import { getSocials } from '@/actions/socials';
 import { Reveal } from '@/components/motion/reveal';
+import Image from 'next/image';
+import VCREffect from '@/components/extra/vcr';
 
 export default async function Contact() {
   const { data: socials } = await getSocials();
@@ -14,10 +16,39 @@ export default async function Contact() {
       <Reveal direction='up' once={false}>
         <FlipText text='Contato' className='font-heading text-7xl mb-6' />
       </Reveal>
-      <div className='flex flex-row gap-6'>
-        <Reveal direction='up' delay={0.2} once={false} className='w-1/2 min-w-1/2'>
-          <div className='relative bg-linear-to-br from-surface to-background w-full h-full aspect-video pixel-corners-border mx-auto'>
-            <DvdLogo />
+      <div className='flex gap-6'>
+        <Reveal
+          direction='up'
+          delay={0.2}
+          once={false}
+          className='w-1/2 min-w-1/2'
+        >
+          <div className='relative w-full aspect-square'>
+            <div
+              className='absolute z-10'
+              style={{ top: '14%', bottom: '27%', left: '10%', right: '10%' }}
+            >
+              <div className='w-full h-full relative overflow-hidden bg-white/70'>
+                <VCREffect
+                  config={{ glitch: false, contentBlur: 0.7 }}
+                  className='absolute inset-0 w-full h-full'
+                >
+                  <div className='absolute inset-0 flex items-center justify-center pointer-events-none opacity-20'>
+                    <span className='font-heading text-5xl text-center leading-tight whitespace-nowrap text-black'>
+                      BORA<br/>CONVERSAR?
+                    </span>
+                  </div>
+                  <DvdLogo />
+                </VCREffect>
+              </div>
+            </div>
+
+            <Image
+              src='/tv.png'
+              alt='Retro TV Frame'
+              fill
+              className='object-contain pointer-events-none z-50 absolute inset-0 drop-shadow-2xl'
+            />
           </div>
         </Reveal>
         <Connect socials={socials || []} />

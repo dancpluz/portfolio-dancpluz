@@ -12,7 +12,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-
 export function formatDate(
   startDateString: string,
   endDateString: string | null = null,
@@ -206,4 +205,11 @@ export const getSectionId = (
 export function isGif(url: string | null | undefined): boolean {
   if (!url) return false;
   return url.toLowerCase().endsWith('.gif');
+}
+
+export function getRandomInt(min: number, max: number): number {
+  return (
+    Math.floor(Math.random() * (Math.floor(max) - Math.ceil(min) + 1)) +
+    Math.ceil(min)
+  );
 }

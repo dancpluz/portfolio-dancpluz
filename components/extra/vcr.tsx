@@ -1,188 +1,351 @@
-'use client';
+'use client'
 
-import { useEffect, useRef, ReactNode } from 'react';
+import { getRandomInt } from '@/lib/utils';
+import { useState, useRef, useEffect, useCallback, ReactNode } from 'react';
+
+interface VCRConfig {
+  scanlines?: boolean;
+  vignette?: boolean;
+  snow?: boolean;
+  snowOpacity?: number;
+  vcr?: boolean;
+  vcrOpacity?: number;
+  vcrBlur?: number;
+  tracking?: number;
+  tapeAge?: number;
+  wobbleX?: boolean;
+  wobbleY?: boolean;
+  glitch?: boolean;
+  roll?: boolean;
+  rollSpeed?: number;
+  contentBlur?: number;
+}
 
 interface VCREffectProps {
-  children?: ReactNode;
+  children: ReactNode;
+  config?: VCRConfig;
   className?: string;
+}
+
+const defaultConfig: Required<VCRConfig> = {
+  scanlines: true,
+  vignette: true,
+  snow: true,
+  snowOpacity: 0.18,
+  vcr: true,
+  vcrOpacity: 0.9,
+  vcrBlur: 1,
+  tracking: 220,
+  tapeAge: 60,
+  wobbleX: true,
+  wobbleY: true,
+  glitch: true,
+  roll: false,
+  rollSpeed: 3000,
+  contentBlur: 0,
+};
+
+interface CanvasSize {
+  width: number;
+  height: number;
+}
+
+function SnowCanvas({
+  opacity,
+  width,
+  height,
+}: CanvasSize & { opacity: number }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const rafRef = useRef<number>(0);
+  const offscreenCanvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const w = Math.max(1, Math.floor(width / 2));
+    const h = Math.max(1, Math.floor(height / 2));
+
+    const offscreen = document.createElement('canvas');
+    const offscreenW = w * 2;
+    const offscreenH = h * 2;
+    offscreen.width = offscreenW;
+    offscreen.height = offscreenH;
+    
+    const ctx = offscreen.getContext('2d', { alpha: true });
+    if (!ctx) return;
+    
+    const d = ctx.createImageData(offscreenW, offscreenH);
+    const b = new Uint32Array(d.data.buffer);
+    for (let i = 0; i < b.length; i++) {
+      b[i] = Math.trunc(255 * Math.random()) << 24;
+    }
+    ctx.putImageData(d, 0, 0);
+    offscreenCanvasRef.current = offscreen;
+  }, [width, height]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d', { alpha: true });
+    if (!ctx) return;
+
+    let lastTime = 0;
+    const fps = 24; // Limit to 24fps for VCR feel and lower CPU usage
+    const interval = 1000 / fps;
+
+    const draw = (time: number) => {
+      rafRef.current = requestAnimationFrame(draw);
+      
+      const delta = time - lastTime;
+      if (delta < interval) return;
+      lastTime = time - (delta % interval);
+
+      const offscreen = offscreenCanvasRef.current;
+      if (!offscreen || canvas.width === 0 || canvas.height === 0) return;
+
+      const w = canvas.width;
+      const h = canvas.height;
+      const dx = -(Math.random() * w);
+      const dy = -(Math.random() * h);
+
+      ctx.clearRect(0, 0, w, h);
+      ctx.drawImage(offscreen, dx, dy);
+    };
+
+    rafRef.current = requestAnimationFrame(draw);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      width={Math.max(1, Math.floor(width / 2))}
+      height={Math.max(1, Math.floor(height / 2))}
+      className='absolute inset-0 w-full h-full pointer-events-none'
+      style={{ opacity, zIndex: 10, mixBlendMode: 'screen' }}
+    />
+  );
+}
+
+interface VCRCanvasProps extends CanvasSize {
+  opacity: number;
+  blur: number;
+  tracking: number;
+  tapeAge: number;
+}
+
+function VCRCanvas({
+  opacity,
+  blur,
+  tracking,
+  tapeAge,
+  width,
+  height,
+}: Readonly<VCRCanvasProps>) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const rafRef = useRef<number>(0);
+
+  const renderTail = useCallback(
+    (ctx: CanvasRenderingContext2D, x: number, y: number, radius: number) => {
+      const n = getRandomInt(1, 50);
+      const dir = Math.random() < 0.5 ? 1 : -1;
+      for (let i = 0; i < n; i++) {
+        const r = Math.max(0, radius - 0.1 * i);
+        const dx = getRandomInt(1, 4) * dir;
+        ctx.fillRect((x += dx), y, r, r);
+      }
+      ctx.fill();
+    },
+    [],
+  );
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let lastTime = 0;
+    const fps = 24;
+    const interval = 1000 / fps;
+
+    const draw = (time: number) => {
+      rafRef.current = requestAnimationFrame(draw);
+
+      const delta = time - lastTime;
+      if (delta < interval) return;
+      lastTime = time - (delta % interval);
+
+      if (canvas.width === 0 || canvas.height === 0) return;
+
+      canvas.style.filter = `blur(${blur}px)`;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#fff';
+
+      ctx.beginPath();
+      for (let i = 0; i <= tapeAge; i++) {
+        const x = Math.random() * canvas.width;
+        const y1 = getRandomInt(
+          Math.min(tracking + i * 3, canvas.height),
+          canvas.height,
+        );
+        const y2 = getRandomInt(
+          0,
+          Math.max(canvas.height - tracking - i * 3, 0),
+        );
+        ctx.fillRect(x, y1, 2, 2);
+        ctx.fillRect(x, y2, 2, 2);
+        ctx.fill();
+        renderTail(ctx, x, y1, 2);
+        renderTail(ctx, x, y2, 2);
+      }
+      ctx.closePath();
+    };
+
+    rafRef.current = requestAnimationFrame(draw);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [blur, tracking, tapeAge, renderTail]);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      width={Math.max(1, width)}
+      height={Math.max(1, height)}
+      className='absolute inset-0 w-full h-full pointer-events-none'
+      style={{ opacity, zIndex: 11 }}
+    />
+  );
 }
 
 export default function VCREffect({
   children,
+  config: externalConfig,
   className = '',
 }: Readonly<VCREffectProps>) {
+  const cfg: Required<VCRConfig> = { ...defaultConfig, ...externalConfig };
+
   const containerRef = useRef<HTMLDivElement>(null);
-  const snowCanvasRef = useRef<HTMLCanvasElement>(null);
-  const vcrCanvasRef = useRef<HTMLCanvasElement>(null);
+  const [size, setSize] = useState<CanvasSize>({ width: 640, height: 360 });
 
   useEffect(() => {
-    const snowCtx = snowCanvasRef.current?.getContext('2d', { alpha: true });
-    const vcrCtx = vcrCanvasRef.current?.getContext('2d', { alpha: true });
-
-    const offscreenSnowCanvas = document.createElement('canvas');
-    const offscreenSnowCtx = offscreenSnowCanvas.getContext('2d', { alpha: true });
-
-    let animationFrameId: number;
-    let width = 0;
-    let height = 0;
-
-    // Variáveis para o Tracking (Linhas do VCR)
-    let trackingY1 = 0;
-    let trackingY2 = 0;
-
-    const resizeCanvases = () => {
-      if (
-        !containerRef.current ||
-        !snowCanvasRef.current ||
-        !vcrCanvasRef.current
-      )
-        return;
-
-      const rect = containerRef.current.getBoundingClientRect();
-      width = rect.width;
-      height = rect.height;
-
-      // O Snow é renderizado pela metade da resolução para criar o efeito pixel e melhorar perf.
-      const w2 = width / 2;
-      const h2 = height / 2;
-      snowCanvasRef.current.width = w2;
-      snowCanvasRef.current.height = h2;
-
-      vcrCanvasRef.current.width = width;
-      vcrCanvasRef.current.height = height;
-
-      // Gera o buffer de estática 'Snow' UMA VEZ num offscreen canvas (2x o tamanho visual)
-      if (offscreenSnowCtx) {
-        const ow = w2 * 2;
-        const oh = h2 * 2;
-        offscreenSnowCanvas.width = ow;
-        offscreenSnowCanvas.height = oh;
-        const oData = offscreenSnowCtx.createImageData(ow, oh);
-        const oBuf = new Uint32Array(oData.data.buffer);
-        for (let i = 0; i < oBuf.length; i++) {
-          oBuf[i] = (Math.trunc(255 * Math.random())) << 24;
-        }
-        offscreenSnowCtx.putImageData(oData, 0, 0);
-      }
-
-      trackingY2 = height; // Inicia a segunda linha de ruído no final da tela
-    };
-
-    // Observador para redimensionar dinamicamente caso a tela mude
-    const observer = new ResizeObserver(resizeCanvases);
-    if (containerRef.current) observer.observe(containerRef.current);
-
-    // Função ultra-rápida para o ruído estático (Panning em vez de recalcular pixels)
-    const renderSnow = () => {
-      if (!snowCtx || offscreenSnowCanvas.width === 0) return;
-      const w2 = width / 2;
-      const h2 = height / 2;
-      
-      // Desenha o offscreen canvas com um deslocamento (offset) aleatório 
-      // usando Aceleração de Hardware do drawImage, evitando gargalo de CPU
-      const dx = -(Math.random() * w2);
-      const dy = -(Math.random() * h2);
-      
-      snowCtx.clearRect(0, 0, w2, h2);
-      snowCtx.drawImage(offscreenSnowCanvas, dx, dy);
-    };
-
-    // Ruído de rastreamento (aquelas linhas brancas distorcidas horizontais)
-    const renderVCR = () => {
-      if (!vcrCtx) return;
-      vcrCtx.clearRect(0, 0, width, height);
-      vcrCtx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-
-      trackingY1 = (trackingY1 + 3) % height;
-      trackingY2 = trackingY2 - 3;
-      if (trackingY2 < 0) trackingY2 = height;
-
-      vcrCtx.beginPath();
-      for (let i = 0; i < 20; i++) {
-        const x = Math.random() * width;
-        const radius = Math.random() * 2 + 1;
-
-        // Renderiza blocos nas zonas de tracking
-        const y1 = trackingY1 + (Math.random() * 30 - 15);
-        const y2 = trackingY2 + (Math.random() * 30 - 15);
-
-        vcrCtx.fillRect(x, y1, radius, radius);
-        vcrCtx.fillRect(x, y2, radius, radius);
-
-        // Cauda do glitch (Tail)
-        const renderTail = (tx: number, ty: number, tr: number) => {
-          const tailLen = Math.floor(Math.random() * 30);
-          const dir = Math.random() > 0.5 ? 1 : -1;
-          for (let j = 0; j < tailLen; j++) {
-            tx += (Math.random() * 4 + 1) * dir;
-            tr = Math.max(0, tr - 0.1);
-            vcrCtx.fillRect(tx, ty, tr, tr);
-          }
-        };
-
-        renderTail(x, y1, radius);
-        renderTail(x, y2, radius);
-      }
-      vcrCtx.closePath();
-    };
-
-    let lastTime = performance.now();
-    const fps = 24;
-    const interval = 1000 / fps;
-
-    const loop = (time: number) => {
-      animationFrameId = requestAnimationFrame(loop);
-
-      const delta = time - lastTime;
-      if (delta >= interval) {
-        lastTime = time - (delta % interval);
-        renderSnow();
-        renderVCR();
-      }
-    };
-
-    // Inicializa
-    resizeCanvases();
-    animationFrameId = requestAnimationFrame(loop);
-
-    return () => {
-      observer.disconnect();
-      cancelAnimationFrame(animationFrameId);
-    };
+    const el = containerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      setSize({
+        width: entry.contentRect.width,
+        height: entry.contentRect.height,
+      });
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
   }, []);
 
+  const wobbleXStyle: React.CSSProperties = cfg.wobbleX
+    ? { animation: 'vcrWobbleX 100ms infinite' }
+    : {};
+
+  const wobbleYStyle: React.CSSProperties = cfg.wobbleY
+    ? { animation: 'vcrWobbleY 100ms infinite' }
+    : {};
+
+  const glitchStyle: React.CSSProperties = cfg.glitch
+    ? { animation: 'vcrGlitch 5s ease 2s infinite' }
+    : {};
+
+  const rollStyle: React.CSSProperties = cfg.roll
+    ? { animation: `vcrRoll ${cfg.rollSpeed}ms linear infinite` }
+    : {};
+
+  const blurStyle: React.CSSProperties =
+    cfg.contentBlur > 0 ? { filter: `blur(${cfg.contentBlur}px)` } : {};
+
   return (
-    <div
-      ref={containerRef}
-      className={`relative overflow-hidden bg-surface ${className}`}
-    >
-      {/* Container Principal que sofre o Glitch e o Wobble */}
-      <div className='relative w-full h-full vcr-wobble-y'>
-        <div className='relative w-full h-full vcr-wobble-x vcr-glitch'>
-          {/* 1. Conteúdo Base (Filtros do Tailwind para parecer velha) */}
-          <div className='absolute inset-0 w-full h-full blur-[1.2px] contrast-125 saturate-50 sepia-[.20] opacity-90 mix-blend-screen overflow-hidden'>
-            {children}
+    <>
+      <style>{`
+        @keyframes vcrWobbleX {
+          50% { transform: translateX(1px); }
+          51% { transform: translateX(0); }
+        }
+        @keyframes vcrWobbleY {
+          0%   { transform: translateY(1px); }
+          100% { transform: translateY(0); }
+        }
+        @keyframes vcrGlitch {
+          40% { opacity: 1; transform: scale(1,1) skew(0deg); }
+          41% { opacity: 0.8; transform: scale(1,1.15) skew(60deg); }
+          42% { opacity: 0.8; transform: scale(1,1.15) skew(-40deg); }
+          43% { opacity: 1; transform: scale(1,1) skew(0deg); }
+        }
+        @keyframes vcrRoll {
+          from { transform: translateY(0); }
+          to   { transform: translateY(-50%); }
+        }
+      `}</style>
+
+      <div
+        className={`relative inline-block w-full ${className}`}
+        ref={containerRef}
+      >
+        <div
+          className='relative overflow-hidden w-full h-full'
+          style={wobbleXStyle}
+        >
+          <div className='w-full h-full' style={wobbleYStyle}>
+            <div className='w-full h-full' style={glitchStyle}>
+              {cfg.roll ? (
+                <div style={rollStyle} className="w-full h-full relative">
+                  <div style={blurStyle} className="w-full h-full relative">{children}</div>
+                  <div style={blurStyle} className="w-full h-full relative">{children}</div>
+                </div>
+              ) : (
+                <div style={blurStyle} className="w-full h-full relative">{children}</div>
+              )}
+
+              {cfg.snow && (
+                <SnowCanvas
+                  opacity={cfg.snowOpacity}
+                  width={size.width}
+                  height={size.height}
+                />
+              )}
+
+              {cfg.vcr && (
+                <VCRCanvas
+                  opacity={cfg.vcrOpacity}
+                  blur={cfg.vcrBlur}
+                  tracking={cfg.tracking}
+                  tapeAge={cfg.tapeAge}
+                  width={size.width}
+                  height={size.height}
+                />
+              )}
+
+              {cfg.scanlines && (
+                <div
+                  className='absolute inset-0 pointer-events-none'
+                  style={{
+                    zIndex: 12,
+                    background: `
+                      linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.18) 50%),
+                      linear-gradient(90deg, rgba(255,0,0,0.03), rgba(0,255,0,0.01), rgba(0,0,255,0.03))
+                    `,
+                    backgroundSize: '100% 2px, 3px 100%',
+                  }}
+                />
+              )}
+
+              {cfg.vignette && (
+                <div
+                  className='absolute inset-0 pointer-events-none'
+                  style={{
+                    zIndex: 13,
+                    background:
+                      'radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.75) 100%)',
+                  }}
+                />
+              )}
+            </div>
           </div>
-
-          {/* 2. Estática (Snow) */}
-          <canvas
-            ref={snowCanvasRef}
-            className='absolute inset-0 w-full h-full opacity-20 pointer-events-none mix-blend-screen'
-          />
-
-          {/* 3. Linhas de Rastreamento (VCR Noise) */}
-          <canvas
-            ref={vcrCanvasRef}
-            className='absolute inset-0 w-full h-full opacity-60 blur-[1px] pointer-events-none mix-blend-screen'
-          />
-
-          {/* 4. Scanlines de CRT */}
-          <div className='vcr-scanlines absolute inset-0 pointer-events-none z-40' />
-
-          {/* 5. Vinheta (Sombra das bordas de tubo) */}
-          <div className='absolute inset-0 pointer-events-none z-50 bg-[radial-gradient(circle,transparent_50%,rgba(0,0,0,0.8)_120%)] mix-blend-multiply' />
         </div>
       </div>
-    </div>
+    </>
   );
 }
