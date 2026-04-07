@@ -1,11 +1,21 @@
 import Matter from 'matter-js';
 import { Peg } from './Peg';
 import {
-  INITIAL_BALLS, BALL_SPEED, BALL_RADIUS,
-  CANNON_WIDTH, CANNON_HEIGHT, HEADING_FONT,
-  PEG_ROWS, PEG_COLS, PEG_SPACING_Y, PEG_START_Y,
-  RECT_PEG_WIDTH, CANVAS_WIDTH, CANVAS_HEIGHT,
-  PEG_COLORS, PEG_DISTRIBUTION,
+  INITIAL_BALLS,
+  BALL_SPEED,
+  BALL_RADIUS,
+  CANNON_WIDTH,
+  CANNON_HEIGHT,
+  HEADING_FONT,
+  PEG_ROWS,
+  PEG_COLS,
+  PEG_SPACING_Y,
+  PEG_START_Y,
+  RECT_PEG_WIDTH,
+  CANVAS_WIDTH,
+  CANVAS_HEIGHT,
+  PEG_COLORS,
+  PEG_DISTRIBUTION,
   getComboMultiplier,
 } from './constants';
 
@@ -35,7 +45,7 @@ export class PeggleSystem {
   public world: Matter.World;
   public runner: Matter.Runner;
   public render: Matter.Render;
-  
+
   private readonly container: HTMLElement;
   private readonly width: number;
   private readonly height: number;
@@ -56,14 +66,22 @@ export class PeggleSystem {
   private cyanMultiplierBoost: number = 0;
   private shotBaseScore: number = 0;
 
+  // Camera state
+  private zoomScale = 1;
+  private zoomTranslate = { x: 0, y: 0 };
+
   private onStateChange?: (state: GameHUDState) => void;
 
   constructor(container: HTMLElement) {
     this.container = container;
-    
+
     const containerW = container.clientWidth;
     const containerH = container.clientHeight;
-    const scale = Math.min(containerW / CANVAS_WIDTH, containerH / CANVAS_HEIGHT, 1);
+    const scale = Math.min(
+      containerW / CANVAS_WIDTH,
+      containerH / CANVAS_HEIGHT,
+      1,
+    );
     this.width = Math.floor(CANVAS_WIDTH * scale);
     this.height = Math.floor(CANVAS_HEIGHT * scale);
 
@@ -97,7 +115,7 @@ export class PeggleSystem {
   }
 
   private notifyStateChange() {
-    const pinkLeft = this.pegs.filter(p => p.isNeonPink && !p.isHit).length;
+    const pinkLeft = this.pegs.filter((p) => p.isNeonPink && !p.isHit).length;
     const multiplier = this.getCurrentMultiplier();
     this.onStateChange?.({
       balls: this.ballsRemaining,
@@ -139,7 +157,7 @@ export class PeggleSystem {
 
   public resetGame() {
     const allBodies = Matter.Composite.allBodies(this.world);
-    allBodies.forEach(b => {
+    allBodies.forEach((b) => {
       if (b.label === 'peg' || b.label === 'ball') {
         Matter.Composite.remove(this.world, b);
       }
@@ -149,7 +167,10 @@ export class PeggleSystem {
     this.ballsRemaining = INITIAL_BALLS;
     this.score = 0;
     this.comboCount = 0;
+    this.cyanMultiplierBoost = 0;
     this.shotBaseScore = 0;
+    this.zoomScale = 1;
+    this.zoomTranslate = { x: 0, y: 0 };
     this.gameState = 'playing';
     this.createPegs();
     this.notifyStateChange();
@@ -160,20 +181,48 @@ export class PeggleSystem {
   }
 
   private createWalls() {
-    const wallOptions = { isStatic: true, render: { fillStyle: '#1e293b' }, label: 'wall' };
-    const leftWall = Matter.Bodies.rectangle(-25, this.height / 2, 50, this.height, wallOptions);
-    const rightWall = Matter.Bodies.rectangle(this.width + 25, this.height / 2, 50, this.height, wallOptions);
-    const ceiling = Matter.Bodies.rectangle(this.width / 2, -25, this.width, 50, wallOptions);
-    Matter.Composite.add(this.world, [leftWall, rightWall, ceiling]); 
+    const wallOptions = {
+      isStatic: true,
+      render: { fillStyle: '#1e293b' },
+      label: 'wall',
+    };
+    const leftWall = Matter.Bodies.rectangle(
+      -25,
+      this.height / 2,
+      50,
+      this.height,
+      wallOptions,
+    );
+    const rightWall = Matter.Bodies.rectangle(
+      this.width + 25,
+      this.height / 2,
+      50,
+      this.height,
+      wallOptions,
+    );
+    const ceiling = Matter.Bodies.rectangle(
+      this.width / 2,
+      -25,
+      this.width,
+      50,
+      wallOptions,
+    );
+    Matter.Composite.add(this.world, [leftWall, rightWall, ceiling]);
   }
 
   private createCannon() {
     const cannonPos = { x: this.width / 2, y: 0 };
-    this.cannon = Matter.Bodies.rectangle(cannonPos.x, cannonPos.y, CANNON_WIDTH, CANNON_HEIGHT, {
-      isStatic: true,
-      label: 'cannon',
-      render: { visible: false }
-    });
+    this.cannon = Matter.Bodies.rectangle(
+      cannonPos.x,
+      cannonPos.y,
+      CANNON_WIDTH,
+      CANNON_HEIGHT,
+      {
+        isStatic: true,
+        label: 'cannon',
+        render: { visible: false },
+      },
+    );
     Matter.Composite.add(this.world, this.cannon);
   }
 
@@ -202,7 +251,7 @@ export class PeggleSystem {
       }
 
       for (let col = 0; col < currentCols; col++) {
-        const offsetX = (!isRectRow && row % 2 === 0) ? spacingX / 2 : 0;
+        const offsetX = !isRectRow && row % 2 === 0 ? spacingX / 2 : 0;
         const x = (col + 1) * spacingX + offsetX;
         const y = startY + row * spacingY;
 
@@ -263,8 +312,8 @@ export class PeggleSystem {
     }
 
     // Remove hit pegs after the shot ends (delayed removal like real Peggle)
-    const hitPegs = this.pegs.filter(p => p.isHit);
-    hitPegs.forEach(peg => this.removePeg(peg.body));
+    const hitPegs = this.pegs.filter((p) => p.isHit);
+    hitPegs.forEach((peg) => this.removePeg(peg.body));
 
     this.comboCount = 0;
     this.shotBaseScore = 0;
@@ -277,7 +326,9 @@ export class PeggleSystem {
     if (!this.cannon || this.gameState !== 'playing') return;
     if (this.ballsRemaining <= 0) return;
 
-    const balls = Matter.Composite.allBodies(this.world).filter(b => b.label === 'ball');
+    const balls = Matter.Composite.allBodies(this.world).filter(
+      (b) => b.label === 'ball',
+    );
     if (balls.length > 0) return;
 
     this.startShot(); // Reset combo for the new shot
@@ -285,7 +336,7 @@ export class PeggleSystem {
     const angle = this.cannon.angle;
     const cannonPos = { x: this.width / 2, y: 0 };
     const spawnDistance = CANNON_WIDTH + 10;
-    
+
     const x = cannonPos.x + Math.cos(angle) * spawnDistance;
     const y = cannonPos.y + Math.sin(angle) * spawnDistance;
 
@@ -295,12 +346,12 @@ export class PeggleSystem {
       frictionAir: 0.001,
       density: 0.05,
       label: 'ball',
-      render: { visible: false }
+      render: { visible: false },
     });
 
     Matter.Body.setVelocity(ball, {
       x: Math.cos(angle) * BALL_SPEED,
-      y: Math.sin(angle) * BALL_SPEED
+      y: Math.sin(angle) * BALL_SPEED,
     });
 
     this.ballsRemaining--;
@@ -308,7 +359,12 @@ export class PeggleSystem {
     this.notifyStateChange();
   }
 
-  private spawnScoreParticle(x: number, y: number, value: number | string, color: string) {
+  private spawnScoreParticle(
+    x: number,
+    y: number,
+    value: number | string,
+    color: string,
+  ) {
     const text = typeof value === 'number' ? `+${value}` : value;
     this.scoreParticles.push({ x, y, text, color, age: 0, maxAge: 60 });
   }
@@ -333,7 +389,7 @@ export class PeggleSystem {
           text: 'MULTI UP!',
           color: pegObj.baseColor,
           age: 0,
-          maxAge: 70
+          maxAge: 70,
         });
       }
 
@@ -343,10 +399,15 @@ export class PeggleSystem {
 
       // The difference is what we just earned, reflecting retroactive multiplier gains!
       const earnedThisHit = newShotScore - prevShotScore;
-      
+
       this.score += earnedThisHit;
 
-      this.spawnScoreParticle(pegBody.position.x, pegBody.position.y, earnedThisHit, pegObj.baseColor);
+      this.spawnScoreParticle(
+        pegBody.position.x,
+        pegBody.position.y,
+        earnedThisHit,
+        pegObj.baseColor,
+      );
       this.notifyStateChange();
     }
   }
@@ -354,13 +415,20 @@ export class PeggleSystem {
   private attachEvents() {
     // Collision Start — track combo hits and show base score particles
     Matter.Events.on(this.engine, 'collisionStart', (event) => {
-      event.pairs.forEach(pair => {
+      event.pairs.forEach((pair) => {
         const { bodyA, bodyB } = pair;
-        const pegBody = bodyA.label === 'peg' ? bodyA : (bodyB.label === 'peg' ? bodyB : null);
-        const ball = bodyA.label === 'ball' ? bodyA : (bodyB.label === 'ball' ? bodyB : null);
+        const pegBody =
+          bodyA.label === 'peg' ? bodyA : bodyB.label === 'peg' ? bodyB : null;
+        const ball =
+          bodyA.label === 'ball'
+            ? bodyA
+            : bodyB.label === 'ball'
+              ? bodyB
+              : null;
 
         if (pegBody && ball) {
-          const pegObj = (pegBody.plugin as Record<string, unknown>).gameObject as Peg | undefined;
+          const pegObj = (pegBody.plugin as Record<string, unknown>)
+            .gameObject as Peg | undefined;
           if (pegObj) {
             this.handlePegHit(pegObj, pegBody);
           }
@@ -370,15 +438,22 @@ export class PeggleSystem {
 
     // Collision Active — unstick balls from any peg
     Matter.Events.on(this.engine, 'collisionActive', (event) => {
-      event.pairs.forEach(pair => {
+      event.pairs.forEach((pair) => {
         const { bodyA, bodyB } = pair;
-        const pegBody = bodyA.label === 'peg' ? bodyA : (bodyB.label === 'peg' ? bodyB : null);
-        const ball = bodyA.label === 'ball' ? bodyA : (bodyB.label === 'ball' ? bodyB : null);
+        const pegBody =
+          bodyA.label === 'peg' ? bodyA : bodyB.label === 'peg' ? bodyB : null;
+        const ball =
+          bodyA.label === 'ball'
+            ? bodyA
+            : bodyB.label === 'ball'
+              ? bodyB
+              : null;
 
         if (pegBody && ball) {
           const speed = Matter.Vector.magnitude(ball.velocity);
           if (speed < 0.05) {
-            const pegObj = (pegBody.plugin as Record<string, unknown>).gameObject as Peg | undefined;
+            const pegObj = (pegBody.plugin as Record<string, unknown>)
+              .gameObject as Peg | undefined;
             if (pegObj) {
               this.handlePegHit(pegObj, pegBody);
             }
@@ -391,36 +466,75 @@ export class PeggleSystem {
     // After Update — detect ball exit and end the shot
     Matter.Events.on(this.engine, 'afterUpdate', () => {
       const bodies = Matter.Composite.allBodies(this.world);
-      const balls = bodies.filter(b => b.label === 'ball');
-      
-      balls.forEach(ball => {
+      const balls = bodies.filter((b) => b.label === 'ball');
+
+      balls.forEach((ball) => {
         if (ball.position.y > this.height + 100) {
           Matter.Composite.remove(this.world, ball);
           this.endShot(); // Finalize combo score and remove hit pegs
         }
       });
 
-      this.scoreParticles.forEach(p => p.age++);
-      this.scoreParticles = this.scoreParticles.filter(p => p.age < p.maxAge);
+      this.scoreParticles.forEach((p) => p.age++);
+      this.scoreParticles = this.scoreParticles.filter((p) => p.age < p.maxAge);
     });
 
-    // Before Update — cannon aim
     Matter.Events.on(this.engine, 'beforeUpdate', () => {
       if (!this.cannon) return;
+
+      let targetFever = false;
+      const pinkLeft = this.pegs.filter((p) => p.isNeonPink && !p.isHit);
+
+      let targetZoom = 1;
+      let targetTx = 0;
+      let targetTy = 0;
+
+      if (pinkLeft.length === 1 && this.gameState === 'playing') {
+        const targetPeg = pinkLeft[0];
+        const balls = Matter.Composite.allBodies(this.world).filter(
+          (b) => b.label === 'ball',
+        );
+
+        if (balls.length > 0) {
+          const ball = balls[0];
+          const dist = Matter.Vector.magnitude(
+            Matter.Vector.sub(ball.position, targetPeg.body.position),
+          );
+
+          if (dist < 80) {
+            targetFever = true;
+
+            const midX = (ball.position.x + targetPeg.body.position.x) / 2;
+            const midY = (ball.position.y + targetPeg.body.position.y) / 2;
+
+            targetZoom = Math.min(2.5, 200 / Math.max(dist, 50));
+            targetTx = this.width / 2 - midX * targetZoom;
+            targetTy = this.height / 2 - midY * targetZoom;
+          }
+        }
+      }
+
+      this.engine.timing.timeScale = targetFever ? 0.2 : 1;
+
+      // Smooth camera lerp
+      this.zoomScale += (targetZoom - this.zoomScale) * 0.1;
+      this.zoomTranslate.x += (targetTx - this.zoomTranslate.x) * 0.1;
+      this.zoomTranslate.y += (targetTy - this.zoomTranslate.y) * 0.1;
+
       const cannonPos = { x: this.width / 2, y: 0 };
 
       let angle = Math.atan2(
         this.mousePos.y - cannonPos.y,
-        this.mousePos.x - cannonPos.x
+        this.mousePos.x - cannonPos.x,
       );
-      
-      if (angle < 0 && angle > -Math.PI / 2) angle = 0; 
-      if (angle < -Math.PI / 2) angle = Math.PI; 
 
-      const pivotOffset = CANNON_WIDTH / 2 - 10; 
+      if (angle < 0 && angle > -Math.PI / 2) angle = 0;
+      if (angle < -Math.PI / 2) angle = Math.PI;
+
+      const pivotOffset = CANNON_WIDTH / 2 - 10;
       Matter.Body.setPosition(this.cannon, {
         x: cannonPos.x + Math.cos(angle) * pivotOffset,
-        y: cannonPos.y + Math.sin(angle) * pivotOffset
+        y: cannonPos.y + Math.sin(angle) * pivotOffset,
       });
       Matter.Body.setAngle(this.cannon, angle);
     });
@@ -430,8 +544,14 @@ export class PeggleSystem {
       const ctx = this.render.context;
       if (!ctx || !this.cannon) return;
 
+      ctx.save();
+      if (this.zoomScale > 1.001) {
+        ctx.translate(this.zoomTranslate.x, this.zoomTranslate.y);
+        ctx.scale(this.zoomScale, this.zoomScale);
+      }
+
       const worldBodies = Matter.Composite.allBodies(this.world);
-      this.pegs.forEach(peg => {
+      this.pegs.forEach((peg) => {
         if (worldBodies.includes(peg.body)) {
           peg.renderCustom(ctx);
         }
@@ -441,13 +561,15 @@ export class PeggleSystem {
       this.renderBalls(ctx);
 
       if (this.gameState === 'playing') {
-        const activeBalls = worldBodies.filter(b => b.label === 'ball');
+        const activeBalls = worldBodies.filter((b) => b.label === 'ball');
         if (activeBalls.length === 0) {
           this.renderTrajectory(ctx);
         }
       }
 
       this.renderScoreParticles(ctx);
+
+      ctx.restore();
 
       if (this.gameState !== 'playing') {
         this.renderGameOverlay(ctx);
@@ -460,36 +582,43 @@ export class PeggleSystem {
     ctx.save();
     ctx.translate(this.cannon.position.x, this.cannon.position.y);
     ctx.rotate(this.cannon.angle);
-    
+
     if (this.cannonImg.complete && this.cannonImg.width > 0) {
-      ctx.rotate(45 * Math.PI / 180);
+      ctx.rotate((45 * Math.PI) / 180);
       const w = CANNON_WIDTH + 10;
       const h = w * (this.cannonImg.height / this.cannonImg.width);
       ctx.drawImage(this.cannonImg, -CANNON_WIDTH / 2, -h / 2, w, h);
     } else {
       ctx.fillStyle = '#334155';
-      ctx.fillRect(-CANNON_WIDTH / 2, -CANNON_HEIGHT / 2, CANNON_WIDTH, CANNON_HEIGHT);
+      ctx.fillRect(
+        -CANNON_WIDTH / 2,
+        -CANNON_HEIGHT / 2,
+        CANNON_WIDTH,
+        CANNON_HEIGHT,
+      );
     }
     ctx.restore();
   }
 
   private renderBalls(ctx: CanvasRenderingContext2D) {
-    const balls = Matter.Composite.allBodies(this.world).filter(b => b.label === 'ball');
-    balls.forEach(ball => {
+    const balls = Matter.Composite.allBodies(this.world).filter(
+      (b) => b.label === 'ball',
+    );
+    balls.forEach((ball) => {
       const { x: bx, y: by } = ball.position;
       const r = BALL_RADIUS;
-      
+
       ctx.beginPath();
       ctx.arc(bx, by, r, 0, Math.PI * 2);
-      
-      const gradX = bx - r * 0.3; 
-      const gradY = by - r * 0.7; 
+
+      const gradX = bx - r * 0.3;
+      const gradY = by - r * 0.7;
       const grad = ctx.createRadialGradient(gradX, gradY, 1, bx, by, r);
       grad.addColorStop(0, 'white');
       grad.addColorStop(0.03, '#d1d5db');
       grad.addColorStop(0.6, '#374151');
       grad.addColorStop(1, '#9ca3af');
-      
+
       ctx.fillStyle = grad;
       ctx.fill();
       ctx.lineWidth = 1;
@@ -503,61 +632,68 @@ export class PeggleSystem {
 
     const angle = this.cannon.angle;
     const cannonPos = { x: this.width / 2, y: 0 };
-    
+
     const startX = cannonPos.x + Math.cos(angle) * CANNON_WIDTH;
     const startY = cannonPos.y + Math.sin(angle) * CANNON_WIDTH;
-    
+
     ctx.beginPath();
     ctx.moveTo(startX, startY);
     ctx.setLineDash([10, 10]);
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
     ctx.lineWidth = 2;
-    
+
     let currX = startX;
     let currY = startY;
     let vx = Math.cos(angle) * BALL_SPEED;
     let vy = Math.sin(angle) * BALL_SPEED;
-    
-    const gravityY = this.engine.gravity.y * this.engine.gravity.scale * 277.77; 
-    const frictionAir = 1 - 0.001; 
-    
-    const bodiesToCheck = Matter.Composite.allBodies(this.world).filter(b => b.label === 'peg');
-    
+
+    const gravityY = this.engine.gravity.y * this.engine.gravity.scale * 277.77;
+    const frictionAir = 1 - 0.001;
+
+    const bodiesToCheck = Matter.Composite.allBodies(this.world).filter(
+      (b) => b.label === 'peg',
+    );
+
     for (let i = 0; i < 40; i++) {
-      vy += gravityY; 
-      vx *= frictionAir; 
+      vy += gravityY;
+      vx *= frictionAir;
       vy *= frictionAir;
-      
+
       const nextX = currX + vx;
       const nextY = currY + vy;
-      
-      const collisions = Matter.Query.ray(bodiesToCheck, { x: currX, y: currY }, { x: nextX, y: nextY }, 30);
-      
+
+      const collisions = Matter.Query.ray(
+        bodiesToCheck,
+        { x: currX, y: currY },
+        { x: nextX, y: nextY },
+        30,
+      );
+
       ctx.lineTo(nextX, nextY);
       currX = nextX;
       currY = nextY;
-      
+
       if (collisions.length > 0) {
-        ctx.stroke(); 
+        ctx.stroke();
         ctx.beginPath();
-        ctx.setLineDash([]); 
+        ctx.setLineDash([]);
         ctx.arc(currX, currY, BALL_RADIUS, 0, 2 * Math.PI);
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
         ctx.stroke();
-        ctx.beginPath(); 
-        break; 
+        ctx.beginPath();
+        break;
       }
     }
-    
+
     ctx.stroke();
-    ctx.setLineDash([]); 
+    ctx.setLineDash([]);
   }
 
   private renderScoreParticles(ctx: CanvasRenderingContext2D) {
-    this.scoreParticles.forEach(particle => {
+    this.scoreParticles.forEach((particle) => {
       const progress = particle.age / particle.maxAge;
-      const yOffset = progress * 40; 
-      const alpha = progress > 0.6 ? 1 - ((progress - 0.6) / 0.4) : 1;
+      const yOffset = progress * 40;
+      const alpha = progress > 0.6 ? 1 - (progress - 0.6) / 0.4 : 1;
 
       ctx.save();
       ctx.globalAlpha = alpha;
@@ -573,7 +709,6 @@ export class PeggleSystem {
       ctx.restore();
     });
   }
-
 
   private renderGameOverlay(ctx: CanvasRenderingContext2D) {
     ctx.save();
@@ -595,7 +730,7 @@ export class PeggleSystem {
     ctx.font = `bold 22px ${HEADING_FONT}`;
     ctx.fillStyle = 'white';
     ctx.fillText(`SCORE: ${this.score}`, this.width / 2, this.height / 2 + 20);
-    
+
     ctx.font = `14px ${HEADING_FONT}`;
     ctx.fillStyle = '#9ca3af';
     ctx.fillText('CLICK TO RESTART', this.width / 2, this.height / 2 + 55);
@@ -604,7 +739,7 @@ export class PeggleSystem {
   }
 
   private checkGameEnd() {
-    const pinkLeft = this.pegs.filter(p => p.isNeonPink && !p.isHit).length;
+    const pinkLeft = this.pegs.filter((p) => p.isNeonPink && !p.isHit).length;
 
     if (pinkLeft === 0) {
       this.gameState = 'won';
@@ -612,7 +747,9 @@ export class PeggleSystem {
       return;
     }
 
-    const activeBalls = Matter.Composite.allBodies(this.world).filter(b => b.label === 'ball');
+    const activeBalls = Matter.Composite.allBodies(this.world).filter(
+      (b) => b.label === 'ball',
+    );
     if (this.ballsRemaining <= 0 && activeBalls.length === 0) {
       this.gameState = 'lost';
       this.notifyStateChange();
@@ -629,6 +766,6 @@ export class PeggleSystem {
 
   private removePeg(body: Matter.Body) {
     Matter.Composite.remove(this.world, body);
-    this.pegs = this.pegs.filter(p => p.body !== body);
+    this.pegs = this.pegs.filter((p) => p.body !== body);
   }
 }
