@@ -68,10 +68,10 @@ function SnowCanvas({
     const offscreenH = h * 2;
     offscreen.width = offscreenW;
     offscreen.height = offscreenH;
-    
+
     const ctx = offscreen.getContext('2d', { alpha: true });
     if (!ctx) return;
-    
+
     const d = ctx.createImageData(offscreenW, offscreenH);
     const b = new Uint32Array(d.data.buffer);
     for (let i = 0; i < b.length; i++) {
@@ -93,7 +93,7 @@ function SnowCanvas({
 
     const draw = (time: number) => {
       rafRef.current = requestAnimationFrame(draw);
-      
+
       const delta = time - lastTime;
       if (delta < interval) return;
       lastTime = time - (delta % interval);
@@ -164,7 +164,7 @@ function VCRCanvas({
     if (!ctx) return;
 
     let lastTime = 0;
-    const fps = 24;
+    const fps = 16;
     const interval = 1000 / fps;
 
     const draw = (time: number) => {
@@ -291,12 +291,18 @@ export default function VCREffect({
           <div className='w-full h-full' style={wobbleYStyle}>
             <div className='w-full h-full' style={glitchStyle}>
               {cfg.roll ? (
-                <div style={rollStyle} className="w-full h-full relative">
-                  <div style={blurStyle} className="w-full h-full relative">{children}</div>
-                  <div style={blurStyle} className="w-full h-full relative">{children}</div>
+                <div style={rollStyle} className='w-full h-full relative'>
+                  <div style={blurStyle} className='w-full h-full relative'>
+                    {children}
+                  </div>
+                  <div style={blurStyle} className='w-full h-full relative'>
+                    {children}
+                  </div>
                 </div>
               ) : (
-                <div style={blurStyle} className="w-full h-full relative">{children}</div>
+                <div style={blurStyle} className='w-full h-full relative'>
+                  {children}
+                </div>
               )}
 
               {cfg.snow && (

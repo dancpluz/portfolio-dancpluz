@@ -10,15 +10,14 @@ export default async function HomePage() {
   return (
     <PageTransition
       tag='main'
-      className='flex max-w-screen flex-col gap-20 mt-50 z-10 section-px'
+      className='flex max-w-screen flex-col gap-20 mt-32 z-10 section-px'
     >
       <ScrollToHash />
-      <Hero />
+      {/* <Hero /> */}
       <Projects />
       <Technologies />
       <About />
       <Contact />
-
     </PageTransition>
   );
 }

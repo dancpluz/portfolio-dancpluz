@@ -14,7 +14,7 @@ export default async function Contact() {
   return (
     <section id={getSectionId(ROUTES.contact)} className='w-full'>
       <Reveal direction='up' once={false}>
-        <FlipText text='Contato' className='font-heading text-7xl mb-6' />
+        <FlipText text='Contato' className='font-heading text-8xl mb-6' />
       </Reveal>
       <div className='flex gap-6'>
         <Reveal
@@ -23,7 +23,7 @@ export default async function Contact() {
           once={false}
           className='w-1/2 min-w-1/2'
         >
-          <div className='relative w-full aspect-square'>
+          <div className='relative w-full aspect-square -my-[5%]'>
             <div
               className='absolute z-10'
               style={{ top: '14%', bottom: '27%', left: '10%', right: '10%' }}
@@ -34,8 +34,10 @@ export default async function Contact() {
                   className='absolute inset-0 w-full h-full'
                 >
                   <div className='absolute inset-0 flex items-center justify-center pointer-events-none opacity-20'>
-                    <span className='font-heading text-5xl text-center leading-tight whitespace-nowrap text-black'>
-                      BORA<br/>CONVERSAR?
+                    <span className='font-heading text-5xl text-center font-bold leading-tight whitespace-nowrap text-black'>
+                      BORA
+                      <br />
+                      CONVERSAR?
                     </span>
                   </div>
                   <DvdLogo />
@@ -44,10 +46,10 @@ export default async function Contact() {
             </div>
 
             <Image
-              src='/tv.png'
+              src='/img/tv.png'
               alt='Retro TV Frame'
               fill
-              className='object-contain pointer-events-none z-50 absolute inset-0 drop-shadow-2xl'
+              className='object-contain pointer-events-none z-10 absolute inset-0 drop-shadow-2xl'
             />
           </div>
         </Reveal>

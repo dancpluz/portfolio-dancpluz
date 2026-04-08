@@ -2,6 +2,7 @@
 - [ ] 404 Page
 - [x] Logger
 - [x] Internationalization
+- [ ] API Authentication
 - [ ] Error Page
 - [x] Smooth scroll
 - [x] Logo
@@ -10,11 +11,17 @@
 - [ ] Landing Page
   - [x] Loading state
   - [ ] Hero
+    - [ ] Photo
   - [x] Projects
+    - [ ] Photo
   - [x] Tech
+    - [ ] Photo
   - [ ] About
+    - [ ] Photo
+    - [ ] Text
   - [x] Testimonial
   - [x] Contact
+    - [ ] Skype Photo
   - [ ] Responsive
 - [ ] Project Page
   - [ ] Loading state
@@ -27,7 +34,6 @@
   - [x] Dark theme
   - [x] Article card image
   - [ ] Error state
-  - [ ] Autenticação api
   - [x] Categories and Anim
   - [x] Query params
   - [ ] Responsive

@@ -22,7 +22,7 @@ export default async function About() {
       id={getSectionId(ROUTES.about)}
       className='flex w-full flex-col'
     >
-      <FlipText text='Sobre' className='font-heading text-7xl' />
+      <FlipText text='Sobre' className='font-heading text-8xl' />
       <Myself polaroids={polaroids.data || []} />
       <Testimonials testimonials={displayTestimonials} />
     </section>

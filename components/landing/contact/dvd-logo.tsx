@@ -225,7 +225,7 @@ export default function DvdLogo({
           aria-label='Teleport logo'
         >
           <Image
-            src='/logo.svg'
+            src='/img/logo.svg'
             alt='Logo'
             width={logoW}
             height={logoH}

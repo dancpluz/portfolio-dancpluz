@@ -21,7 +21,7 @@ export default function Socials() {
 
   return (
     <div className='px-6 py-4 border-t border-foreground text-foreground flex flex-col items-center justify-center h-full'>
-      <ul className='w-full flex items-center justify-between gap-2 h-full'>
+      <ul className='w-full flex items-center justify-around gap-2 h-full'>
         {socials.map((social) => (
           <m.li
             key={social.id}

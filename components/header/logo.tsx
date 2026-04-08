@@ -22,7 +22,7 @@ export default function Logo() {
         <TransitionLink href={ROUTES.landing.path} onClick={onClickHandler}>
           <Image
             priority
-            src='/logo.svg'
+            src='/img/logo.svg'
             alt='Logo'
             width={80}
             height={80}

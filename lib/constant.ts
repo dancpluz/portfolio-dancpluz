@@ -66,15 +66,15 @@ export const ROUTES = {
     text: 'Obras',
     image: 'https://picsum.photos/1920/1080?random=3',
   },
-  contact: {
-    path: '/#contact',
-    text: 'Contato',
-    image: 'https://picsum.photos/1920/1080?random=5',
-  },
   about: {
     path: '/#about',
     text: 'Sobre',
     image: 'https://picsum.photos/1920/1080?random=2',
+  },
+  contact: {
+    path: '/#contact',
+    text: 'Contato',
+    image: 'https://picsum.photos/1920/1080?random=5',
   },
 } as const;
 
