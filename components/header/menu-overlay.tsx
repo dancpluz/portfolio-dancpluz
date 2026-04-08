@@ -5,6 +5,7 @@ import FlowingNav from './flowing-nav';
 import { useMenu } from '@/hooks/use-menu';
 import Socials from './socials';
 import Image from 'next/image';
+import { ROUTES } from '@/lib/constant';
 
 export default function MenuOverlay() {
   const { isOpen, closeMenu, hoverMedia, setHoverMedia } = useMenu();
@@ -27,36 +28,44 @@ export default function MenuOverlay() {
               <Socials />
             </div>
           </div>
-          <div className='hidden lg:flex w-full lg:w-1/2 items-center justify-center relative overflow-hidden'>
-            <AnimatePresence>
-              <m.div
-                key={hoverMedia.src}
-                initial={{ opacity: 0, scale: 1.1 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
-                className='absolute inset-0 bg-surface/50'
-              >
-                {hoverMedia.isVideo ? (
-                  <video
-                    src={hoverMedia.src}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className='object-cover w-full h-full'
-                  />
-                ) : (
-                  <Image
-                    src={hoverMedia.src}
-                    alt='Image'
-                    fill
-                    className='object-cover'
-                    priority
-                  />
-                )}
-              </m.div>
-            </AnimatePresence>
+          <div className='hidden lg:flex w-full lg:w-1/2 items-center justify-center relative overflow-hidden bg-surface'>
+            {Array.from(new Set(Object.values(ROUTES).map((r: any) => r.media as string))).map((mediaUrl) => {
+              const isVideo = !!new RegExp(/\.(webm|mp4|ogg)$/i).exec(mediaUrl);
+              const isActive = hoverMedia?.src === mediaUrl;
+              
+              return (
+                <m.div
+                  key={mediaUrl}
+                  initial={false}
+                  animate={{ 
+                    opacity: isActive ? 1 : 0, 
+                    scale: isActive ? 1 : 0.95 
+                  }}
+                  transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
+                  className='absolute inset-0 pointer-events-none'
+                  style={{ willChange: 'opacity, transform', zIndex: isActive ? 10 : 0 }} 
+                >
+                  {isVideo ? (
+                    <video
+                      src={mediaUrl} 
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className='w-full h-full object-cover'
+                    />
+                  ) : (
+                    <Image
+                      src={mediaUrl || '/placeholder.jpg'}
+                      alt='Preview'
+                      fill
+                      className='object-cover'
+                      priority={isActive}
+                    />
+                  )}
+                </m.div>
+              );
+            })}
           </div>
         </m.div>
       )}

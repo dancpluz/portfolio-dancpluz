@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { animate } from 'motion/react';
 import Image from 'next/image';
 import MotionLink from '../motion/motion-link';
@@ -132,8 +132,14 @@ const MenuItem = React.memo(function MenuItem({
     };
   }, [contentWidth, speed]);
 
-  const handleMouseEnter = (ev: React.MouseEvent<HTMLAnchorElement>) => {
-    setHoverMedia({ src: media, isVideo });
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleMouseEnter = useCallback((ev: React.MouseEvent<HTMLAnchorElement>) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    
+    timeoutRef.current = setTimeout(() => {
+      setHoverMedia({ src: media, isVideo });
+    }, 100);
 
     if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current)
       return;
@@ -155,9 +161,11 @@ const MenuItem = React.memo(function MenuItem({
       { y: [edge === 'top' ? '101%' : '-101%', '0%'] },
       { duration: HOVER_DURATION, ease: EXPO_EASE },
     );
-  };
+  }, [media, isVideo, setHoverMedia]);
 
-  const handleMouseLeave = (ev: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleMouseLeave = useCallback((ev: React.MouseEvent<HTMLAnchorElement>) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
     if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current)
       return;
     const rect = itemRef.current.getBoundingClientRect();
@@ -178,7 +186,7 @@ const MenuItem = React.memo(function MenuItem({
       { y: edge === 'top' ? '101%' : '-101%' },
       { duration: HOVER_DURATION, ease: EXPO_EASE },
     );
-  };
+  }, []);
 
   const isSection = path.includes('#');
   const LinkComponent = isSection ? MotionLink : TransitionLink;

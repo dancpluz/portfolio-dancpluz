@@ -1,4 +1,4 @@
-import { Social } from '@/types/api';
+import { Social, Testimonial } from '@/types/api';
 import { PostsCategoryOptions } from '@/types/pocketbase';
 
 export const categoryEmoji: Record<PostsCategoryOptions, string> = {
@@ -64,7 +64,7 @@ export const ROUTES = {
   projects: {
     path: '/#projects',
     text: 'Obras',
-    media: 'https://picsum.photos/1920/1080?random=3',
+    media: '/video/joias.webm',
   },
   about: {
     path: '/#about',
@@ -74,11 +74,11 @@ export const ROUTES = {
   contact: {
     path: '/#contact',
     text: 'Contato',
-    media: 'https://picsum.photos/1920/1080?random=5',
+    media: '/video/orelhao.webm',
   },
 } as const;
 
-export const MOCK_TESTIMONIALS: import('@/types/api').Testimonial[] = [
+export const MOCK_TESTIMONIALS: Testimonial[] = [
   {
     id: 'mock-1',
     title: 'Sarah Chen',
