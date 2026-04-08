@@ -163,7 +163,6 @@ const TestimonialCard = memo(function TestimonialCard({
         skewY: isSelected ? 0 : SKEW,
         scale: isSelected ? 1.05 : 1,
         zIndex: isSelected ? 50 : index,
-        filter: isSelected ? 'grayscale(0%)' : undefined,
       }}
       transition={{
         type: 'spring',
@@ -171,7 +170,7 @@ const TestimonialCard = memo(function TestimonialCard({
         damping: 28,
       }}
       className={cn(
-        '[grid-area:stack] relative flex h-auto min-h-[140px] sm:min-h-[180px] w-[260px] sm:w-[380px] select-none flex-col pixel-corners-border bg-card/90 backdrop-blur-sm px-3 sm:px-4 py-3 sm:py-4 cursor-pointer font-heading',
+        '[grid-area:stack] relative flex h-auto min-h-[140px] sm:min-h-[180px] w-[260px] sm:w-[380px] select-none flex-col pixel-corners-border backdrop-blur-sm px-3 sm:px-4 py-3 sm:py-4 cursor-pointer font-heading transition-[filter] duration-500',
         isSelected && 'shadow-xl z-50',
         !isLast && !isSelected && OVERLAY_CLASSES,
       )}
@@ -198,7 +197,7 @@ const TestimonialCard = memo(function TestimonialCard({
         )}
       </AnimatePresence>
       <div className='flex items-start gap-2 sm:gap-3 mb-2 sm:mb-3'>
-        <div className='size-9 sm:size-12 rounded-full bg-linear-to-br from-green-400 via-yellow-400 to-green-500 flex items-center justify-center pixel-corners-small overflow-hidden shrink-0'>
+        <div className='size-9 sm:size-12 rounded-full flex items-center justify-center pixel-corners-small overflow-hidden shrink-0'>
           {testimonial.profileUrl ? (
             <CanvasImage
               src={testimonial.profileUrl}
