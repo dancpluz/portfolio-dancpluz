@@ -4,21 +4,32 @@ import React, { useRef, useEffect, useState } from 'react';
 import { animate } from 'motion/react';
 import Image from 'next/image';
 import MotionLink from '../motion/motion-link';
-import { useMenu } from '@/hooks/use-menu';
+import { HoverMedia } from '@/hooks/use-menu';
 import { useSectionScroll } from '@/hooks/use-section-scroll';
 import TransitionLink from '../transition-link';
 import { ROUTES } from '@/lib/constant';
 import { RouteItem } from '@/types/utils';
 
-export default function FlowingNav({
+const FlowingNav = React.memo(function FlowingNav({
   speed = 15,
   onItemClick,
-}: Readonly<{ speed?: number; onItemClick?: () => void }>) {
+  setHoverMedia
+}: Readonly<{ speed?: number; onItemClick?: () => void; setHoverMedia: (m: HoverMedia) => void; }>) {
   useEffect(() => {
     Object.values(ROUTES).forEach((item) => {
       if (typeof globalThis !== 'undefined') {
-        const img = new globalThis.Image();
-        img.src = item.image;
+        const media = (item as any).media;
+        if (typeof media === 'string') {
+          const isVideo = !!new RegExp(/\.(webm|mp4|ogg)$/i).exec(media);
+          if (isVideo) {
+            const video = document.createElement('video');
+            video.src = media;
+            video.preload = 'auto';
+          } else {
+            const img = new globalThis.Image();
+            img.src = media;
+          }
+        }
       }
     });
   }, []);
@@ -32,18 +43,21 @@ export default function FlowingNav({
             route={item}
             speed={speed}
             onClick={onItemClick}
+            setHoverMedia={setHoverMedia}
           />
         ))}
       </nav>
     </div>
   );
-}
+});
+export default FlowingNav;
 
-function MenuItem({
+const MenuItem = React.memo(function MenuItem({
   route,
   speed,
   onClick,
-}: Readonly<{ route: RouteItem; speed: number; onClick?: () => void }>) {
+  setHoverMedia
+}: Readonly<{ route: RouteItem; speed: number; onClick?: () => void; setHoverMedia: (m: HoverMedia) => void; }>) {
   const itemRef = useRef<HTMLDivElement>(null);
   const marqueeRef = useRef<HTMLDivElement>(null);
   const marqueeInnerRef = useRef<HTMLDivElement>(null);
@@ -51,11 +65,12 @@ function MenuItem({
   const [repetitions, setRepetitions] = useState(4);
   const [contentWidth, setContentWidth] = useState(0);
 
-  const { path, text, image } = route;
+  const { path, text } = route;
+  const media = (route as any).media;
+  const isVideo = typeof media === 'string' && !!new RegExp(/\.(webm|mp4|ogg)$/i).exec(media);
   const EXPO_EASE: [number, number, number, number] = [0.19, 1, 0.22, 1];
   const HOVER_DURATION = 0.6;
 
-  const { setImageHovering } = useMenu();
   const handleScroll = useSectionScroll();
 
   const handleLinkClick = handleScroll(path, onClick);
@@ -87,7 +102,7 @@ function MenuItem({
     calculateRepetitions();
     window.addEventListener('resize', calculateRepetitions);
     return () => window.removeEventListener('resize', calculateRepetitions);
-  }, [text, image]);
+  }, [text, media]);
 
   useEffect(() => {
     const measure = () => {
@@ -99,7 +114,7 @@ function MenuItem({
     };
     const timer = setTimeout(measure, 50);
     return () => clearTimeout(timer);
-  }, [text, image, repetitions]);
+  }, [text, media, repetitions]);
 
   useEffect(() => {
     if (!marqueeInnerRef.current || contentWidth === 0) return;
@@ -118,7 +133,7 @@ function MenuItem({
   }, [contentWidth, speed]);
 
   const handleMouseEnter = (ev: React.MouseEvent<HTMLAnchorElement>) => {
-    setImageHovering(image);
+    setHoverMedia({ src: media, isVideo });
 
     if (!itemRef.current || !marqueeRef.current || !marqueeInnerRef.current)
       return;
@@ -204,13 +219,24 @@ function MenuItem({
                 {text}
               </span>
               <div className='relative w-[200px] h-[7vh] my-[2em] mx-[2vw] py-[1em] pixel-corners-small overflow-hidden shrink-0'>
-                <Image
-                  src={image || '/placeholder.svg'}
-                  alt={text}
-                  fill
-                  sizes='200px'
-                  className='object-cover'
-                />
+                {isVideo ? (
+                  <video
+                    src={media}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className='object-cover w-full h-full absolute inset-0'
+                  />
+                ) : (
+                  <Image
+                    src={media || '/placeholder.svg'}
+                    alt={text}
+                    fill
+                    sizes='200px'
+                    className='object-cover'
+                  />
+                )}
               </div>
             </div>
           ))}
@@ -218,4 +244,4 @@ function MenuItem({
       </div>
     </div>
   );
-}
+});

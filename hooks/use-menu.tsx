@@ -1,7 +1,12 @@
 'use client';
 
 import { Social } from '@/types/api';
-import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
+import { createContext, useContext, useState, ReactNode, useMemo, useCallback } from 'react';
+
+export type HoverMedia = {
+  src: string;
+  isVideo: boolean;
+};
 
 interface MenuContextType {
   isOpen: boolean;
@@ -9,8 +14,8 @@ interface MenuContextType {
   closeMenu: () => void;
   openMenu: () => void;
   socials: Social[];
-  imageHovering: string;
-  setImageHovering: (image: string) => void;
+  hoverMedia: HoverMedia;
+  setHoverMedia: (media: HoverMedia) => void;
 }
 
 const MenuContext = createContext<MenuContextType | undefined>(undefined);
@@ -20,11 +25,11 @@ export function MenuProvider({
   socials,
 }: Readonly<{ children: ReactNode; socials: Social[] }>) {
   const [isOpen, setIsOpen] = useState<MenuContextType['isOpen']>(false);
-  const [imageHovering, setImageHovering] = useState<MenuContextType['imageHovering']>('https://picsum.photos/600/400?random=1'); // TODO: Change Later
+  const [hoverMedia, setHoverMedia] = useState<MenuContextType['hoverMedia']>({ src: '/video/universe.webm', isVideo: true }); // TODO: Change Later
 
-  const toggleMenu = () => setIsOpen((prev) => !prev);
-  const closeMenu = () => setIsOpen(false);
-  const openMenu = () => setIsOpen(true);
+  const toggleMenu = useCallback(() => setIsOpen((prev) => !prev), []);
+  const closeMenu = useCallback(() => setIsOpen(false), []);
+  const openMenu = useCallback(() => setIsOpen(true), []);
 
   return (
     <MenuContext.Provider value={useMemo(() => ({
@@ -33,9 +38,9 @@ export function MenuProvider({
       closeMenu,
       openMenu,
       socials,
-      imageHovering,
-      setImageHovering
-    }), [isOpen, toggleMenu, closeMenu, openMenu, socials, imageHovering, setImageHovering])}>
+      hoverMedia,
+      setHoverMedia
+    }), [isOpen, toggleMenu, closeMenu, openMenu, socials, hoverMedia, setHoverMedia])}>
       {children}
     </MenuContext.Provider>
   );

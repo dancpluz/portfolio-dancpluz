@@ -54,27 +54,27 @@ export const ROUTES = {
   landing: {
     path: '/',
     text: 'Início',
-    image: 'https://picsum.photos/1920/1080?random=1',
+    media: '/video/universe.webm',
   },
   // blog: {
   //   path: '/blog',
   //   text: 'Blog',
-  //   image: 'https://picsum.photos/1920/1080?random=4',
+  //   media: 'https://picsum.photos/1920/1080?random=4',
   // },
   projects: {
     path: '/#projects',
     text: 'Obras',
-    image: 'https://picsum.photos/1920/1080?random=3',
+    media: 'https://picsum.photos/1920/1080?random=3',
   },
   about: {
     path: '/#about',
     text: 'Sobre',
-    image: 'https://picsum.photos/1920/1080?random=2',
+    media: '/video/screensaver.webm',
   },
   contact: {
     path: '/#contact',
     text: 'Contato',
-    image: 'https://picsum.photos/1920/1080?random=5',
+    media: 'https://picsum.photos/1920/1080?random=5',
   },
 } as const;
 

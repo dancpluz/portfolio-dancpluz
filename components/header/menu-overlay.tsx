@@ -7,7 +7,7 @@ import Socials from './socials';
 import Image from 'next/image';
 
 export default function MenuOverlay() {
-  const { isOpen, closeMenu, imageHovering } = useMenu();
+  const { isOpen, closeMenu, hoverMedia, setHoverMedia } = useMenu();
 
   return (
     <AnimatePresence>
@@ -21,7 +21,7 @@ export default function MenuOverlay() {
         >
           <div className='w-full lg:w-1/2 relative border-r border-foreground pt-26'>
             <div className='w-full h-4/5'>
-              <FlowingNav onItemClick={closeMenu} />
+              <FlowingNav onItemClick={closeMenu} setHoverMedia={setHoverMedia} />
             </div>
             <div className='w-full h-1/5'>
               <Socials />
@@ -30,20 +30,31 @@ export default function MenuOverlay() {
           <div className='hidden lg:flex w-full lg:w-1/2 items-center justify-center relative overflow-hidden'>
             <AnimatePresence>
               <m.div
-                key={imageHovering}
+                key={hoverMedia.src}
                 initial={{ opacity: 0, scale: 1.1 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
-                className='absolute inset-0'
+                className='absolute inset-0 bg-surface/50'
               >
-                <Image
-                  src={imageHovering}
-                  alt='Image'
-                  fill
-                  className='object-cover'
-                  priority
-                />
+                {hoverMedia.isVideo ? (
+                  <video
+                    src={hoverMedia.src}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className='object-cover w-full h-full'
+                  />
+                ) : (
+                  <Image
+                    src={hoverMedia.src}
+                    alt='Image'
+                    fill
+                    className='object-cover'
+                    priority
+                  />
+                )}
               </m.div>
             </AnimatePresence>
           </div>
