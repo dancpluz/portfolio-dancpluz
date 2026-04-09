@@ -1,58 +1,147 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-:root {
-  scroll-behavior: smooth !important;
-  -webkit-font-smoothing: antialiased;
-  user-select: none;
+@theme {
+  --font-text: var(--font-text);
+  --font-heading: var(--font-heading);
+
+  --color-background: #080808;
+  --color-foreground: #efefef;
+  --color-surface: #181818;
+
+  --color-neon-pink: #ff00ff;
+  --color-electric-green: #00f248;
+  --color-cyan-blue: #00fbfe;
+
+  --color-accent-1: var(--color-neon-pink);
+  --color-accent-2: var(--color-electric-green);
+  --color-accent-3: var(--color-cyan-blue);
+
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.dark {
-  --background: 0, 0, 0;
-  --foreground: 255, 255, 255;
-  --alternate: 111, 111, 111;
+@layer {
+  button {
+    cursor: pointer;
+  }
 
-  background: rgba(var(--background));
-  color: rgba(var(--foreground));
+  [data-theme='dark'] {
+    --color-background: #080808;
+    --color-foreground: #efefef;
+    --color-surface: #181818;
+    --color-accent-1: var(--color-neon-pink);
+    --color-accent-2: var(--color-electric-green);
+    --color-accent-3: var(--color-cyan-blue);
+  }
+
+  [data-theme='light'] {
+    --color-background: #f5f5f5;
+    --color-foreground: #080808;
+    --color-surface: #d1d1d1;
+    --color-accent-1: var(--color-neon-pink);
+    --color-accent-2: var(--color-electric-green);
+    --color-accent-3: var(--color-cyan-blue);
+  }
+
+  body {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-text);
+    transition:
+      background 0.6s ease-in-out,
+      color 0.6s ease-in-out;
+  }
+
+  /* ViewTransition API Animations for Theme Toggle */
+  html {
+    view-transition-name: theme;
+  }
+
+  ::view-transition-old(theme),
+  ::view-transition-new(theme) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+
+  /* Circle animation from top-right */
+  ::view-transition-new(theme) {
+    clip-path: circle(0% at top right);
+    animation: circle-top-right 0.5s ease-out;
+    animation-fill-mode: both;
+    transform-origin: top right;
+  }
+
+  ::view-transition-old(theme) {
+    z-index: -1;
+  }
+
+  @keyframes circle-top-right {
+    from {
+      clip-path: circle(0% at top right);
+    }
+    to {
+      clip-path: circle(150% at top right);
+    }
+  }
 }
 
-.light {
-  --background: 255, 255, 255;
-  --foreground: 0, 0, 0;
-  --alternate: 160, 160, 160;
+@layer utilities {
+  .underline-magical {
+    @apply bg-no-repeat no-underline bg-position-[0_100%]
+    bg-size-[100%_0.2em] focus:bg-size-[100%_100%] hover:text-background
+    hover:bg-size-[100%_100%] motion-safe:transition-all
+    motion-safe:duration-300;
+    background-image: linear-gradient(
+      to right,
+      var(--magical-accent, var(--color-accent-1)),
+      var(--magical-accent, var(--color-accent-1))
+    );
+  }
 
-  background: rgba(var(--background));
-  color: rgba(var(--foreground));
-}
+  .underline-magical-2 {
+    @apply bg-no-repeat no-underline bg-position-[0_100%]
+    bg-size-[100%_0px] focus:bg-size-[100%_100%] hover:text-background
+    hover:bg-size-[100%_100%] motion-safe:transition-all
+    motion-safe:duration-300;
+    background-image: linear-gradient(
+      to right,
+      var(--magical-accent, var(--color-accent-1)),
+      var(--magical-accent, var(--color-accent-1))
+    );
+  }
 
-.sans {
-  font-family: var(--font-sans);
-  font-weight: 100;
-  letter-spacing: .025em;
-}
+  :root {
+    scroll-behavior: smooth !important;
+    -webkit-font-smoothing: antialiased;
+  }
 
-.base {
-  font-family: var(--font-base);
-}
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
 
-@layer base {
-  ::selection, ::-moz-selection {
-    background: rgba(var(--foreground), 0.9);
-    color: rgb(var(--background));
-    text-shadow: none;
+  ::selection {
+    background: var(--color-neon-pink);
+    color: var(--color-background);
+  }
+
+  ::-moz-selection {
+    background: var(--color-neon-pink);
+    color: var(--color-background);
   }
 
   .text-stroke {
     -webkit-text-stroke-width: 0.5px;
-    -webkit-text-stroke-color: rgba(var(--foreground));
+    -webkit-text-stroke-color: rgba(var(--color-foreground));
     -webkit-text-fill-color: transparent;
   }
 
   .no-text-stroke {
     -webkit-text-stroke-width: 0px;
   }
-  
+
   .pause {
     animation-play-state: paused;
   }
@@ -90,4 +179,281 @@
       opacity: 1;
     }
   }
+
+  .loading-dots::after {
+    content: '...';
+    animation: loading-dots 1.2s infinite;
+    display: inline-block;
+    width: 3ch;
+    text-align: left;
+  }
+
+  @keyframes loading-dots {
+    0%,
+    20% {
+      content: '.';
+    }
+    40% {
+      content: '..';
+    }
+    60%,
+    100% {
+      content: '...';
+    }
+  }
+
+  .pixel-corners-big {
+    clip-path: polygon(
+      0px calc(100% - 40px),
+      8px calc(100% - 40px),
+      8px calc(100% - 24px),
+      16px calc(100% - 24px),
+      16px calc(100% - 16px),
+      24px calc(100% - 16px),
+      24px calc(100% - 8px),
+      40px calc(100% - 8px),
+      40px 100%,
+      calc(100% - 40px) 100%,
+      calc(100% - 40px) calc(100% - 8px),
+      calc(100% - 24px) calc(100% - 8px),
+      calc(100% - 24px) calc(100% - 16px),
+      calc(100% - 16px) calc(100% - 16px),
+      calc(100% - 16px) calc(100% - 24px),
+      calc(100% - 8px) calc(100% - 24px),
+      calc(100% - 8px) calc(100% - 40px),
+      100% calc(100% - 40px),
+      100% 40px,
+      calc(100% - 8px) 40px,
+      calc(100% - 8px) 24px,
+      calc(100% - 16px) 24px,
+      calc(100% - 16px) 16px,
+      calc(100% - 24px) 16px,
+      calc(100% - 24px) 8px,
+      calc(100% - 40px) 8px,
+      calc(100% - 40px) 0px,
+      40px 0px,
+      40px 8px,
+      24px 8px,
+      24px 16px,
+      16px 16px,
+      16px 24px,
+      8px 24px,
+      8px 40px,
+      0px 40px
+    );
+  }
+
+  .pixel-corners-small {
+    clip-path: polygon(
+      0px calc(100% - 20px),
+      4px calc(100% - 20px),
+      4px calc(100% - 12px),
+      8px calc(100% - 12px),
+      8px calc(100% - 8px),
+      12px calc(100% - 8px),
+      12px calc(100% - 4px),
+      20px calc(100% - 4px),
+      20px 100%,
+      calc(100% - 20px) 100%,
+      calc(100% - 20px) calc(100% - 4px),
+      calc(100% - 12px) calc(100% - 4px),
+      calc(100% - 12px) calc(100% - 8px),
+      calc(100% - 8px) calc(100% - 8px),
+      calc(100% - 8px) calc(100% - 12px),
+      calc(100% - 4px) calc(100% - 12px),
+      calc(100% - 4px) calc(100% - 20px),
+      100% calc(100% - 20px),
+      100% 20px,
+      calc(100% - 4px) 20px,
+      calc(100% - 4px) 12px,
+      calc(100% - 8px) 12px,
+      calc(100% - 8px) 8px,
+      calc(100% - 12px) 8px,
+      calc(100% - 12px) 4px,
+      calc(100% - 20px) 4px,
+      calc(100% - 20px) 0px,
+      20px 0px,
+      20px 4px,
+      12px 4px,
+      12px 8px,
+      8px 8px,
+      8px 12px,
+      4px 12px,
+      4px 20px,
+      0px 20px
+    );
+  }
+
+  .pixel-corners-border,
+  .pixel-corners-border--wrapper {
+    clip-path: polygon(
+      0px calc(100% - 20px),
+      4px calc(100% - 20px),
+      4px calc(100% - 12px),
+      8px calc(100% - 12px),
+      8px calc(100% - 8px),
+      12px calc(100% - 8px),
+      12px calc(100% - 4px),
+      20px calc(100% - 4px),
+      20px 100%,
+      calc(100% - 20px) 100%,
+      calc(100% - 20px) calc(100% - 4px),
+      calc(100% - 12px) calc(100% - 4px),
+      calc(100% - 12px) calc(100% - 8px),
+      calc(100% - 8px) calc(100% - 8px),
+      calc(100% - 8px) calc(100% - 12px),
+      calc(100% - 4px) calc(100% - 12px),
+      calc(100% - 4px) calc(100% - 20px),
+      100% calc(100% - 20px),
+      100% 20px,
+      calc(100% - 4px) 20px,
+      calc(100% - 4px) 12px,
+      calc(100% - 8px) 12px,
+      calc(100% - 8px) 8px,
+      calc(100% - 12px) 8px,
+      calc(100% - 12px) 4px,
+      calc(100% - 20px) 4px,
+      calc(100% - 20px) 0px,
+      20px 0px,
+      20px 4px,
+      12px 4px,
+      12px 8px,
+      8px 8px,
+      8px 12px,
+      4px 12px,
+      4px 20px,
+      0px 20px
+    );
+    position: relative;
+  }
+  .pixel-corners-border {
+    border: 4px solid transparent;
+  }
+  .pixel-corners-border--wrapper {
+    width: fit-content;
+    height: fit-content;
+  }
+  .pixel-corners-border--wrapper .pixel-corners-border {
+    display: block;
+    clip-path: polygon(
+      4px 20px,
+      8px 20px,
+      8px 12px,
+      12px 12px,
+      12px 8px,
+      20px 8px,
+      20px 4px,
+      calc(100% - 20px) 4px,
+      calc(100% - 20px) 8px,
+      calc(100% - 12px) 8px,
+      calc(100% - 12px) 12px,
+      calc(100% - 8px) 12px,
+      calc(100% - 8px) 20px,
+      calc(100% - 4px) 20px,
+      calc(100% - 4px) calc(100% - 20px),
+      calc(100% - 8px) calc(100% - 20px),
+      calc(100% - 8px) calc(100% - 12px),
+      calc(100% - 12px) calc(100% - 12px),
+      calc(100% - 12px) calc(100% - 8px),
+      calc(100% - 20px) calc(100% - 8px),
+      calc(100% - 20px) calc(100% - 4px),
+      20px calc(100% - 4px),
+      20px calc(100% - 8px),
+      12px calc(100% - 8px),
+      12px calc(100% - 12px),
+      8px calc(100% - 12px),
+      8px calc(100% - 20px),
+      4px calc(100% - 20px)
+    );
+  }
+  .pixel-corners-border::after,
+  .pixel-corners-border--wrapper::after {
+    content: '';
+    position: absolute;
+    clip-path: polygon(
+      0px calc(100% - 20px),
+      4px calc(100% - 20px),
+      4px calc(100% - 12px),
+      8px calc(100% - 12px),
+      8px calc(100% - 8px),
+      12px calc(100% - 8px),
+      12px calc(100% - 4px),
+      20px calc(100% - 4px),
+      20px 100%,
+      calc(100% - 20px) 100%,
+      calc(100% - 20px) calc(100% - 4px),
+      calc(100% - 12px) calc(100% - 4px),
+      calc(100% - 12px) calc(100% - 8px),
+      calc(100% - 8px) calc(100% - 8px),
+      calc(100% - 8px) calc(100% - 12px),
+      calc(100% - 4px) calc(100% - 12px),
+      calc(100% - 4px) calc(100% - 20px),
+      100% calc(100% - 20px),
+      100% 20px,
+      calc(100% - 4px) 20px,
+      calc(100% - 4px) 12px,
+      calc(100% - 8px) 12px,
+      calc(100% - 8px) 8px,
+      calc(100% - 12px) 8px,
+      calc(100% - 12px) 4px,
+      calc(100% - 20px) 4px,
+      calc(100% - 20px) 0px,
+      20px 0px,
+      20px 4px,
+      12px 4px,
+      12px 8px,
+      8px 8px,
+      8px 12px,
+      4px 12px,
+      4px 20px,
+      0px 20px,
+      0px 50%,
+      4px 50%,
+      4px 20px,
+      8px 20px,
+      8px 12px,
+      12px 12px,
+      12px 8px,
+      20px 8px,
+      20px 4px,
+      calc(100% - 20px) 4px,
+      calc(100% - 20px) 8px,
+      calc(100% - 12px) 8px,
+      calc(100% - 12px) 12px,
+      calc(100% - 8px) 12px,
+      calc(100% - 8px) 20px,
+      calc(100% - 4px) 20px,
+      calc(100% - 4px) calc(100% - 20px),
+      calc(100% - 8px) calc(100% - 20px),
+      calc(100% - 8px) calc(100% - 12px),
+      calc(100% - 12px) calc(100% - 12px),
+      calc(100% - 12px) calc(100% - 8px),
+      calc(100% - 20px) calc(100% - 8px),
+      calc(100% - 20px) calc(100% - 4px),
+      20px calc(100% - 4px),
+      20px calc(100% - 8px),
+      12px calc(100% - 8px),
+      12px calc(100% - 12px),
+      8px calc(100% - 12px),
+      8px calc(100% - 20px),
+      4px calc(100% - 20px),
+      4px 50%,
+      0px 50%
+    );
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--color-foreground);
+    display: block;
+    pointer-events: none;
+  }
+  .pixel-corners-border::after {
+    margin: -4px;
+  }
+
+  .section-px {
+    @apply px-6 md:px-12 lg:px-24;
+  }
+
 }

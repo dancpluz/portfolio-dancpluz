@@ -1,0 +1,49 @@
+- [ ] Maintenance Page
+- [ ] 404 Page
+- [x] Logger
+- [x] Internationalization
+- [ ] API Authentication
+- [ ] Error Page
+- [x] Smooth scroll
+- [x] Logo
+- [x] Header
+  - [ ] Images from routes
+- [ ] Landing Page
+  - [x] Loading state
+  - [ ] Hero
+    - [ ] Photo
+  - [x] Projects
+    - [ ] Photo
+  - [x] Tech
+    - [ ] Photo
+  - [ ] About
+    - [ ] Photo
+    - [ ] Text
+  - [x] Testimonial
+  - [x] Contact
+    - [ ] Skype Photo
+  - [ ] Responsive
+- [ ] Project Page
+  - [ ] Loading state
+  - [ ] Structure
+  - [ ] Responsive
+- [ ] Blog
+  - [x] Loading state
+  - [x] Fetch blog posts
+  - [x] Blog List
+  - [x] Dark theme
+  - [x] Article card image
+  - [ ] Error state
+  - [x] Categories and Anim
+  - [x] Query params
+  - [ ] Responsive
+  - [ ] Article
+    - [ ] Loading state
+    - [x] Render Rich Text
+    - [ ] Responsive
+    - [ ] Header
+    - [x] Improve Rich text
+    - [x] Progress Bar
+    - [x] Table of contents
+    - [ ] Medias
+    - [ ] Generate metadata

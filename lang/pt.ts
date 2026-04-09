@@ -1,0 +1,49 @@
+import { Translation } from './types';
+
+const pt: Translation = {
+  home: {
+    part1: 'Olá, eu sou o Daniel Luz.',
+    part2: 'Bem-vindo ao meu portfólio.',
+  },
+  blog: {
+    title: 'Blog',
+    description: 'Minhas ideias idiotas',
+    heading: 'Ideias',
+    no_posts_found: 'Nenhum post encontrado ainda.',
+    error_loading: 'Erro ao carregar artigo:',
+    articles_found:
+      '{count, plural, =0 {Nenhum artigo encontrado} =1 {1 artigo encontrado} other {# artigos encontrados}}',
+    fetching_ideas: 'Buscando ideias...',
+    please_wait: 'Por favor, aguarde um momento',
+    reading_article: 'Lendo...',
+  },
+  common: {
+    loader: 'Carregando...',
+    copied: 'Copiado!',
+    copy_to_clipboard: 'Copiar para a área de transferência',
+  },
+  nav: {
+    landing: 'Início',
+    projects: 'Obras',
+    about: 'Sobre',
+    contact: 'Contato',
+  },
+  projects: {
+    title: 'Obras',
+    not_found: 'Projeto não encontrado.',
+  },
+  about: {
+    title: 'Sobre',
+  },
+  contact: {
+    title: 'Contato',
+    lets_talk_1: 'BORA',
+    lets_talk_2: 'CONVERSAR?',
+  },
+  technologies: {
+    title: 'Tecnologias',
+    text: 'Brinquedos que uso',
+  },
+};
+
+export default pt;
