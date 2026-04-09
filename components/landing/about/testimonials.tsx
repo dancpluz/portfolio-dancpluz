@@ -22,7 +22,7 @@ const PROFILE_EFFECTS: ImageEffect[] = [
   {
     type: 'pixelate',
     enabled: true,
-    params: { size: 8, maintainAspect: true },
+    params: { size: 4, maintainAspect: true },
   },
   {
     type: 'posterize',
@@ -176,7 +176,7 @@ const TestimonialCard = memo(function TestimonialCard({
       )}
     >
       <AnimatePresence>
-        {isSelected && (
+        {isSelected && testimonial.url && (
           <m.div
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}

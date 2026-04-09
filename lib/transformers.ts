@@ -40,7 +40,8 @@ export function transformSocial(record: SocialsResponse<IconExpand>): Social {
     id: record.id,
     url: record.url || '',
     text: record.text || '',
-    subtext: record.subtext || '',
+    subtextEn: record.subtext_en || '',
+    subtextPt: record.subtext_pt || '',
     iconUrl,
     iconAlt,
   };
@@ -71,8 +72,10 @@ export function transformProject(
 ): Project {
   return {
     id: record.id,
-    title: record.title,
-    description: record.description || '',
+    titleEn: record.title_en || '',
+    titlePt: record.title_pt || '',
+    descriptionEn: record.description_en || '',
+    descriptionPt: record.description_pt || '',
     date: record.date || '',
     url: record.url || '#',
     coverUrl: record.cover ? buildImageUrl(record, record.cover) : '',
@@ -82,7 +85,8 @@ export function transformProject(
         ? record.medias.map((media) => buildImageUrl(record, media))
         : [],
     client: record.client || '',
-    subtitle: record.subtitle || '',
+    subtitleEn: record.subtitle_en || '',
+    subtitlePt: record.subtitle_pt || '',
     categories: record.categories || [],
     projectType: record.project_type || '',
   };
@@ -114,6 +118,7 @@ export function transformPolaroid(
   return {
     id: record.id,
     photoUrl: record.photo ? buildImageUrl(record, record.photo) : '',
-    text: record.text || '',
+    textEn: record.text_en || '',
+    textPt: record.text_pt || '',
   };
 }

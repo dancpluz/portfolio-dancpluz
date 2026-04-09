@@ -9,7 +9,8 @@ export interface Social {
   id: string;
   url: string;
   text: string;
-  subtext: string;
+  subtextEn: string;
+  subtextPt: string;
   iconUrl: string;
   iconAlt: string;
 }
@@ -24,9 +25,12 @@ export interface Technology {
 
 export interface Project {
   id: string;
-  title: string;
-  subtitle: string;
-  description: HTMLString;
+  titleEn: string;
+  titlePt: string;
+  subtitleEn: string;
+  subtitlePt: string;
+  descriptionEn: HTMLString;
+  descriptionPt: HTMLString;
   projectType: ProjectsProjectTypeOptions;
   coverUrl: string;
   url: string;
@@ -50,5 +54,6 @@ export interface Testimonial {
 export interface Polaroid {
   id: string;
   photoUrl: string;
-  text: string;
+  textEn: string;
+  textPt: string;
 }

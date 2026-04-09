@@ -3,6 +3,7 @@ import PageTransition from '@/components/motion/page-transition';
 import { ContainerScroll } from '@/components/project/container-scroll-animation';
 import ParallaxImage from '@/components/project/parallax-image';
 import { Project } from '@/types/api';
+import { getLocale } from 'next-intl/server';
 
 export async function generateStaticParams() {
   const { data: projects, error } = await getProjects();
@@ -23,6 +24,7 @@ export default async function ProjectPage (
 ) {
   const { id } = await props.params;
   const { data: project } = await getProjectById(id) as { data: Project | null };
+  const locale = await getLocale();
 
   if (!project) {
     return (
@@ -41,17 +43,17 @@ export default async function ProjectPage (
         titleComponent={
           <div className='flex flex-col gap-4 mb-4'>
             <h1 className='text-4xl md:text-7xl font-bold font-heading text-foreground'>
-              {project.title}
+              {locale === 'en' ? project.titleEn : project.titlePt}
             </h1>
             <p className='text-xl md:text-2xl text-muted-foreground font-text'>
-              {project.subtitle}
+              {locale === 'en' ? project.subtitleEn : project.subtitlePt}
             </p>
           </div>
         }
       >
         <ParallaxImage
           src={project.coverUrl || '/placeholder.svg'}
-          alt={project.title}
+          alt={locale === 'en' ? project.titleEn : project.titlePt}
           overflow={1.2}
           priority
           global

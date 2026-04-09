@@ -18,7 +18,11 @@ export default function PostCard({
   index: number;
 }>) {
   const locale = useLocale();
-  const { title, id, long_text, article, created } = post;
+  const { id, created } = post;
+  
+  const title = locale === 'en' ? post.title_en : post.title_pt;
+  const article = locale === 'en' ? post.article_en : post.article_pt;
+  const long_text = locale === 'en' ? post.long_text_en : post.long_text_pt;
 
   const description = long_text || getFirstParagraphText(article);
 
@@ -66,7 +70,9 @@ export default function PostCard({
 }
 
 function ImageGif({ post }: Readonly<{ post: PostsResponse }>) {
-  const { gifs, images, category, title } = post;
+  const locale = useLocale();
+  const { gifs, images, category } = post;
+  const title = locale === 'en' ? post.title_en : post.title_pt;
 
   const firstGif = gifs?.[0] ?? null;
   const firstImage = images?.[0] ?? null;

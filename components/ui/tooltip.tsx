@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef, useId, useCallback } from 'react';
+import { useState, useRef, useId, useCallback, useMemo } from 'react';
 import {
   m,
   useTransform,
@@ -11,6 +11,7 @@ import {
 interface TooltipProps {
   children: React.ReactNode;
   name: string;
+  alt?: string;
   className?: string;
   as?: 'div' | 'button' | 'span';
 }
@@ -18,12 +19,18 @@ interface TooltipProps {
 export default function Tooltip({
   children,
   name,
+  alt,
   className = '',
   as = 'div',
 }: Readonly<TooltipProps>) {
   const [isHovered, setIsHovered] = useState(false);
   const id = useId();
   const animationFrameRef = useRef<number | null>(null);
+
+  const randShimmer = useMemo(() => {
+    const classes = ['via-accent-1', 'via-accent-2', 'via-accent-3'];
+    return classes[Math.floor(Math.random() * classes.length)];
+  }, []);
 
   const springConfig = { stiffness: 100, damping: 15 };
   const x = useMotionValue(0);
@@ -38,7 +45,6 @@ export default function Tooltip({
 
   const handleMouseMove = useCallback(
     (event: React.MouseEvent<HTMLElement>) => {
-      // ✅ Read synchronously — before React can null out currentTarget
       const rect = event.currentTarget.getBoundingClientRect();
       const offsetX = event.clientX - rect.left - rect.width / 2;
 
@@ -52,12 +58,11 @@ export default function Tooltip({
   );
 
   const handleMouseLeave = useCallback(() => {
-    // Cancel any pending rAF so it doesn't fire after hover ends
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
       animationFrameRef.current = null;
     }
-    x.set(0); // reset so next hover starts centered
+    x.set(0);
     setIsHovered(false);
   }, [x]);
 
@@ -102,15 +107,19 @@ export default function Tooltip({
             style={{
               translateX,
               rotate,
-              whiteSpace: 'nowrap',
               pointerEvents: 'none',
             }}
-            className='absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 overflow-hidden rounded-md border border-foreground/20 bg-background px-4 py-2 shadow-xl shadow-black/20'
+            className='absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 overflow-hidden rounded-md border border-foreground/20 bg-background px-4 py-2 shadow-xl shadow-black/20 w-max max-w-[250px]'
           >
-            <div className='absolute bottom-0 left-1/2 h-px w-4/5 -translate-x-1/2 bg-linear-to-r from-transparent via-accent-1 to-transparent opacity-80' />
-            <div className='absolute bottom-0 left-1/2 h-px w-2/5 -translate-x-1/2 bg-linear-to-r from-transparent via-accent-1 to-transparent' />
+            <div className={`absolute bottom-0 left-1/2 h-px w-4/5 -translate-x-1/2 bg-linear-to-r from-transparent ${randShimmer} to-transparent opacity-80`} />
+            <div className={`absolute bottom-0 left-1/2 h-px w-2/5 -translate-x-1/2 bg-linear-to-r from-transparent ${randShimmer} to-transparent`} />
 
-            <span className='font-heading relative z-30 text-base font-bold text-foreground'>
+            {alt && (
+              <span className='block text-left text-[10px] uppercase font-bold tracking-wider font-heading text-foreground/50 mb-1 leading-none'>
+                {alt}
+              </span>
+            )}
+            <span className='font-heading relative z-30 text-base font-bold text-foreground block text-center wrap-break-word whitespace-normal leading-tight'>
               {name}
             </span>
           </m.div>

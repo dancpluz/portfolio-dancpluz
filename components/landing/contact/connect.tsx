@@ -8,7 +8,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { useTheme } from 'next-themes';
-
+import { useLocale } from 'next-intl';
 
 const SHIMMER_CLASSES = [
   `via-accent-1/10`,
@@ -37,7 +37,8 @@ function SocialCard({ social, index }: Readonly<SocialCardProps>) {
   const shimmer = SHIMMER_CLASSES[index % SHIMMER_CLASSES.length];
   const arrow = ARROW_CLASSES[index % ARROW_CLASSES.length];
   const color = TEXT_COLORS[index % TEXT_COLORS.length];
-  const   { theme } = useTheme();
+  const locale = useLocale();
+  const { theme } = useTheme();
   const [copied, setCopied] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -118,7 +119,7 @@ function SocialCard({ social, index }: Readonly<SocialCardProps>) {
 
           <div className='mt-auto pt-4 flex items-center text-foreground/50 group-hover:text-foreground transition-colors duration-300'>
             <span className='text-md font-medium transition-all duration-300'>
-              {social.subtext}
+              {locale === 'en' ? social.subtextEn : social.subtextPt}
             </span>
             <ArrowRight
               className={cn(

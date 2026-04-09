@@ -121,7 +121,8 @@ export type PolaroidsRecord = {
 	created: IsoAutoDateString
 	id: string
 	photo: FileNameString
-	text?: string
+	text_en?: string
+	text_pt?: string
 	updated: IsoAutoDateString
 }
 
@@ -134,20 +135,25 @@ export enum PostsCategoryOptions {
 	"desenvolvimento" = "desenvolvimento",
 	"curiosidades" = "curiosidades",
 }
-export type PostsRecord<Tkeywords = unknown> = {
-	article?: HTMLString
-	category?: PostsCategoryOptions
+export type PostsRecord<Tkeywords_en = unknown, Tkeywords_pt = unknown> = {
+	article_en: HTMLString
+	article_pt: HTMLString
+	category: PostsCategoryOptions
 	created: IsoAutoDateString
 	gifs?: FileNameString[]
 	id: string
 	images?: FileNameString[]
-	keywords?: null | Tkeywords
-	long_text?: string
+	keywords_en?: null | Tkeywords_en
+	keywords_pt?: null | Tkeywords_pt
+	long_text_en?: string
+	long_text_pt?: string
 	long_video?: FileNameString
 	short_video?: FileNameString
-	title: string
+	title_en: string
+	title_pt: string
 	updated: IsoAutoDateString
-	video_caption?: string
+	video_caption_en?: string
+	video_caption_pt?: string
 }
 
 export enum ProjectsProjectTypeOptions {
@@ -176,13 +182,16 @@ export type ProjectsRecord = {
 	cover: FileNameString
 	created: IsoAutoDateString
 	date: IsoDateString
-	description?: HTMLString
+	description_en?: HTMLString
+	description_pt?: HTMLString
 	id: string
 	medias?: FileNameString[]
 	project_type: ProjectsProjectTypeOptions
 	social_refs?: RecordIdString[]
-	subtitle: string
-	title: string
+	subtitle_en: string
+	subtitle_pt: string
+	title_en: string
+	title_pt: string
 	updated: IsoAutoDateString
 	url?: string
 }
@@ -192,7 +201,8 @@ export type SocialsRecord = {
 	icon_ref: RecordIdString
 	id: string
 	main?: boolean
-	subtext?: string
+	subtext_en?: string
+	subtext_pt?: string
 	text: string
 	updated: IsoAutoDateString
 	url: string
@@ -228,7 +238,7 @@ export type SuperusersResponse<Texpand = unknown> = Required<SuperusersRecord> &
 export type ExperienceResponse<Texpand = unknown> = Required<ExperienceRecord> & BaseSystemFields<Texpand>
 export type IconsResponse<Texpand = unknown> = Required<IconsRecord> & BaseSystemFields<Texpand>
 export type PolaroidsResponse<Texpand = unknown> = Required<PolaroidsRecord> & BaseSystemFields<Texpand>
-export type PostsResponse<Tkeywords = unknown, Texpand = unknown> = Required<PostsRecord<Tkeywords>> & BaseSystemFields<Texpand>
+export type PostsResponse<Tkeywords_en = unknown, Tkeywords_pt = unknown, Texpand = unknown> = Required<PostsRecord<Tkeywords_en, Tkeywords_pt>> & BaseSystemFields<Texpand>
 export type ProjectsResponse<Texpand = unknown> = Required<ProjectsRecord> & BaseSystemFields<Texpand>
 export type SocialsResponse<Texpand = unknown> = Required<SocialsRecord> & BaseSystemFields<Texpand>
 export type TechnologiesResponse<Texpand = unknown> = Required<TechnologiesRecord> & BaseSystemFields<Texpand>

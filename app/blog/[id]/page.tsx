@@ -39,7 +39,9 @@ export default async function Article(props: Readonly<{
     );
   }
 
-  const { article, title, updated } = post ?? {};
+  const { updated } = post ?? {};
+  const article = locale === 'en' ? post?.article_en : post?.article_pt;
+  const title = locale === 'en' ? post?.title_en : post?.title_pt;
 
   const { headings, processedHtml } = article
     ? processArticleHtml(article)

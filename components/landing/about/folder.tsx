@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useMemo, useCallback, memo } from 'react';
 import { createPortal } from 'react-dom';
 import { useClickOutside } from '@/hooks/use-click-outside';
 import { Polaroid } from '@/types/api';
+import { useLocale } from 'next-intl';
 import { useAutoFitText } from '@/hooks/use-auto-fit-text';
 import CanvasImage, { type ImageEffect } from '@/components/extra/canvas-image';
 
@@ -214,6 +215,7 @@ export default function Folder({
   polaroids = [],
   className = '',
 }: Readonly<FolderProps>) {
+  const locale = useLocale();
   const maxItems = 3;
   const papers = useMemo(() => {
     let arr: { node: React.ReactNode; text?: string }[] = [];
@@ -223,18 +225,18 @@ export default function Folder({
           <CanvasImage
             key={p.id}
             src={p.photoUrl}
-            alt={p.text || 'polaroid'}
+            alt={locale === 'en' ? (p.textEn || 'polaroid') : (p.textPt || 'polaroid')}
             effects={POLAROID_EFFECTS}
           />
         ),
-        text: p.text,
+        text: locale === 'en' ? p.textEn : p.textPt,
       }));
     } else {
       arr = items.map((item) => ({ node: item }));
     }
     const finalArr = arr.slice(0, maxItems);
     return finalArr;
-  }, [items, polaroids]);
+  }, [items, polaroids, locale]);
 
   const [open, setOpen] = useState(false);
   const [zoomedIndex, setZoomedIndex] = useState<number | null>(null);

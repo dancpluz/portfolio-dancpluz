@@ -13,10 +13,11 @@ import { shuffleArray } from '@/lib/utils';
 import { Technology } from '@/types/api';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
+import { useLocale } from 'next-intl';
 import Tooltip from '../../ui/tooltip';
 
-const CYCLE_INTERVAL = 3000;
-const COLUMN_DELAY = 300;
+const CYCLE_INTERVAL = 6000;
+const COLUMN_DELAY = 600;
 
 const distributeLogos = (
   allLogos: Technology[],
@@ -59,6 +60,7 @@ const LogoColumn: React.FC<LogoColumnProps> = React.memo(
       [logos, currentIndex],
     );
     const { theme } = useTheme();
+    const locale = useLocale();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
@@ -123,8 +125,12 @@ const LogoColumn: React.FC<LogoColumnProps> = React.memo(
       </m.div>
     );
 
-    return currentLogo.tooltipEn ? (
-      <Tooltip name={currentLogo.tooltipEn}>{innerContent}</Tooltip>
+    const tooltipText = locale === 'en' ? currentLogo.tooltipEn : currentLogo.tooltipPt;
+
+    console.log(currentLogo);
+
+    return tooltipText ? (
+      <Tooltip name={tooltipText} alt={currentLogo.alt}>{innerContent}</Tooltip>
     ) : (
       innerContent
     );

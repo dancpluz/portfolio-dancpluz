@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { lerp, isGif } from '@/lib/utils';
 import FlipText from '../../extra/flip-text';
 import { Project } from '@/types/api';
+import { useLocale } from 'next-intl';
 import { LineReveal } from '../../motion/reveal';
 import { AnimatePresence, m } from 'motion/react';
 import { ArrowRight } from '../../ui/svg';
@@ -15,6 +16,7 @@ export default function ProjectShowcase({
 }: Readonly<{
   projects?: Project[];
 }>) {
+  const locale = useLocale();
   const sortedProjects = useMemo(() => {
     return [...projects].sort((a, b) => {
       const dateA = new Date(a.date).getTime();
@@ -132,7 +134,7 @@ export default function ProjectShowcase({
               <Image
                 key={`img-${project.id}`}
                 src={project.coverUrl || '/placeholder.svg'}
-                alt={project.title}
+                alt={locale === 'en' ? project.titleEn : project.titlePt}
                 fill
                 unoptimized={isGif(project.coverUrl)}
                 className='absolute inset-0 w-full h-full object-cover transition-all duration-500 ease-out'
@@ -181,6 +183,7 @@ function ProjectRow({
   onMouseEnter: (index: number) => void;
   onMouseLeave: () => void;
 }>) {
+  const locale = useLocale();
   const formattedDate = useMemo(() => {
     const d = new Date(project.date);
     if (Number.isNaN(d.getTime())) return project.date;
@@ -226,7 +229,7 @@ function ProjectRow({
               <FlipText
                 duration={0.2}
                 staggerDelay={0.02}
-                text={project.title}
+                text={locale === 'en' ? project.titleEn : project.titlePt}
                 className='font-heading font-bold text-md'
                 isHovered={isHovered}
               />
@@ -240,7 +243,7 @@ function ProjectRow({
             <p
               className={`text-sm leading-relaxed transition-all duration-300 ease-out`}
             >
-              {project.subtitle}
+              {locale === 'en' ? project.subtitleEn : project.subtitlePt}
             </p>
           </div>
           <div className='flex flex-col justify-between items-end gap-1'>
