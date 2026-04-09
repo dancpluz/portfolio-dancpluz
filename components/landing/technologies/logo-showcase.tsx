@@ -12,7 +12,6 @@ import { shuffleArray } from '@/lib/utils';
 
 import { Technology } from '@/types/api';
 import Image from 'next/image';
-import { useTheme } from 'next-themes';
 import { useLocale } from 'next-intl';
 import Tooltip from '../../ui/tooltip';
 
@@ -59,13 +58,7 @@ const LogoColumn: React.FC<LogoColumnProps> = React.memo(
       () => logos[currentIndex],
       [logos, currentIndex],
     );
-    const { theme } = useTheme();
     const locale = useLocale();
-    const [mounted, setMounted] = useState(false);
-
-    useEffect(() => {
-      setMounted(true);
-    }, []);
 
     if (!currentLogo) return null;
 
@@ -116,9 +109,8 @@ const LogoColumn: React.FC<LogoColumnProps> = React.memo(
               style={{
                 width: 'auto',
                 height: 'auto',
-                filter: mounted && theme === 'dark' ? 'invert(0)' : 'invert(1)',
               }}
-              className='pointer-events-none h-20 w-20 max-h-[80%] max-w-[80%] object-contain md:h-32 md:w-32'
+              className='pointer-events-none h-20 w-20 max-h-[80%] max-w-[80%] object-contain md:h-32 md:w-32 theme-invert-1 transition-all duration-300'
             />
           </m.div>
         </AnimatePresence>

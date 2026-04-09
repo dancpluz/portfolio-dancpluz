@@ -2,20 +2,12 @@
 
 import { useMenu } from '@/hooks/use-menu';
 import Link from 'next/link';
-import { useTheme } from 'next-themes';
 import { m } from 'motion/react';
 import { Reveal } from '../motion/reveal';
-import { useState, useEffect } from 'react';
 import MotionImage from '../motion/motion-image';
 
 export default function Socials() {
   const { socials, isOpen } = useMenu();
-  const { theme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const delay = isOpen ? 1 : 0.3;
 
@@ -47,9 +39,7 @@ export default function Socials() {
                 width={24}
                 height={24}
                 src={social.iconUrl}
-                style={{
-                  filter: mounted && theme === 'dark' ? 'invert(1)' : '',
-                }}
+                className='theme-invert-0'
                 alt={social.iconAlt}
               />
               <Reveal

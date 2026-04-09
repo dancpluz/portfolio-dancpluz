@@ -109,7 +109,7 @@ export default function Tooltip({
               rotate,
               pointerEvents: 'none',
             }}
-            className='absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 overflow-hidden rounded-md border border-foreground/20 bg-background px-4 py-2 shadow-xl shadow-black/20 w-max max-w-[250px]'
+            className='absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 overflow-hidden rounded-md border border-foreground/20 bg-background px-4 py-2 shadow-xl shadow-black/20 w-max max-w-[200px]'
           >
             <div className={`absolute bottom-0 left-1/2 h-px w-4/5 -translate-x-1/2 bg-linear-to-r from-transparent ${randShimmer} to-transparent opacity-80`} />
             <div className={`absolute bottom-0 left-1/2 h-px w-2/5 -translate-x-1/2 bg-linear-to-r from-transparent ${randShimmer} to-transparent`} />

@@ -7,7 +7,6 @@ import { m } from 'motion/react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { useTheme } from 'next-themes';
 import { useLocale, useTranslations } from 'next-intl';
 
 const SHIMMER_CLASSES = [
@@ -39,13 +38,7 @@ function SocialCard({ social, index }: Readonly<SocialCardProps>) {
   const color = TEXT_COLORS[index % TEXT_COLORS.length];
   const locale = useLocale();
   const t = useTranslations('common');
-  const { theme } = useTheme();
   const [copied, setCopied] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const handleCopy = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -107,10 +100,7 @@ function SocialCard({ social, index }: Readonly<SocialCardProps>) {
               alt={social.iconAlt || social.text}
               width={32}
               height={32}
-              className='object-contain'
-              style={{
-                filter: mounted && theme === 'dark' ? 'invert(1)' : '',
-              }}
+              className='object-contain theme-invert-0'
             />
           </div>
 

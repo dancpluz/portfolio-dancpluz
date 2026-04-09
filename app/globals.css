@@ -109,6 +109,20 @@
     );
   }
 
+  .theme-invert-1 {
+    filter: invert(1);
+  }
+  [data-theme='dark'] .theme-invert-1 {
+    filter: invert(0);
+  }
+
+  .theme-invert-0 {
+    filter: invert(0);
+  }
+  [data-theme='dark'] .theme-invert-0 {
+    filter: invert(1);
+  }
+
   :root {
     scroll-behavior: smooth !important;
     -webkit-font-smoothing: antialiased;
