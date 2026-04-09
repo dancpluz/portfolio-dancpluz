@@ -6,6 +6,7 @@ import { ReactLenis } from 'lenis/react';
 import Header from '@/components/header/header';
 import ClientProviders from './client-providers';
 import ServerProviders from './server-providers';
+import Preloader from '@/components/ui/preloader';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -57,6 +58,7 @@ export default function RootLayout({
       <body className={`${inter.variable} ${offBit.variable}`}>
         <ServerProviders>
           <ClientProviders>
+            <Preloader />
             <Header />
             <ReactLenis root>{children}</ReactLenis>
           </ClientProviders>

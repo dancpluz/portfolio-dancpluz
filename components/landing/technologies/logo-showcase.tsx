@@ -119,8 +119,6 @@ const LogoColumn: React.FC<LogoColumnProps> = React.memo(
 
     const tooltipText = locale === 'en' ? currentLogo.tooltipEn : currentLogo.tooltipPt;
 
-    console.log(currentLogo);
-
     return tooltipText ? (
       <Tooltip name={tooltipText} alt={currentLogo.alt}>{innerContent}</Tooltip>
     ) : (
