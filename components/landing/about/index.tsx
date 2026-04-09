@@ -5,11 +5,13 @@ import FlipText from '../../extra/flip-text';
 import Testimonials from './testimonials';
 import { getPolaroids } from '@/actions/polaroids';
 import Myself from './myself';
+import { getTranslations } from 'next-intl/server';
 
 export default async function About() {
-  const [testimonials, polaroids] = await Promise.all([
+  const [testimonials, polaroids, t] = await Promise.all([
     getTestimonials(),
     getPolaroids(),
+    getTranslations('about')
   ]);
 
   const displayTestimonials =
@@ -22,7 +24,7 @@ export default async function About() {
       id={getSectionId(ROUTES.about)}
       className='flex w-full flex-col'
     >
-      <FlipText text='Sobre' className='font-heading text-8xl' />
+      <FlipText text={t('title')} className='font-heading text-8xl' />
       <Myself polaroids={polaroids.data || []} />
       <Testimonials testimonials={displayTestimonials} />
     </section>

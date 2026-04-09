@@ -7,14 +7,18 @@ import { getSocials } from '@/actions/socials';
 import { Reveal } from '@/components/motion/reveal';
 import Image from 'next/image';
 import VCREffect from '@/components/extra/vcr';
+import { getTranslations } from 'next-intl/server';
 
 export default async function Contact() {
-  const { data: socials } = await getSocials();
+  const [{ data: socials }, t] = await Promise.all([
+    getSocials(),
+    getTranslations('contact')
+  ]);
 
   return (
     <section id={getSectionId(ROUTES.contact)} className='w-full'>
       <Reveal direction='up' once={false}>
-        <FlipText text='Contato' className='font-heading text-8xl mb-6' />
+        <FlipText text={t('title')} className='font-heading text-8xl mb-6' />
       </Reveal>
       <div className='flex gap-6'>
         <Reveal
@@ -34,10 +38,10 @@ export default async function Contact() {
                   className='absolute inset-0 w-full h-full'
                 >
                   <div className='absolute inset-0 flex items-center justify-center pointer-events-none opacity-20'>
-                    <span className='font-heading text-5xl text-center font-bold leading-tight whitespace-nowrap text-black'>
-                      BORA
+                    <span className='font-heading text-7xl text-center font-bold leading-tight whitespace-nowrap text-black uppercase'>
+                      {t('lets_talk_1')}
                       <br />
-                      CONVERSAR?
+                      {t('lets_talk_2')}
                     </span>
                   </div>
                   <DvdLogo />

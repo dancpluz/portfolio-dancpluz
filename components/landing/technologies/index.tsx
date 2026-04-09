@@ -1,9 +1,13 @@
 import { getTechnologies } from '@/actions/technologies';
 import LogoShowcase from './logo-showcase';
 import FlipText from '../../extra/flip-text';
+import { getTranslations } from 'next-intl/server';
 
 export default async function Technologies() {
-  const { data: technologies, error } = await getTechnologies();
+  const [{ data: technologies, error }, t] = await Promise.all([
+    getTechnologies(),
+    getTranslations('technologies')
+  ]);
 
   if (error || !technologies) {
     return null;
@@ -11,8 +15,8 @@ export default async function Technologies() {
 
   return (
     <section className='w-full flex flex-col items-center'>
-      <FlipText text='Stack' className='font-heading text-8xl' />
-      <p className='text-xl font-regular mb-10'>Brinquedos que uso</p>
+      <FlipText text={t('title')} className='font-heading text-8xl' />
+      <p className='text-xl font-regular mb-10'>{t('text')}</p>
       <LogoShowcase logos={technologies} columnCount={5} />
     </section>
   );

@@ -9,12 +9,15 @@ import { useSectionScroll } from '@/hooks/use-section-scroll';
 import TransitionLink from '../transition-link';
 import { ROUTES } from '@/lib/constant';
 import { RouteItem } from '@/types/utils';
+import { useTranslations } from 'next-intl';
 
 const FlowingNav = React.memo(function FlowingNav({
   speed = 15,
   onItemClick,
   setHoverMedia
 }: Readonly<{ speed?: number; onItemClick?: () => void; setHoverMedia: (m: HoverMedia) => void; }>) {
+  const t = useTranslations('nav');
+
   useEffect(() => {
     Object.values(ROUTES).forEach((item) => {
       if (typeof globalThis !== 'undefined') {
@@ -37,10 +40,10 @@ const FlowingNav = React.memo(function FlowingNav({
   return (
     <div className='w-full h-full overflow-hidden'>
       <nav className='flex flex-col h-full m-0 p-0'>
-        {Object.values(ROUTES).map((item) => (
+        {Object.entries(ROUTES).map(([key, item]) => (
           <MenuItem
             key={item.path}
-            route={item}
+            route={{ ...item, text: t(key) }}
             speed={speed}
             onClick={onItemClick}
             setHoverMedia={setHoverMedia}
@@ -57,7 +60,7 @@ const MenuItem = React.memo(function MenuItem({
   speed,
   onClick,
   setHoverMedia
-}: Readonly<{ route: RouteItem; speed: number; onClick?: () => void; setHoverMedia: (m: HoverMedia) => void; }>) {
+}: Readonly<{ route: Omit<RouteItem, 'text'> & { text: string }; speed: number; onClick?: () => void; setHoverMedia: (m: HoverMedia) => void; }>) {
   const itemRef = useRef<HTMLDivElement>(null);
   const marqueeRef = useRef<HTMLDivElement>(null);
   const marqueeInnerRef = useRef<HTMLDivElement>(null);

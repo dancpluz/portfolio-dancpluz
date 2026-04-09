@@ -25,9 +25,11 @@ export default async function Article(props: Readonly<{
   params: Promise<{ id: string }>;
 }>) {
   const { id } = await props.params;
-  const { data: post, error } = await getPostById(id);
-  const t = await getTranslations('blog');
-  const locale = await getLocale();
+  const [{ data: post, error }, t, locale] = await Promise.all([
+    getPostById(id),
+    getTranslations('blog'),
+    getLocale()
+  ]);
 
   if (error) {
     return (

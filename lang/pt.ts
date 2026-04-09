@@ -18,8 +18,32 @@ const pt: Translation = {
     reading_article: 'Lendo...',
   },
   common: {
-    loader: "Carregando..."
-  }
+    loader: 'Carregando...',
+    copied: 'Copiado!',
+    copy_to_clipboard: 'Copiar para a área de transferência',
+  },
+  nav: {
+    landing: 'Início',
+    projects: 'Obras',
+    about: 'Sobre',
+    contact: 'Contato',
+  },
+  projects: {
+    title: 'Obras',
+    not_found: 'Projeto não encontrado.',
+  },
+  about: {
+    title: 'Sobre',
+  },
+  contact: {
+    title: 'Contato',
+    lets_talk_1: 'BORA',
+    lets_talk_2: 'CONVERSAR?',
+  },
+  technologies: {
+    title: 'Tecnologias',
+    text: 'Brinquedos que uso',
+  },
 };
 
 export default pt;

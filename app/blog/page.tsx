@@ -32,10 +32,11 @@ export default async function Blog({
 }: Readonly<{
   searchParams: Promise<SearchParams>;
 }>) {
-  const { categoria } = await loadCategoryParams(searchParams);
-  const t = await getTranslations('blog');
-
-  const { data: posts, error } = await getPosts();
+  const [{ categoria }, t, { data: posts, error }] = await Promise.all([
+    loadCategoryParams(searchParams),
+    getTranslations('blog'),
+    getPosts()
+  ]);
 
   if (error) {
     return (

@@ -8,7 +8,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { useTheme } from 'next-themes';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 const SHIMMER_CLASSES = [
   `via-accent-1/10`,
@@ -38,6 +38,7 @@ function SocialCard({ social, index }: Readonly<SocialCardProps>) {
   const arrow = ARROW_CLASSES[index % ARROW_CLASSES.length];
   const color = TEXT_COLORS[index % TEXT_COLORS.length];
   const locale = useLocale();
+  const t = useTranslations('common');
   const { theme } = useTheme();
   const [copied, setCopied] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -84,7 +85,7 @@ function SocialCard({ social, index }: Readonly<SocialCardProps>) {
               ? `text-${color}`
               : 'text-foreground/50 hover:text-foreground',
           )}
-          title='Copy to clipboard'
+          title={t('copy_to_clipboard')}
         >
           <Copy className='size-5' />
           {copied && (
@@ -93,7 +94,7 @@ function SocialCard({ social, index }: Readonly<SocialCardProps>) {
               animate={{ opacity: 1, y: 0 }}
               className='absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] uppercase font-bold tracking-widest whitespace-nowrap font-heading'
             >
-              Copiado!
+              {t('copied')}
             </m.span>
           )}
         </button>

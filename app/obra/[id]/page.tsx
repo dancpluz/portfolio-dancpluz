@@ -3,7 +3,7 @@ import PageTransition from '@/components/motion/page-transition';
 import { ContainerScroll } from '@/components/project/container-scroll-animation';
 import ParallaxImage from '@/components/project/parallax-image';
 import { Project } from '@/types/api';
-import { getLocale } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 
 export async function generateStaticParams() {
   const { data: projects, error } = await getProjects();
@@ -23,13 +23,16 @@ export default async function ProjectPage (
   }>,
 ) {
   const { id } = await props.params;
-  const { data: project } = await getProjectById(id) as { data: Project | null };
-  const locale = await getLocale();
+  const [{ data: project }, locale, t] = await Promise.all([
+    getProjectById(id) as Promise<{ data: Project | null }>,
+    getLocale(),
+    getTranslations('projects')
+  ]);
 
   if (!project) {
     return (
       <PageTransition tag='main' className='flex max-h-screen max-w-screen flex-col items-center justify-center p-20 z-10'>
-        <p className='text-xl'>Projeto não encontrado.</p>
+        <p className='text-xl'>{t('not_found')}</p>
       </PageTransition>
     );
   }
