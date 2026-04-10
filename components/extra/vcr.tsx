@@ -1,7 +1,6 @@
 'use client'
 
-import { getRandomInt } from '@/lib/utils';
-import { useState, useRef, useEffect, useCallback, ReactNode } from 'react';
+import { useState, useRef, useEffect, ReactNode } from 'react';
 
 interface VCRConfig {
   scanlines?: boolean;
@@ -50,69 +49,56 @@ interface CanvasSize {
   height: number;
 }
 
+// --- SnowCanvas: uses transferControlToOffscreen + Web Worker ---
+
 function SnowCanvas({
   opacity,
   width,
   height,
 }: CanvasSize & { opacity: number }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const rafRef = useRef<number>(0);
-  const offscreenCanvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  useEffect(() => {
-    const w = Math.max(1, Math.floor(width / 2));
-    const h = Math.max(1, Math.floor(height / 2));
-
-    const offscreen = document.createElement('canvas');
-    const offscreenW = w * 2;
-    const offscreenH = h * 2;
-    offscreen.width = offscreenW;
-    offscreen.height = offscreenH;
-
-    const ctx = offscreen.getContext('2d', { alpha: true });
-    if (!ctx) return;
-
-    const d = ctx.createImageData(offscreenW, offscreenH);
-    const b = new Uint32Array(d.data.buffer);
-    for (let i = 0; i < b.length; i++) {
-      b[i] = Math.trunc(255 * Math.random()) << 24;
-    }
-    ctx.putImageData(d, 0, 0);
-    offscreenCanvasRef.current = offscreen;
-  }, [width, height]);
+  const workerRef = useRef<Worker | null>(null);
+  const transferredRef = useRef(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d', { alpha: true });
-    if (!ctx) return;
+    if (!canvas || transferredRef.current) return;
 
-    let lastTime = 0;
-    const fps = 24; // Limit to 24fps for VCR feel and lower CPU usage
-    const interval = 1000 / fps;
+    try {
+      const offscreen = canvas.transferControlToOffscreen();
+      const worker = new Worker(
+        new URL('./snow.worker.ts', import.meta.url),
+      );
 
-    const draw = (time: number) => {
-      rafRef.current = requestAnimationFrame(draw);
+      worker.postMessage(
+        {
+          type: 'init',
+          canvas: offscreen,
+          width,
+          height,
+        },
+        [offscreen],
+      );
 
-      const delta = time - lastTime;
-      if (delta < interval) return;
-      lastTime = time - (delta % interval);
+      workerRef.current = worker;
+      transferredRef.current = true;
+    } catch {
+      // Fallback: OffscreenCanvas not supported, canvas stays inert
+    }
 
-      const offscreen = offscreenCanvasRef.current;
-      if (!offscreen || canvas.width === 0 || canvas.height === 0) return;
-
-      const w = canvas.width;
-      const h = canvas.height;
-      const dx = -(Math.random() * w);
-      const dy = -(Math.random() * h);
-
-      ctx.clearRect(0, 0, w, h);
-      ctx.drawImage(offscreen, dx, dy);
+    return () => {
+      workerRef.current?.postMessage({ type: 'stop' });
+      workerRef.current?.terminate();
+      workerRef.current = null;
     };
-
-    rafRef.current = requestAnimationFrame(draw);
-    return () => cancelAnimationFrame(rafRef.current);
+    // Only run on mount — canvas transfer can only happen once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Send resize messages when dimensions change
+  useEffect(() => {
+    workerRef.current?.postMessage({ type: 'resize', width, height });
+  }, [width, height]);
 
   return (
     <canvas
@@ -124,6 +110,8 @@ function SnowCanvas({
     />
   );
 }
+
+// --- VCRCanvas: uses transferControlToOffscreen + Web Worker ---
 
 interface VCRCanvasProps extends CanvasSize {
   opacity: number;
@@ -141,68 +129,61 @@ function VCRCanvas({
   height,
 }: Readonly<VCRCanvasProps>) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const rafRef = useRef<number>(0);
-
-  const renderTail = useCallback(
-    (ctx: CanvasRenderingContext2D, x: number, y: number, radius: number) => {
-      const n = getRandomInt(1, 50);
-      const dir = Math.random() < 0.5 ? 1 : -1;
-      for (let i = 0; i < n; i++) {
-        const r = Math.max(0, radius - 0.1 * i);
-        const dx = getRandomInt(1, 4) * dir;
-        ctx.fillRect((x += dx), y, r, r);
-      }
-      ctx.fill();
-    },
-    [],
-  );
+  const workerRef = useRef<Worker | null>(null);
+  const transferredRef = useRef(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!canvas || transferredRef.current) return;
 
-    let lastTime = 0;
-    const fps = 16;
-    const interval = 1000 / fps;
+    try {
+      const offscreen = canvas.transferControlToOffscreen();
+      const worker = new Worker(
+        new URL('./vcr-tape.worker.ts', import.meta.url),
+      );
 
-    const draw = (time: number) => {
-      rafRef.current = requestAnimationFrame(draw);
+      worker.postMessage(
+        {
+          type: 'init',
+          canvas: offscreen,
+          width,
+          height,
+          blur,
+          tracking,
+          tapeAge,
+        },
+        [offscreen],
+      );
 
-      const delta = time - lastTime;
-      if (delta < interval) return;
-      lastTime = time - (delta % interval);
+      workerRef.current = worker;
+      transferredRef.current = true;
+    } catch {
+      // Fallback: OffscreenCanvas not supported
+    }
 
-      if (canvas.width === 0 || canvas.height === 0) return;
-
-      canvas.style.filter = `blur(${blur}px)`;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#fff';
-
-      ctx.beginPath();
-      for (let i = 0; i <= tapeAge; i++) {
-        const x = Math.random() * canvas.width;
-        const y1 = getRandomInt(
-          Math.min(tracking + i * 3, canvas.height),
-          canvas.height,
-        );
-        const y2 = getRandomInt(
-          0,
-          Math.max(canvas.height - tracking - i * 3, 0),
-        );
-        ctx.fillRect(x, y1, 2, 2);
-        ctx.fillRect(x, y2, 2, 2);
-        ctx.fill();
-        renderTail(ctx, x, y1, 2);
-        renderTail(ctx, x, y2, 2);
-      }
-      ctx.closePath();
+    return () => {
+      workerRef.current?.postMessage({ type: 'stop' });
+      workerRef.current?.terminate();
+      workerRef.current = null;
     };
+    // Only run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    rafRef.current = requestAnimationFrame(draw);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [blur, tracking, tapeAge, renderTail]);
+  // Send resize messages
+  useEffect(() => {
+    workerRef.current?.postMessage({ type: 'resize', width, height });
+  }, [width, height]);
+
+  // Send config updates
+  useEffect(() => {
+    workerRef.current?.postMessage({
+      type: 'update',
+      blur,
+      tracking,
+      tapeAge,
+    });
+  }, [blur, tracking, tapeAge]);
 
   return (
     <canvas
@@ -210,7 +191,7 @@ function VCRCanvas({
       width={Math.max(1, width)}
       height={Math.max(1, height)}
       className='absolute inset-0 w-full h-full pointer-events-none'
-      style={{ opacity, zIndex: 11 }}
+      style={{ opacity, zIndex: 11, filter: `blur(${blur}px)` }}
     />
   );
 }
