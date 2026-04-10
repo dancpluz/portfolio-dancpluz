@@ -7,11 +7,13 @@ import { Project, Social, Technology, Testimonial, Polaroid } from '@/types/api'
 import {
   IconsResponse,
   ProjectsResponse,
+  ProjectsProjectTypeOptions,
   SocialsResponse,
   TechnologiesResponse,
   TestimonialsResponse,
   PolaroidsResponse,
 } from '@/types/pocketbase';
+import { transformLogger } from '@/lib/logger';
 
 /**
  * Transforms a PocketBase Icon record into a standard URL and Alt text object.
@@ -21,30 +23,48 @@ export function transformIcon(
   fallbackAlt: string = '',
 ) {
   if (!iconRef) return { url: '', alt: fallbackAlt };
-  return {
-    url: buildImageUrl(iconRef, iconRef.icon),
-    alt: iconRef.alt || fallbackAlt,
-  };
+  try {
+    return {
+      url: buildImageUrl(iconRef, iconRef.icon),
+      alt: iconRef.alt || fallbackAlt,
+    };
+  } catch (err) {
+    transformLogger.error(`[transformIcon] Failed to build icon URL for ${iconRef.id}: ${err}`);
+    return { url: '', alt: fallbackAlt };
+  }
 }
 
 /**
  * Transforms a PocketBase Social record into the Social interface.
  */
 export function transformSocial(record: SocialsResponse<IconExpand>): Social {
-  const { url: iconUrl, alt: iconAlt } = transformIcon(
-    record.expand?.icon_ref,
-    record.text || '',
-  );
+  try {
+    const { url: iconUrl, alt: iconAlt } = transformIcon(
+      record.expand?.icon_ref,
+      record.text || '',
+    );
 
-  return {
-    id: record.id,
-    url: record.url || '',
-    text: record.text || '',
-    subtextEn: record.subtext_en || '',
-    subtextPt: record.subtext_pt || '',
-    iconUrl,
-    iconAlt,
-  };
+    return {
+      id: record.id,
+      url: record.url || '',
+      text: record.text || '',
+      subtextEn: record.subtext_en || '',
+      subtextPt: record.subtext_pt || '',
+      iconUrl,
+      iconAlt,
+    };
+  } catch (err) {
+    transformLogger.error(`[transformSocial] Failed to transform social ${record.id}: ${err}`);
+    return {
+      id: record.id,
+      url: '',
+      text: '',
+      subtextEn: '',
+      subtextPt: '',
+      iconUrl: '',
+      iconAlt: '',
+    };
+  }
 }
 
 /**
@@ -53,15 +73,26 @@ export function transformSocial(record: SocialsResponse<IconExpand>): Social {
 export function transformTechnology(
   record: TechnologiesResponse<IconExpand>,
 ): Technology {
-  const { url: imageUrl, alt } = transformIcon(record.expand?.icon_ref);
+  try {
+    const { url: imageUrl, alt } = transformIcon(record.expand?.icon_ref);
 
-  return {
-    id: record.id,
-    imageUrl,
-    tooltipEn: record.tooltip_en || '',
-    tooltipPt: record.tooltip_pt || '',
-    alt,
-  };
+    return {
+      id: record.id,
+      imageUrl,
+      tooltipEn: record.tooltip_en || '',
+      tooltipPt: record.tooltip_pt || '',
+      alt,
+    };
+  } catch (err) {
+    transformLogger.error(`[transformTechnology] Failed to transform technology ${record.id}: ${err}`);
+    return {
+      id: record.id,
+      imageUrl: '',
+      tooltipEn: '',
+      tooltipPt: '',
+      alt: '',
+    };
+  }
 }
 
 /**
@@ -70,26 +101,47 @@ export function transformTechnology(
 export function transformProject(
   record: ProjectsResponse<ProjectExpand>,
 ): Project {
-  return {
-    id: record.id,
-    titleEn: record.title_en || '',
-    titlePt: record.title_pt || '',
-    descriptionEn: record.description_en || '',
-    descriptionPt: record.description_pt || '',
-    date: record.date || '',
-    url: record.url || '#',
-    coverUrl: record.cover ? buildImageUrl(record, record.cover) : '',
-    socials: record.expand?.social_refs?.map(transformSocial) || [],
-    medias:
-      record.medias && record.medias.length > 0
-        ? record.medias.map((media) => buildImageUrl(record, media))
-        : [],
-    client: record.client || '',
-    subtitleEn: record.subtitle_en || '',
-    subtitlePt: record.subtitle_pt || '',
-    categories: record.categories || [],
-    projectType: record.project_type || '',
-  };
+  try {
+    return {
+      id: record.id,
+      titleEn: record.title_en || '',
+      titlePt: record.title_pt || '',
+      descriptionEn: record.description_en || '',
+      descriptionPt: record.description_pt || '',
+      date: record.date || '',
+      url: record.url || '#',
+      coverUrl: record.cover ? buildImageUrl(record, record.cover) : '',
+      socials: record.expand?.social_refs?.map(transformSocial) || [],
+      medias:
+        record.medias && record.medias.length > 0
+          ? record.medias.map((media) => buildImageUrl(record, media))
+          : [],
+      client: record.client || '',
+      subtitleEn: record.subtitle_en || '',
+      subtitlePt: record.subtitle_pt || '',
+      categories: record.categories || [],
+      projectType: record.project_type || '',
+    };
+  } catch (err) {
+    transformLogger.error(`[transformProject] Failed to transform project ${record.id}: ${err}`);
+    return {
+      id: record.id,
+      titleEn: '',
+      titlePt: '',
+      descriptionEn: '',
+      descriptionPt: '',
+      date: '',
+      url: '#',
+      coverUrl: '',
+      socials: [],
+      medias: [],
+      client: '',
+      subtitleEn: '',
+      subtitlePt: '',
+      categories: [],
+      projectType: '' as unknown as ProjectsProjectTypeOptions,
+    };
+  }
 }
 
 /**
@@ -98,15 +150,28 @@ export function transformProject(
 export function transformTestimonial(
   record: TestimonialsResponse,
 ): Testimonial {
-  return {
-    id: record.id,
-    title: record.title,
-    subtitle: record.subtitle,
-    content: record.content,
-    profileUrl: record.profile ? buildImageUrl(record, record.profile) : '',
-    url: record.url || '',
-    date: record.date || '',
-  };
+  try {
+    return {
+      id: record.id,
+      title: record.title,
+      subtitle: record.subtitle,
+      content: record.content,
+      profileUrl: record.profile ? buildImageUrl(record, record.profile) : '',
+      url: record.url || '',
+      date: record.date || '',
+    };
+  } catch (err) {
+    transformLogger.error(`[transformTestimonial] Failed to transform testimonial ${record.id}: ${err}`);
+    return {
+      id: record.id,
+      title: '',
+      subtitle: '',
+      content: '',
+      profileUrl: '',
+      url: '',
+      date: '',
+    };
+  }
 }
 
 /**
@@ -115,10 +180,21 @@ export function transformTestimonial(
 export function transformPolaroid(
   record: PolaroidsResponse,
 ): Polaroid {
-  return {
-    id: record.id,
-    photoUrl: record.photo ? buildImageUrl(record, record.photo) : '',
-    textEn: record.text_en || '',
-    textPt: record.text_pt || '',
-  };
+  try {
+    return {
+      id: record.id,
+      photoUrl: record.photo ? buildImageUrl(record, record.photo) : '',
+      textEn: record.text_en || '',
+      textPt: record.text_pt || '',
+    };
+  } catch (err) {
+    transformLogger.error(`[transformPolaroid] Failed to transform polaroid ${record.id}: ${err}`);
+    return {
+      id: record.id,
+      photoUrl: '',
+      textEn: '',
+      textPt: '',
+    };
+  }
 }
+

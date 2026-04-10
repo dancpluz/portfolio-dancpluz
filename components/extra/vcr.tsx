@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, ReactNode } from 'react';
+import { uiLogger } from '@/lib/logger';
 
 interface VCRConfig {
   scanlines?: boolean;
@@ -82,8 +83,8 @@ function SnowCanvas({
 
       workerRef.current = worker;
       transferredRef.current = true;
-    } catch {
-      // Fallback: OffscreenCanvas not supported, canvas stays inert
+    } catch (err) {
+      uiLogger.warn(`[SnowCanvas] OffscreenCanvas not supported, snow effect disabled: ${err}`);
     }
 
     return () => {
@@ -157,8 +158,8 @@ function VCRCanvas({
 
       workerRef.current = worker;
       transferredRef.current = true;
-    } catch {
-      // Fallback: OffscreenCanvas not supported
+    } catch (err) {
+      uiLogger.warn(`[VCRCanvas] OffscreenCanvas not supported, VCR effect disabled: ${err}`);
     }
 
     return () => {

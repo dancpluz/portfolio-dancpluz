@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, memo } from 'react';
+import { uiLogger } from '@/lib/logger';
 
 // --- Effect type definitions ---
 
@@ -105,7 +106,7 @@ const CanvasImage = memo(function CanvasImage({
 
         bitmap.close();
       } else if (msg.type === 'error') {
-        console.error('CanvasImage worker error:', msg.error);
+        uiLogger.error(`[CanvasImage] Worker error: ${msg.error}`);
       }
     };
 

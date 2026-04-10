@@ -39,3 +39,8 @@ await configure({
 
 export const clientLogger = getLogger(['client']);
 export const serverLogger = getLogger(['server']);
+
+// Child loggers for granular categorization (inherit parent level/sinks)
+export const transformLogger = getLogger(['server', 'transform']);
+export const i18nLogger = getLogger(['server', 'i18n']);
+export const uiLogger = getLogger(['client', 'ui']);

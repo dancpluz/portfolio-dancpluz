@@ -1,6 +1,4 @@
 // Snow effect rendered entirely in a Web Worker via OffscreenCanvas
-export {};
-
 interface SnowInitMessage {
   type: 'init';
   canvas: OffscreenCanvas;
@@ -81,7 +79,7 @@ function handleResize(w: number, h: number) {
   noiseCanvas = generateNoise(canvasW, canvasH);
 }
 
-self.onmessage = (e: MessageEvent<SnowMessage>) => {
+globalThis.onmessage = (e: MessageEvent<SnowMessage>) => {
   const msg = e.data;
 
   switch (msg.type) {

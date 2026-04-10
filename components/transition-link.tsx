@@ -5,6 +5,7 @@ import { triggerExitAnimation } from '@/components/motion/events';
 import React, { forwardRef, type ComponentProps } from 'react';
 import { m } from 'motion/react';
 import Link from 'next/link';
+import { clientLogger } from '@/lib/logger';
 
 type LinkProps = ComponentProps<typeof Link>;
 
@@ -42,7 +43,7 @@ const TransitionLinkInner = forwardRef<HTMLAnchorElement, LinkProps>(
             new Promise((resolve) => setTimeout(resolve, 800)),
           ]);
         } catch (error) {
-          console.error('Exit animation failed:', error);
+          clientLogger.error(`[TransitionLink] Exit animation failed: ${error}`);
         }
       }
       

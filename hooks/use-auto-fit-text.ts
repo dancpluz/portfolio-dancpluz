@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { prepare, layout } from '@chenglou/pretext';
+import { uiLogger } from '@/lib/logger';
 
 export interface UseAutoFitTextParams {
   text: string;
@@ -50,7 +51,8 @@ export function useAutoFitText({
           break;
         }
       }
-    } catch {
+    } catch (err) {
+      uiLogger.warn(`[useAutoFitText] Layout calculation failed for "${text.slice(0, 30)}", using baseSize: ${err}`);
       bestSize = baseSize;
     }
     
