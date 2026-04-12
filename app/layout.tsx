@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Permanent_Marker } from 'next/font/google';
 import localFont from 'next/font/local';
 import './globals.css';
 import { ReactLenis } from 'lenis/react';
@@ -13,6 +13,13 @@ const inter = Inter({
   display: 'swap',
   variable: '--font-text',
   preload: true,
+});
+
+const permanentMarker = Permanent_Marker({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-marker',
+  display: 'swap',
 });
 
 const offBit = localFont({
@@ -55,7 +62,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='pt-BR' suppressHydrationWarning>
-      <body className={`${inter.variable} ${offBit.variable}`}>
+      <body className={`${inter.variable} ${offBit.variable} ${permanentMarker.variable}`}>
         <ServerProviders>
           <ClientProviders>
             <Preloader />

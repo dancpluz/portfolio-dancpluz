@@ -3,6 +3,7 @@
 @theme {
   --font-text: var(--font-text);
   --font-heading: var(--font-heading);
+  --font-marker: var(--font-marker);
 
   --color-background: #080808;
   --color-foreground: #efefef;

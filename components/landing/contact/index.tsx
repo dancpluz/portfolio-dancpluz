@@ -2,7 +2,7 @@ import { getSectionId } from '@/lib/utils';
 import { ROUTES } from '@/lib/constant';
 import FlipText from '../../extra/flip-text';
 import DvdLogo from './dvd-logo';
-import Connect from './connect';
+import VHSTape from './vhs-tape';
 import { getSocials } from '@/actions/socials';
 import { Reveal } from '@/components/motion/reveal';
 import Image from 'next/image';
@@ -50,15 +50,20 @@ export default async function Contact() {
             </div>
 
             <Image
-              src='/img/tv.png'
+              src='/img/tv.webp'
               alt='Retro TV Frame'
               fill
               className='object-contain pointer-events-none z-10 absolute inset-0 drop-shadow-2xl'
             />
           </div>
         </Reveal>
-        <Connect socials={socials || []} />
+        <div className='flex flex-col w-full justify-center'>
+          {(socials || []).map((social, index) => (
+            <VHSTape key={social.id} social={social} index={index} />
+          ))}
+        </div>
       </div>
     </section>
   );
 }
+

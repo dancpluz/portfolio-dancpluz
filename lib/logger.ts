@@ -5,6 +5,8 @@ import {
   getAnsiColorFormatter,
 } from '@logtape/logtape';
 
+const isProd = process.env.NODE_ENV === 'production';
+
 await configure({
   sinks: {
     console: getConsoleSink({
@@ -32,15 +34,14 @@ await configure({
       lowestLevel: 'warning',
       sinks: ['console'],
     },
-    { category: ['client'], lowestLevel: 'debug', sinks: ['console'] },
-    { category: ['server'], lowestLevel: 'debug', sinks: ['console'] },
+    { category: ['client'], lowestLevel: isProd ? 'error' : 'debug', sinks: isProd ? [] : ['console'] },
+    { category: ['server'], lowestLevel: isProd ? 'info' : 'debug', sinks: ['console'] },
   ],
 });
 
 export const clientLogger = getLogger(['client']);
 export const serverLogger = getLogger(['server']);
 
-// Child loggers for granular categorization (inherit parent level/sinks)
 export const transformLogger = getLogger(['server', 'transform']);
 export const i18nLogger = getLogger(['server', 'i18n']);
 export const uiLogger = getLogger(['client', 'ui']);

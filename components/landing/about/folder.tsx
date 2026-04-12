@@ -88,11 +88,12 @@ const AutoFitText = memo(function AutoFitText({
     baseSize: 32,
     minSize: 10,
     lineHeightMultiplier: 1.25,
+    fontFamily: '"Permanent Marker", cursive',
   });
 
   return (
     <span
-      className='text-black text-center px-1 wrap-break-word w-full'
+      className='font-marker text-black text-center px-1 wrap-break-word w-full'
       style={{ fontSize: `${fontSize}px`, lineHeight: 1.25 }}
     >
       {text}
@@ -199,7 +200,7 @@ const PaperItem = memo(function PaperItem({
       </div>
       {text && (
         <div className='flex-1 flex items-center justify-center overflow-hidden mt-1 px-[2px]'>
-          <span className='text-[6px] text-black leading-tight line-clamp-1 wrap-break-word overflow-hidden text-ellipsis'>
+          <span className='font-marker text-[6px] text-black leading-tight line-clamp-1 wrap-break-word overflow-hidden text-ellipsis'>
             {text}
           </span>
         </div>
