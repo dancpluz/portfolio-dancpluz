@@ -1,3 +1,5 @@
+import { getSectionId } from '@/lib/utils';
+import { ROUTES } from '@/lib/constant';
 import { getTechnologies } from '@/actions/technologies';
 import LogoShowcase from './logo-showcase';
 import FlipText from '../../extra/flip-text';
@@ -14,7 +16,7 @@ export default async function Technologies() {
   }
 
   return (
-    <section className='w-full flex flex-col items-center'>
+    <section id={getSectionId(ROUTES.technologies)} className='w-full flex flex-col items-center'>
       <FlipText text={t('title')} className='font-heading text-8xl' />
       <p className='text-xl font-regular mb-10'>{t('text')}</p>
       <LogoShowcase logos={technologies} columnCount={5} />

@@ -40,7 +40,9 @@ const FlowingNav = React.memo(function FlowingNav({
   return (
     <div className='w-full h-full overflow-hidden'>
       <nav className='flex flex-col h-full m-0 p-0'>
-        {Object.entries(ROUTES).map(([key, item]) => (
+        {Object.entries(ROUTES)
+          .filter(([_, item]) => item.menu)
+          .map(([key, item]) => (
           <MenuItem
             key={item.path}
             route={{ ...item, text: t(key) }}

@@ -7,6 +7,9 @@ import Header from '@/components/header/header';
 import ClientProviders from './client-providers';
 import ServerProviders from './server-providers';
 import Preloader from '@/components/ui/preloader';
+import Footer from '@/components/footer';
+import { getSocials } from '@/actions/socials';
+import { MenuProvider } from '@/hooks/use-menu';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -55,19 +58,26 @@ export const metadata: Metadata = {
   description: 'Bem vindo ao meu portfólio',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const socials = await getSocials(true);
+
   return (
     <html lang='pt-BR' suppressHydrationWarning>
       <body className={`${inter.variable} ${offBit.variable} ${permanentMarker.variable}`}>
         <ServerProviders>
           <ClientProviders>
-            <Preloader />
-            <Header />
-            <ReactLenis root>{children}</ReactLenis>
+            <MenuProvider socials={socials.data || []}>
+              <Preloader />
+              <Header />
+              <ReactLenis root>
+                {children}
+                <Footer />
+              </ReactLenis>
+            </MenuProvider>
           </ClientProviders>
         </ServerProviders>
       </body>

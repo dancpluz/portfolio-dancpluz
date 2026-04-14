@@ -3,15 +3,11 @@ import ThemeSwitcher from '../theme-switcher';
 import Hamburguer from './hamburguer';
 import Logo from './logo';
 import { MenuProvider } from '@/hooks/use-menu';
-import { getSocials } from '@/actions/socials';
 import MenuOverlay from './menu-overlay';
 
-export default async function Header() {
-  const socials = await getSocials(true);
-  // TODO: Handle error
-
+export default function Header() {
   return (
-    <MenuProvider socials={socials.data || []}>
+    <>
       <div className='fixed inset-x-0 top-0 py-6 section-px grid grid-cols-3 items-center justify-between gap-4 z-50 pointer-events-none'>
         <div className='flex items-center justify-start pointer-events-auto'>
           <Logo />
@@ -28,6 +24,6 @@ export default async function Header() {
         </div>
       </nav>
       <MenuOverlay />
-    </MenuProvider>
+    </>
   );
 }

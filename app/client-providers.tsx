@@ -12,10 +12,10 @@ export default function ClientProviders({
   useMagicalUnderline();
 
   return (
-    <LazyMotion features={domAnimation}>
-      <ThemeProvider attribute='data-theme' defaultTheme='system' enableSystem>
+    <ThemeProvider attribute='data-theme' defaultTheme='system' enableSystem>
+      <LazyMotion features={domAnimation}>
         {children}
-      </ThemeProvider>
-    </LazyMotion>
+      </LazyMotion>
+    </ThemeProvider>
   );
 }

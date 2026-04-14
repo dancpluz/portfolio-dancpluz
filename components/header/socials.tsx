@@ -12,7 +12,7 @@ export default function Socials() {
   const delay = isOpen ? 1 : 0.3;
 
   return (
-    <div className='px-6 py-4 border-t border-foreground text-foreground flex flex-col items-center justify-center h-full'>
+    <div className='px-6 py-4 border-t border-foreground text-foreground flex flex-col items-center justify-center h-full tracking-wider'>
       <ul className='w-full flex items-center justify-around gap-2 h-full'>
         {socials.map((social) => (
           <m.li

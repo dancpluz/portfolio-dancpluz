@@ -44,6 +44,10 @@ const pt: Translation = {
     title: 'Tecnologias',
     text: 'Brinquedos que uso',
   },
+  footer: {
+    back_to_top: '\u2191 Voltar ao topo',
+    rights: '\u00A9 {year} Daniel Luz',
+  },
 };
 
 export default pt;

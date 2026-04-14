@@ -6,22 +6,25 @@
 - [ ] Error Page
 - [x] Smooth scroll
 - [x] Logo
+- [x] Footer
 - [x] Header
-  - [ ] Images from routes
+  - [x] Images from routes
 - [ ] Landing Page
   - [x] Loading state
   - [ ] Hero
-    - [ ] Photo
+    - [x] Photo
   - [x] Projects
-    - [ ] Photo
+    - [x] Photo
   - [x] Tech
-    - [ ] Photo
+    - [x] Photo
   - [ ] About
-    - [ ] Photo
-    - [ ] Text
+    - [x] Photo
+    - [x] Text
+    - [ ] Texts
+    - [ ] Timeline
   - [x] Testimonial
   - [x] Contact
-    - [ ] Skype Photo
+    - [x] Skype Photo
   - [ ] Responsive
 - [ ] Project Page
   - [ ] Loading state

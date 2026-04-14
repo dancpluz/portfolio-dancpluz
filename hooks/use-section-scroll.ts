@@ -1,10 +1,11 @@
 import { useLenis } from 'lenis/react';
+import { useCallback } from 'react';
 
 export function useSectionScroll() {
   const lenis = useLenis();
 
-  const handleScroll = (path: string, onClick?: () => void) => {
-    return (e: React.MouseEvent<HTMLAnchorElement | HTMLDivElement>) => {
+  const handleScroll = useCallback((path: string, onClick?: () => void, timeoutMs: number = 500) => {
+    return (e: React.MouseEvent<HTMLAnchorElement | HTMLDivElement | HTMLButtonElement>) => {
       const isHome = globalThis.window?.location.pathname === '/';
 
       if (path.includes('#') && isHome) {
@@ -13,7 +14,7 @@ export function useSectionScroll() {
         const hash = path.substring(path.indexOf('#'));
         setTimeout(() => {
           lenis?.scrollTo(hash, { duration: 3 });
-        }, 500);
+        }, timeoutMs);
         return;
       }
 
@@ -22,13 +23,13 @@ export function useSectionScroll() {
         if (onClick) onClick();
         setTimeout(() => {
           lenis?.scrollTo(0, { duration: 3 });
-        }, 500);
+        }, timeoutMs);
         return;
       }
 
       if (onClick) onClick();
     };
-  };
+  }, [lenis]);
 
   return handleScroll;
 }

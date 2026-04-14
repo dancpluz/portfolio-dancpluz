@@ -42,6 +42,10 @@ const en = {
     title: 'Technologies',
     text: 'Toys I play with',
   },
+  footer: {
+    back_to_top: '\u2191 Back to top',
+    rights: '\u00A9 {year} Daniel Luz',
+  },
 };
 
 export default en;

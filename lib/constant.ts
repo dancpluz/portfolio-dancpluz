@@ -59,6 +59,7 @@ export const ROUTES = {
     path: '/',
     text: 'Início',
     media: '/video/universe.webm',
+    menu: true,
   },
   // blog: {
   //   path: '/blog',
@@ -69,16 +70,25 @@ export const ROUTES = {
     path: '/#projects',
     text: 'Obras',
     media: '/video/joias.webm',
+    menu: true,
+  },
+  technologies: {
+    path: '/#technologies',
+    text: 'Tecnologias',
+    media: '/video/screensaver.webm',
+    menu: false,
   },
   about: {
     path: '/#about',
     text: 'Sobre',
     media: '/video/screensaver.webm',
+    menu: true,
   },
   contact: {
     path: '/#contact',
     text: 'Contato',
     media: '/video/orelhao.webm',
+    menu: true,
   },
 } as const;
 
