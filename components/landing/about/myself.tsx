@@ -4,7 +4,7 @@ import { Polaroid } from '@/types/api';
 import Image from 'next/image';
 import Folder from './folder';
 import { m, useMotionValue, useSpring, useTransform } from 'motion/react';
-import React, { useRef } from 'react';
+import React, { useRef, useMemo } from 'react';
 
 export default function Myself({
   polaroids,
@@ -44,6 +44,21 @@ export default function Myself({
   const x3 = useTransform(smoothMouseX, [-1, 1], [-80, 80]);
   const y3 = useTransform(smoothMouseY, [-1, 1], [-40, 40]);
 
+  const [f1Polaroids, f2Polaroids, f3Polaroids] = useMemo(() => {
+    const list1: Polaroid[] = [];
+    const list2: Polaroid[] = [];
+    const list3: Polaroid[] = [];
+    
+    const source = polaroids || [];
+    source.forEach((p, i) => {
+      if (i % 3 === 0) list1.push(p);
+      else if (i % 3 === 1) list2.push(p);
+      else list3.push(p);
+    });
+    
+    return [list1, list2, list3];
+  }, [polaroids]);
+
   return (
     <div className='w-full relative overflow-visible mb-16'>
       <div
@@ -61,7 +76,7 @@ export default function Myself({
             className='absolute top-1/3 left-[7%] z-0 pointer-events-auto'
             style={{ x: x1, y: y1 }}
           >
-            <Folder color='#00f248' size={1} polaroids={polaroids || []} />
+            <Folder color='#00f248' size={1} polaroids={f1Polaroids} />
           </m.div>
 
           {/* Pink */}
@@ -69,7 +84,7 @@ export default function Myself({
             className='absolute top-1/2 -right-[11%] z-0 pointer-events-auto'
             style={{ x: x2, y: y2 }}
           >
-            <Folder color='#ff00ff' size={1.1} polaroids={polaroids || []} />
+            <Folder color='#ff00ff' size={1.1} polaroids={f2Polaroids} />
           </m.div>
 
           {/* Cyan */}
@@ -77,7 +92,7 @@ export default function Myself({
             className='absolute bottom-[4%] -left-[2%] z-15 pointer-events-auto shadow-xl'
             style={{ x: x3, y: y3 }}
           >
-            <Folder color='#00fbfe' size={1.25} polaroids={polaroids || []} />
+            <Folder color='#00fbfe' size={1.25} polaroids={f3Polaroids} />
           </m.div>
 
           {/* Image and Effects (Isolated Stacking Context) */}

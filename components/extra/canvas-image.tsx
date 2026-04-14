@@ -58,7 +58,8 @@ interface CanvasImageProps {
   className?: string;
 }
 
-// --- Component ---
+// Module-level cache: processed bitmaps keyed by src URL
+const bitmapCache = new Map<string, ImageBitmap>();
 
 const CanvasImage = memo(function CanvasImage({
   src,
@@ -76,6 +77,21 @@ const CanvasImage = memo(function CanvasImage({
 
   useEffect(() => {
     if (!src) return;
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const cached = bitmapCache.get(src);
+    if (cached) {
+      canvas.width = cached.width;
+      canvas.height = cached.height;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(cached, 0, 0);
+        setLoaded(true);
+      }
+      return;
+    }
 
     setLoaded(false);
 
@@ -103,6 +119,13 @@ const CanvasImage = memo(function CanvasImage({
           ctx.drawImage(bitmap, 0, 0);
           setLoaded(true);
         }
+
+        // Store a clone in the cache for future instances
+        createImageBitmap(bitmap).then((clone) => {
+          bitmapCache.set(src, clone);
+        }).catch(() => {
+          // bitmap may already be closed, ignore
+        });
 
         bitmap.close();
       } else if (msg.type === 'error') {

@@ -12,7 +12,7 @@ const POLAROID_EFFECTS: ImageEffect[] = [
   {
     type: 'pixelate',
     enabled: true,
-    params: { size: 8, maintainAspect: true },
+    params: { size: 6, maintainAspect: true },
   },
   {
     type: 'posterize',
@@ -87,14 +87,14 @@ const AutoFitText = memo(function AutoFitText({
     maxHeight,
     baseSize: 32,
     minSize: 10,
-    lineHeightMultiplier: 1.25,
+    lineHeightMultiplier: 1.3,
     fontFamily: '"Permanent Marker", cursive',
   });
 
   return (
     <span
-      className='font-marker text-black text-center px-1 wrap-break-word w-full'
-      style={{ fontSize: `${fontSize}px`, lineHeight: 1.25 }}
+      className='font-marker text-black text-center px-1 wrap-break-word w-full block'
+      style={{ fontSize: `${fontSize}px`, lineHeight: 1.3 }}
     >
       {text}
     </span>
@@ -369,7 +369,8 @@ export default function Folder({
               className='p-[16px] shadow-2xl flex flex-col transition-transform scale-100 hover:scale-[1.02] max-h-[95vh] overflow-y-auto scrollbar-hide'
               style={{
                 width: '328px',
-                height: '400px',
+                minHeight: '400px',
+                height: 'auto',
                 backgroundColor: paperColors[zoomedIndex],
               }}
             >
@@ -377,11 +378,11 @@ export default function Folder({
                 {papers[zoomedIndex].node}
               </div>
               {papers[zoomedIndex].text && (
-                <div className='flex-1 flex flex-col items-center justify-center mt-3 pb-2 w-full overflow-hidden'>
+                <div className='flex-1 flex flex-col items-center justify-center mt-3 pb-2 w-full'>
                   <AutoFitText
                     text={papers[zoomedIndex].text}
                     maxWidth={296}
-                    maxHeight={60}
+                    maxHeight={50}
                   />
                 </div>
               )}
