@@ -2,7 +2,6 @@ import LanguageSwitcher from '../lang-switcher';
 import ThemeSwitcher from '../theme-switcher';
 import Hamburguer from './hamburguer';
 import Logo from './logo';
-import { MenuProvider } from '@/hooks/use-menu';
 import MenuOverlay from './menu-overlay';
 
 export default function Header() {

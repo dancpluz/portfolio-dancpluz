@@ -10,6 +10,7 @@ import TransitionLink from '../transition-link';
 import { ROUTES } from '@/lib/constant';
 import { RouteItem } from '@/types/utils';
 import { useTranslations } from 'next-intl';
+import Loader from '@/components/ui/loader';
 
 const FlowingNav = React.memo(function FlowingNav({
   speed = 15,
@@ -232,29 +233,60 @@ const MenuItem = React.memo(function MenuItem({
                 {text}
               </span>
               <div className='relative w-[200px] h-[7vh] my-[2em] mx-[2vw] py-[1em] pixel-corners-small overflow-hidden shrink-0'>
-                {isVideo ? (
-                  <video
-                    src={media}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className='object-cover w-full h-full absolute inset-0'
-                  />
-                ) : (
-                  <Image
-                    src={media || '/placeholder.svg'}
-                    alt={text}
-                    fill
-                    sizes='200px'
-                    className='object-cover'
-                  />
-                )}
+                <MediaContent isVideo={isVideo} media={media} text={text} />
               </div>
             </div>
           ))}
         </div>
       </div>
     </div>
+  );
+});
+
+const MediaContent = React.memo(function MediaContent({
+  isVideo,
+  media,
+  text,
+}: {
+  isVideo: boolean;
+  media: string;
+  text: string;
+}) {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  return (
+    <>
+      {!isLoaded && (
+        <div className='absolute inset-0 flex items-center justify-center -z-10'>
+          <div className='scale-50'>
+            <Loader />
+          </div>
+        </div>
+      )}
+      {isVideo ? (
+        <video
+          src={media}
+          autoPlay
+          loop
+          muted
+          playsInline
+          onLoadedData={() => setIsLoaded(true)}
+          className={`object-cover w-full h-full absolute inset-0 transition-opacity duration-300 ease-in-out ${
+            isLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
+      ) : (
+        <Image
+          src={media}
+          alt={text}
+          fill
+          sizes='200px'
+          onLoad={() => setIsLoaded(true)}
+          className={`object-cover transition-opacity duration-300 ease-in-out ${
+            isLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
+      )}
+    </>
   );
 });

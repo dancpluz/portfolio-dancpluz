@@ -262,7 +262,7 @@ export default function VHSTape({ social, index = 0 }: Readonly<VHSTapeProps>) {
                     className='flex items-center justify-center size-full pointer-events-auto hover:scale-[1.15] active:scale-95 transition-all drop-shadow-md'
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <ArrowRight className='size-8 text-white drop-shadow-lg' />
+                    <ArrowRight className='size-8 text-white drop-shadow-lg -rotate-45' />
                   </Link>
                 </m.div>
               )}

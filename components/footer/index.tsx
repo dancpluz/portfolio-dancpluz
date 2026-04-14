@@ -67,14 +67,11 @@ export default function Footer() {
     };
   }, [isVisible]);
 
-  const navLinks = useMemo(
-    () => Object.entries(ROUTES).filter(([_, route]) => route.menu),
-    []
-  );
+  const navLinks = useMemo(() => Object.entries(ROUTES), []);
 
   const scrollToTop = useMemo(
     () => handleScroll('/', undefined, 100),
-    [handleScroll]
+    [handleScroll],
   );
 
   return (
@@ -87,12 +84,8 @@ export default function Footer() {
           <nav>
             <ul className='flex flex-wrap gap-x-6 gap-y-2'>
               {navLinks.map(([key, route]) => (
-                  <FooterLink
-                    key={route.path}
-                    route={route}
-                    text={tNav(key)}
-                  />
-                ))}
+                <FooterLink key={route.path} route={route} text={tNav(key)} />
+              ))}
             </ul>
           </nav>
           <p className='text-sm font-heading flex items-center gap-x-1'>
@@ -150,7 +143,7 @@ const FooterLink = memo(function FooterLink({
   const handleScroll = useSectionScroll();
   const onClick = useMemo(
     () => handleScroll(route.path, undefined, 100),
-    [handleScroll, route.path]
+    [handleScroll, route.path],
   );
 
   return (

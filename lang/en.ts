@@ -25,6 +25,7 @@ const en = {
     projects: 'Projects',
     about: 'About',
     contact: 'Contact',
+    technologies: 'Technologies',
   },
   projects: {
     title: 'Projects',

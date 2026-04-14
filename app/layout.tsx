@@ -2,12 +2,10 @@ import type { Metadata } from 'next';
 import { Inter, Permanent_Marker } from 'next/font/google';
 import localFont from 'next/font/local';
 import './globals.css';
-import { ReactLenis } from 'lenis/react';
-import Header from '@/components/header/header';
+import Header from '@/components/header';
 import ClientProviders from './client-providers';
 import ServerProviders from './server-providers';
 import Preloader from '@/components/ui/preloader';
-import Footer from '@/components/footer';
 import { getSocials } from '@/actions/socials';
 import { MenuProvider } from '@/hooks/use-menu';
 
@@ -66,17 +64,16 @@ export default async function RootLayout({
   const socials = await getSocials(true);
 
   return (
-    <html lang='pt-BR' suppressHydrationWarning>
-      <body className={`${inter.variable} ${offBit.variable} ${permanentMarker.variable}`}>
+    <html lang='pt-BR' suppressHydrationWarning data-scroll-behavior='smooth'>
+      <body
+        className={`${inter.variable} ${offBit.variable} ${permanentMarker.variable}`}
+      >
         <ServerProviders>
           <ClientProviders>
             <MenuProvider socials={socials.data || []}>
               <Preloader />
               <Header />
-              <ReactLenis root>
-                {children}
-                <Footer />
-              </ReactLenis>
+              {children}
             </MenuProvider>
           </ClientProviders>
         </ServerProviders>

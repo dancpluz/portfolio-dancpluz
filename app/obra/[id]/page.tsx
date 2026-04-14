@@ -1,4 +1,5 @@
 import { getProjects, getProjectById } from '@/actions/projects';
+import Footer from '@/components/footer';
 import PageTransition from '@/components/motion/page-transition';
 import { ContainerScroll } from '@/components/project/container-scroll-animation';
 import ParallaxImage from '@/components/project/parallax-image';
@@ -17,7 +18,7 @@ export async function generateStaticParams() {
 
 export const revalidate = 30;
 
-export default async function ProjectPage (
+export default async function ProjectPage(
   props: Readonly<{
     params: Promise<{ id: string }>;
   }>,
@@ -26,12 +27,15 @@ export default async function ProjectPage (
   const [{ data: project }, locale, t] = await Promise.all([
     getProjectById(id) as Promise<{ data: Project | null }>,
     getLocale(),
-    getTranslations('projects')
+    getTranslations('projects'),
   ]);
 
   if (!project) {
     return (
-      <PageTransition tag='main' className='flex max-h-screen max-w-screen flex-col items-center justify-center p-20 z-10'>
+      <PageTransition
+        tag='main'
+        className='flex max-h-screen max-w-screen flex-col items-center justify-center p-20 z-10'
+      >
         <p className='text-xl'>{t('not_found')}</p>
       </PageTransition>
     );
@@ -63,9 +67,7 @@ export default async function ProjectPage (
         />
       </ContainerScroll>
 
-      <section className='section-px flex flex-col gap-4 mt-8 pb-32 h-screen'>
-        
-      </section>
+      <Footer />
     </PageTransition>
   );
 }

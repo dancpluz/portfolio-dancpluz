@@ -27,6 +27,7 @@ const pt: Translation = {
     projects: 'Obras',
     about: 'Sobre',
     contact: 'Contato',
+    technologies: 'Tecnologias',
   },
   projects: {
     title: 'Obras',
