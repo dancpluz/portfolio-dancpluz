@@ -8,6 +8,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import CodeRenderer from './code-renderer';
 import { isGif } from '@/lib/utils';
+import { PixelPoint } from '@/components/ui/svg';
 
 type ArticleRendererProps = {
   dirtyHtml: string;
@@ -120,7 +121,7 @@ const tagHandlers: Record<
     </blockquote>
   ),
   ul: (_, children) => (
-    <ul className='list-disc list-outside ml-6 mb-4 space-y-1'>
+    <ul className='list-none ml-2 mb-4 space-y-2'>
       {children}
     </ul>
   ),
@@ -131,22 +132,32 @@ const tagHandlers: Record<
   ),
   li: (node, children) => {
     // Calcula o índice relativo apenas entre os elementos <li> para ignorar nós de texto/espaçamentos
-    const parentChildren = (node.parent as Element)?.children || [];
+    const parent = node.parent as Element;
+    const parentChildren = parent?.children || [];
     const liElements = parentChildren.filter(
       (child) => (child as Element).name === 'li',
     );
     const relativeIndex = liElements.indexOf(node);
 
     const accents = [
-      'marker:text-accent-1',
-      'marker:text-accent-2',
-      'marker:text-accent-3',
+      'text-accent-1',
+      'text-accent-2',
+      'text-accent-3',
     ];
     const accentClass = accents[relativeIndex % accents.length];
 
+    if (parent?.name === 'ol') {
+      return (
+        <li className={`mt-1 leading-relaxed text-base md:text-lg marker:${accentClass}`}>
+          {children}
+        </li>
+      );
+    }
+
     return (
-      <li className={`mt-1 leading-relaxed text-base md:text-lg ${accentClass}`}>
-        {children}
+      <li className='flex gap-3 items-start mt-1 leading-relaxed text-base md:text-lg'>
+        <PixelPoint className={`size-2 shrink-0 mt-3 ${accentClass}`} />
+        <span>{children}</span>
       </li>
     );
   },

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ROUTES } from '@/lib/constant';
 import { useTranslations } from 'next-intl';
 import { m, AnimatePresence } from 'motion/react';
@@ -19,6 +20,7 @@ export default function Footer() {
   const animationFrameRef = useRef<number | null>(null);
   const t = useTranslations('footer');
   const tNav = useTranslations('nav');
+  const pathname = usePathname();
   const handleScroll = useSectionScroll();
 
   useEffect(() => {
@@ -70,8 +72,8 @@ export default function Footer() {
   const navLinks = useMemo(() => Object.entries(ROUTES), []);
 
   const scrollToTop = useMemo(
-    () => handleScroll('/', undefined, 100),
-    [handleScroll],
+    () => handleScroll(pathname, undefined, 100),
+    [handleScroll, pathname],
   );
 
   return (

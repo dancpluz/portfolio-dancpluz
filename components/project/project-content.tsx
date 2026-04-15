@@ -3,8 +3,12 @@ import ParallaxImage from '@/components/project/parallax-image';
 import ScrollParallaxImage from '@/components/project/scroll-parallax-image';
 import ArticleRenderer from '@/components/blog/post/article-renderer';
 import { Reveal } from '@/components/motion/reveal';
+import BracketText from '@/components/ui/bracket-text';
 import { Project } from '@/types/api';
 import { useLocale } from 'next-intl';
+import { useMemo } from 'react';
+import { format } from 'date-fns';
+import FlipText from '../extra/flip-text';
 
 export default function ProjectContent({
   project,
@@ -18,17 +22,40 @@ export default function ProjectContent({
   const description =
     locale === 'en' ? project.descriptionEn : project.descriptionPt;
 
+  const formattedDate = useMemo(() => {
+    const d = new Date(project.date);
+    if (Number.isNaN(d.getTime())) return project.date;
+    return format(d, 'MM / yyyy');
+  }, [project.date]);
+
   return (
     <>
       <ContainerScroll
         titleComponent={
-          <div className='flex flex-col gap-4 mb-4'>
-            <h1 className='text-4xl md:text-7xl font-bold font-heading text-foreground'>
-              {title}
-            </h1>
-            <p className='text-xl md:text-2xl text-muted-foreground font-text'>
-              {subtitle}
-            </p>
+          <div className='flex flex-col gap-4 mb-4 relative'>
+            <FlipText
+              text={title}
+              duration={0.25}
+              staggerDelay={0.03}
+              className='text-4xl uppercase md:text-8xl font-bold font-heading text-foreground px-32 mx-auto'
+            />
+            <BracketText
+              text={subtitle}
+              accentClass='text-accent-3'
+              className='text-2xl text-foreground font-medium font-heading'
+            />
+            <BracketText
+              text={project.projectType}
+              accentClass='text-accent-1'
+              className='absolute top-0 left-0'
+            />
+            {project.date && (
+              <BracketText
+                text={formattedDate}
+                accentClass='text-accent-2'
+                className='absolute top-0 right-0'
+              />
+            )}
           </div>
         }
       >
@@ -41,7 +68,21 @@ export default function ProjectContent({
         />
       </ContainerScroll>
 
-      <div className='flex w-full flex-col gap-8 items-center px-92'>
+      <div className='flex w-full flex-col gap-12 items-center px-92'>
+        <div className='flex justify-between gap-4 w-full flex-wrap'>
+          {project.categories.map((category, index) => {
+            const accents = ['text-accent-1', 'text-accent-2', 'text-accent-3'];
+            const accentClass = accents[index % accents.length];
+            return (
+              <BracketText
+                key={category}
+                text={category}
+                accentClass={accentClass}
+                className='text-2xl text-foreground font-heading'
+              />
+            );
+          })}
+        </div>
         <h1 className='text-4xl md:text-6xl w-full text-left font-bold font-heading text-foreground'>
           {locale === 'en' ? 'What is this project?' : 'O que é esse projeto?'}
         </h1>
@@ -53,16 +94,28 @@ export default function ProjectContent({
         )}
         {/* Medias */}
         {project.medias.length > 0 && (
-          <div className='flex flex-col gap-4 w-full'>
+          <div className='flex flex-col gap-4 w-full pixel-corners-border'>
             {project.medias.map((media, index) => (
               <ScrollParallaxImage
                 key={`${title} - ${index + 1}`}
                 src={media}
                 alt={`${title} - ${index + 1}`}
-                className='pixel-corners-big'
               />
             ))}
           </div>
+        )}
+        {((locale === 'en' ? project.clientEn : project.clientPt) ||
+          project.clientPt ||
+          project.clientEn) && (
+          <BracketText
+            text={`${locale === 'en' ? 'made for' : 'feito para'} ${
+              locale === 'en'
+                ? project.clientEn || project.clientPt
+                : project.clientPt || project.clientEn
+            }`}
+            accentClass='text-accent-1'
+            className={`text-lg font-heading font-medium transition-all duration-300 ease-out`}
+          />
         )}
       </div>
     </>

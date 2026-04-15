@@ -60,7 +60,7 @@ export const Header = ({ translate, titleComponent }: any) => {
       style={{
         translateY: translate,
       }}
-      className='max-w-5xl mx-auto text-center mb-8 md:mb-20'
+      className='max-w-5xl mx-auto text-center mb-8 md:mb-16'
     >
       {titleComponent}
     </m.div>
@@ -81,10 +81,8 @@ export const Card = ({
       style={{
         rotateX: rotate,
         scale,
-        boxShadow:
-          '0 0 #0000004d, 0 9px 20px #0000004a, 0 37px 37px #00000042, 0 84px 50px #00000026, 0 149px 60px #0000000a, 0 233px 65px #00000003',
       }}
-      className='max-w-5xl mx-auto aspect-4/3 md:aspect-video w-full border-2 md:border-4 border-foreground/20 p-2 md:p-4 bg-surface pixel-corners-border shadow-2xl relative'
+      className='max-w-5xl mx-auto aspect-4/3 md:aspect-video w-full border-2 md:border-4 border-foreground/20 p-2 md:p-4 bg-surface pixel-corners-border shadow-[0_40px_100px_-20px_rgba(0,0,0,0.15)] dark:shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8)] relative'
     >
       <div className='h-full w-full overflow-hidden pixel-corners-small bg-background/50'>
         {children}

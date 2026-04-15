@@ -167,3 +167,22 @@ export function Copy({
     </svg>
   );
 }
+
+export function PixelPoint({
+  className,
+  ...props
+}: Readonly<SVGProps<SVGSVGElement>>) {
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      viewBox='0 0 8 8'
+      className={className}
+      {...props}
+    >
+      <path
+        className='fill-current'
+        d='M6,8H2v-2h4v2ZM2,6H0V2h2v4ZM8,6h-2V2h2v4ZM6,2H2V0h4v2Z'
+      />
+    </svg>
+  );
+}

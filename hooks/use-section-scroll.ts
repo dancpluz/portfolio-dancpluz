@@ -6,23 +6,22 @@ export function useSectionScroll() {
 
   const handleScroll = useCallback((path: string, onClick?: () => void, timeoutMs: number = 500) => {
     return (e: React.MouseEvent<HTMLAnchorElement | HTMLDivElement | HTMLButtonElement>) => {
-      const isHome = globalThis.window?.location.pathname === '/';
+      const currentPath = globalThis.window?.location.pathname;
+      const pathBase = path.split('#')[0];
+      const isTargetingCurrentPage =
+        path === currentPath ||
+        (path.includes('#') &&
+          (pathBase === currentPath ||
+            (pathBase === '' && currentPath === '/')));
 
-      if (path.includes('#') && isHome) {
+      if (isTargetingCurrentPage) {
         e.preventDefault();
         if (onClick) onClick();
-        const hash = path.substring(path.indexOf('#'));
-        setTimeout(() => {
-          lenis?.scrollTo(hash, { duration: 3 });
-        }, timeoutMs);
-        return;
-      }
 
-      if (path === '/' && isHome) {
-        e.preventDefault();
-        if (onClick) onClick();
+        const target = path.includes('#') ? path.substring(path.indexOf('#')) : 0;
+
         setTimeout(() => {
-          lenis?.scrollTo(0, { duration: 3 });
+          lenis?.scrollTo(target, { duration: 3 });
         }, timeoutMs);
         return;
       }

@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect, useMemo, useCallback, memo } from 'react';
 import Image from 'next/image';
 import { lerp, isGif } from '@/lib/utils';
+import { format } from 'date-fns';
+import BracketText from '@/components/ui/bracket-text';
 import FlipText from '../../extra/flip-text';
 import { Project } from '@/types/api';
 import { useLocale } from 'next-intl';
@@ -187,8 +189,7 @@ function ProjectRow({
   const formattedDate = useMemo(() => {
     const d = new Date(project.date);
     if (Number.isNaN(d.getTime())) return project.date;
-    const month = (d.getMonth() + 1).toString().padStart(2, '0');
-    return `${month} / ${d.getFullYear()}`;
+    return format(d, 'MM / yyyy');
   }, [project.date]);
 
   const accentColor = useMemo(() => {
@@ -234,10 +235,11 @@ function ProjectRow({
                 isHovered={isHovered}
               />
               {project.projectType && (
-                <div className='px-2 py-0.5 text-lg font-heading font-bold tracking-wider text-foreground'>
-                  <span className={accentColor}>[</span> {project.projectType}{' '}
-                  <span className={accentColor}>]</span>
-                </div>
+                <BracketText
+                  text={project.projectType}
+                  accentClass={accentColor}
+                  className='px-2 py-0.5'
+                />
               )}
             </div>
             <p

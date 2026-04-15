@@ -116,8 +116,8 @@ export function transformProject(
         record.medias && record.medias.length > 0
           ? record.medias.map((media) => buildImageUrl(record, media))
           : [],
-      clientEn: record.client_en || '',
-      clientPt: record.client_pt || '',
+      clientEn: record.client_en?.toLowerCase() || '',
+      clientPt: record.client_pt?.toLowerCase() || '',
       subtitleEn: record.subtitle_en || '',
       subtitlePt: record.subtitle_pt || '',
       categories: record.categories || [],
