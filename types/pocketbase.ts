@@ -136,7 +136,7 @@ export enum PostsCategoryOptions {
 	"curiosidades" = "curiosidades",
 }
 export type PostsRecord<Tkeywords_en = unknown, Tkeywords_pt = unknown> = {
-	article_en: HTMLString
+	article_en?: HTMLString
 	article_pt: HTMLString
 	category: PostsCategoryOptions
 	created: IsoAutoDateString
@@ -149,7 +149,7 @@ export type PostsRecord<Tkeywords_en = unknown, Tkeywords_pt = unknown> = {
 	long_text_pt?: string
 	long_video?: FileNameString
 	short_video?: FileNameString
-	title_en: string
+	title_en?: string
 	title_pt: string
 	updated: IsoAutoDateString
 	video_caption_en?: string
@@ -178,7 +178,8 @@ export enum ProjectsCategoriesOptions {
 }
 export type ProjectsRecord = {
 	categories?: ProjectsCategoriesOptions[]
-	client?: string
+	client_en?: string
+	client_pt?: string
 	cover: FileNameString
 	created: IsoAutoDateString
 	date: IsoDateString
@@ -188,9 +189,9 @@ export type ProjectsRecord = {
 	medias?: FileNameString[]
 	project_type: ProjectsProjectTypeOptions
 	social_refs?: RecordIdString[]
-	subtitle_en: string
+	subtitle_en?: string
 	subtitle_pt: string
-	title_en: string
+	title_en?: string
 	title_pt: string
 	updated: IsoAutoDateString
 	url?: string

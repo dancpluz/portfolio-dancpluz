@@ -1,10 +1,9 @@
 import { getProjects, getProjectById } from '@/actions/projects';
 import Footer from '@/components/footer';
 import PageTransition from '@/components/motion/page-transition';
-import { ContainerScroll } from '@/components/project/container-scroll-animation';
-import ParallaxImage from '@/components/project/parallax-image';
+import ProjectContent from '@/components/project/project-content';
 import { Project } from '@/types/api';
-import { getLocale, getTranslations } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 
 export async function generateStaticParams() {
   const { data: projects, error } = await getProjects();
@@ -24,9 +23,8 @@ export default async function ProjectPage(
   }>,
 ) {
   const { id } = await props.params;
-  const [{ data: project }, locale, t] = await Promise.all([
+  const [{ data: project }, t] = await Promise.all([
     getProjectById(id) as Promise<{ data: Project | null }>,
-    getLocale(),
     getTranslations('projects'),
   ]);
 
@@ -46,26 +44,7 @@ export default async function ProjectPage(
       tag='main'
       className='flex max-w-screen flex-col gap-4 z-10'
     >
-      <ContainerScroll
-        titleComponent={
-          <div className='flex flex-col gap-4 mb-4'>
-            <h1 className='text-4xl md:text-7xl font-bold font-heading text-foreground'>
-              {locale === 'en' ? project.titleEn : project.titlePt}
-            </h1>
-            <p className='text-xl md:text-2xl text-muted-foreground font-text'>
-              {locale === 'en' ? project.subtitleEn : project.subtitlePt}
-            </p>
-          </div>
-        }
-      >
-        <ParallaxImage
-          src={project.coverUrl || '/placeholder.svg'}
-          alt={locale === 'en' ? project.titleEn : project.titlePt}
-          overflow={1.2}
-          priority
-          global
-        />
-      </ContainerScroll>
+      <ProjectContent project={project} />
 
       <Footer />
     </PageTransition>

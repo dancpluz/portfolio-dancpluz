@@ -38,7 +38,8 @@ export interface Project {
   date: IsoDateString;
   categories: ProjectsCategoriesOptions[];
   medias: string[];
-  client: string;
+  clientEn: string;
+  clientPt: string;
 }
 
 export interface Testimonial {

@@ -1,6 +1,6 @@
 'use client';
 import React, { useRef } from 'react';
-import { useScroll, useTransform, motion, MotionValue } from 'motion/react';
+import { useScroll, useTransform, m, MotionValue } from 'motion/react';
 
 export const ContainerScroll = ({
   titleComponent,
@@ -36,11 +36,11 @@ export const ContainerScroll = ({
 
   return (
     <div
-      className='h-240 md:h-320 flex items-center justify-center relative p-2 md:p-20'
+      className='flex items-center justify-center relative py-12 md:py-32 section-px'
       ref={containerRef}
     >
       <div
-        className='py-10 md:py-40 w-full relative'
+        className='w-full relative'
         style={{
           perspective: '1000px',
         }}
@@ -56,14 +56,14 @@ export const ContainerScroll = ({
 
 export const Header = ({ translate, titleComponent }: any) => {
   return (
-    <motion.div
+    <m.div
       style={{
         translateY: translate,
       }}
-      className='div max-w-5xl mx-auto text-center'
+      className='max-w-5xl mx-auto text-center mb-8 md:mb-20'
     >
       {titleComponent}
-    </motion.div>
+    </m.div>
   );
 };
 
@@ -77,18 +77,18 @@ export const Card = ({
   children: React.ReactNode;
 }) => {
   return (
-    <motion.div
+    <m.div
       style={{
         rotateX: rotate,
         scale,
         boxShadow:
           '0 0 #0000004d, 0 9px 20px #0000004a, 0 37px 37px #00000042, 0 84px 50px #00000026, 0 149px 60px #0000000a, 0 233px 65px #00000003',
       }}
-      className='max-w-5xl -mt-12 mx-auto h-120 md:h-160 w-full border-4 border-foreground/20 p-2 md:p-6 bg-surface pixel-corners-border shadow-2xl'
+      className='max-w-5xl mx-auto aspect-4/3 md:aspect-video w-full border-2 md:border-4 border-foreground/20 p-2 md:p-4 bg-surface pixel-corners-border shadow-2xl relative'
     >
-      <div className='h-full w-full overflow-hidden pixel-corners-small'>
+      <div className='h-full w-full overflow-hidden pixel-corners-small bg-background/50'>
         {children}
       </div>
-    </motion.div>
+    </m.div>
   );
 };

@@ -252,11 +252,16 @@ function ProjectRow({
             >
               {formattedDate}
             </span>
-            {project.client && (
+            {((locale === 'en' ? project.clientEn : project.clientPt) ||
+              project.clientPt ||
+              project.clientEn) && (
               <span
                 className={`text-xs font-heading font-bold tabular-nums transition-all duration-300 ease-out`}
               >
-                made for {project.client}
+                {locale === 'en' ? 'made for' : 'feito para'}{' '}
+                {locale === 'en'
+                  ? project.clientEn || project.clientPt
+                  : project.clientPt || project.clientEn}
               </span>
             )}
           </div>

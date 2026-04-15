@@ -116,7 +116,8 @@ export function transformProject(
         record.medias && record.medias.length > 0
           ? record.medias.map((media) => buildImageUrl(record, media))
           : [],
-      client: record.client || '',
+      clientEn: record.client_en || '',
+      clientPt: record.client_pt || '',
       subtitleEn: record.subtitle_en || '',
       subtitlePt: record.subtitle_pt || '',
       categories: record.categories || [],
@@ -135,7 +136,8 @@ export function transformProject(
       coverUrl: '',
       socials: [],
       medias: [],
-      client: '',
+      clientEn: '',
+      clientPt: '',
       subtitleEn: '',
       subtitlePt: '',
       categories: [],
