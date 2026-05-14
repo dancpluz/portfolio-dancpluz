@@ -24,6 +24,8 @@ export interface SplitTextProps {
   threshold?: number;
   /** IntersectionObserver rootMargin (CSS string). Default '-100px'. */
   rootMargin?: string;
+  /** Whether the animation should only happen once. Default true. */
+  once?: boolean;
   /** HTML tag to render. Default 'p'. */
   tag?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p' | 'span' | 'div';
   textAlign?: React.CSSProperties['textAlign'];
@@ -52,9 +54,14 @@ function splitLines(text: string): string[] {
 
 function getTokens(text: string, splitType: SplitType): string[] {
   switch (splitType) {
-    case 'chars': return splitChars(text);
-    case 'words': return splitWords(text);
-    case 'lines': return splitLines(text);
+    case 'chars':
+      // Even for chars, we split by words first so we can wrap them in inline-blocks.
+      // Character-level splitting happens in the render loop.
+      return splitWords(text);
+    case 'words':
+      return splitWords(text);
+    case 'lines':
+      return splitLines(text);
   }
 }
 
@@ -70,6 +77,7 @@ export default function SplitText({
   to = { opacity: 1, y: 0 },
   threshold = 0.1,
   rootMargin = '-100px',
+  once = true,
   tag = 'p',
   textAlign = 'center',
   onLetterAnimationComplete,
@@ -77,18 +85,20 @@ export default function SplitText({
   const ref = useRef<HTMLElement>(null);
 
   const isInView = useInView(ref, {
-    once: true,
+    once,
     amount: threshold,
     margin: rootMargin as `${number}px ${number}px ${number}px ${number}px`,
   });
 
   const tokens = useMemo(() => getTokens(text, splitType), [text, splitType]);
 
-  // Only count non-whitespace tokens for stagger calculation
-  const visibleCount = useMemo(
-    () => tokens.filter((t) => t.trim().length > 0).length,
-    [tokens],
-  );
+  // Count total animatable elements to know when the animation is complete
+  const visibleCount = useMemo(() => {
+    if (splitType === 'chars') {
+      return Array.from(text).filter((c) => c.trim().length > 0).length;
+    }
+    return tokens.filter((t) => t.trim().length > 0).length;
+  }, [tokens, text, splitType]);
 
   const Tag = tag as ElementType;
 
@@ -101,32 +111,70 @@ export default function SplitText({
       style={{ textAlign, wordWrap: 'break-word' }}
       aria-label={text}
     >
-      {tokens.map((token, i) => {
+      {tokens.map((token, wordIdx) => {
         const isWhitespace = token.trim().length === 0;
 
         if (isWhitespace) {
-          // Render spaces / newlines as-is (no animation wrapper)
-          return splitType === 'lines'
-            ? <br key={i} />
-            : <span key={i} aria-hidden='true'>{token}</span>;
+          return splitType === 'lines' ? (
+            <br key={wordIdx} />
+          ) : (
+            <span key={wordIdx} aria-hidden='true'>
+              {token}
+            </span>
+          );
         }
 
+        if (splitType === 'chars') {
+          const chars = Array.from(token);
+          return (
+            <span key={wordIdx} className='inline-block whitespace-nowrap'>
+              {chars.map((char, charIdx) => {
+                const tokenIndex = visibleIndex++;
+                const staggerSec = (delay / 1000) * tokenIndex;
+                const isLast = tokenIndex === visibleCount - 1;
+
+                return (
+                  <m.span
+                    key={charIdx}
+                    aria-hidden='true'
+                    className='inline-block will-change-[transform,opacity]'
+                    initial={from}
+                    animate={isInView ? to : from}
+                    transition={{
+                      duration,
+                      delay: staggerSec,
+                      ease: [0.215, 0.61, 0.355, 1],
+                    }}
+                    onAnimationComplete={
+                      isLast && onLetterAnimationComplete
+                        ? onLetterAnimationComplete
+                        : undefined
+                    }
+                  >
+                    {char}
+                  </m.span>
+                );
+              })}
+            </span>
+          );
+        }
+
+        // Words or Lines
         const tokenIndex = visibleIndex++;
         const staggerSec = (delay / 1000) * tokenIndex;
         const isLast = tokenIndex === visibleCount - 1;
 
         return (
           <m.span
-            key={i}
+            key={wordIdx}
             aria-hidden='true'
-            // Inline-block so transforms work correctly on each token
             className='inline-block will-change-[transform,opacity]'
             initial={from}
             animate={isInView ? to : from}
             transition={{
               duration,
               delay: staggerSec,
-              ease: [0.215, 0.61, 0.355, 1], // power3.out cubic-bezier equivalent
+              ease: [0.215, 0.61, 0.355, 1],
             }}
             onAnimationComplete={
               isLast && onLetterAnimationComplete

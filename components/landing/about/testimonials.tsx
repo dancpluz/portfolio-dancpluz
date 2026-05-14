@@ -162,7 +162,6 @@ const TestimonialCard = memo(function TestimonialCard({
         y: isSelected ? 0 : y,
         skewY: isSelected ? 0 : SKEW,
         scale: isSelected ? 1.05 : 1,
-        zIndex: isSelected ? 50 : index,
       }}
       transition={{
         type: 'spring',
@@ -170,7 +169,7 @@ const TestimonialCard = memo(function TestimonialCard({
         damping: 28,
       }}
       className={cn(
-        '[grid-area:stack] relative flex h-auto min-h-[140px] sm:min-h-[180px] w-[260px] sm:w-[380px] select-none flex-col pixel-corners-border backdrop-blur-sm px-3 sm:px-4 py-3 sm:py-4 cursor-pointer font-heading transition-[filter] duration-500',
+        'relative flex h-auto min-h-[140px] sm:min-h-[180px] w-[260px] sm:w-[380px] select-none flex-col pixel-corners-border backdrop-blur-sm px-3 sm:px-4 py-3 sm:py-4 cursor-pointer font-heading transition-[filter] duration-500',
         isSelected && 'shadow-xl z-50',
         !isLast && !isSelected && OVERLAY_CLASSES,
       )}
@@ -314,24 +313,40 @@ export default function Testimonials({
   return (
     <div
       ref={containerRef}
-      className='grid [grid-template-areas:"stack"] place-items-center opacity-100 animate-in fade-in-0 duration-700 mx-auto w-fit my-16'
+      className='grid [grid-template-areas:"stack"] place-items-center mx-auto w-fit my-16 perspective-[1000px]'
     >
-      {testimonials.map((testimonial, index) => (
-        <TestimonialCard
-          key={testimonial.id}
-          testimonial={testimonial}
-          index={index}
-          x={cardPositions[index].x}
-          y={cardPositions[index].y}
-          isLast={index === total - 1}
-          isSelected={selectedIndex === index}
-          isSm={isSm}
-          onSelect={handleSelect}
-          onDeselect={handleDeselect}
-          onHover={() => handleHover(index)}
-          onLeave={handleLeave}
-        />
-      ))}
+      {testimonials.map((testimonial, index) => {
+        const isSelected = selectedIndex === index;
+        return (
+          <m.div
+            key={testimonial.id}
+            className='[grid-area:stack]'
+            style={{ zIndex: isSelected ? 50 : index }}
+            initial={{ opacity: 0, x: 80, scale: 0.95 }}
+            whileInView={{ opacity: 1, x: 0, scale: 1 }}
+            viewport={{ once: false, margin: '-10% 0px -10% 0px' }}
+            transition={{
+              duration: 3.2,
+              delay: index * 0.15,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+          >
+            <TestimonialCard
+              testimonial={testimonial}
+              index={index}
+              x={cardPositions[index].x}
+              y={cardPositions[index].y}
+              isLast={index === total - 1}
+              isSelected={isSelected}
+              isSm={isSm}
+              onSelect={handleSelect}
+              onDeselect={handleDeselect}
+              onHover={() => handleHover(index)}
+              onLeave={handleLeave}
+            />
+          </m.div>
+        );
+      })}
     </div>
   );
 }

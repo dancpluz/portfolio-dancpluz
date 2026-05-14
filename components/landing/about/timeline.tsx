@@ -7,6 +7,8 @@ import Image from 'next/image';
 import { Experience } from '@/types/api';
 import BracketText from '@/components/ui/bracket-text';
 import { formatDateLocal } from '@/lib/utils';
+import SplitText from '@/components/motion/text/split-text';
+import ScrollRevealText from '@/components/motion/text/scroll-reveal-text';
 
 // ─── Single entry row ─────────────────────────────────────────────────────────
 function EntryNode({
@@ -32,12 +34,17 @@ function EntryNode({
   return (
     <div
       ref={rowRef}
-      className='grid grid-cols-[auto_1fr_auto] items-center gap-6 md:gap-32 pt-20 md:pt-32 min-h-[50vh]'
+      className='grid grid-cols-[auto_1fr_auto] items-center justify-center gap-6 md:gap-32 pt-20 md:pt-32 min-h-[80vh]'
     >
       {/* ── Col 1: dot + date on the same row ─────────── */}
       <div className='sticky top-32 self-start flex flex-row items-center gap-4 z-20 shrink-0'>
         {/* Circle node */}
-        <div className='size-7 rounded-full bg-foreground border-2 flex items-center justify-center shrink-0 border-foreground'>
+        <m.div
+          className='size-7 rounded-full bg-foreground border-2 flex items-center justify-center shrink-0 border-foreground'
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: isInView ? 1 : 0.4, opacity: isInView ? 1 : 0 }}
+          transition={{ duration: 0.5, type: 'spring', bounce: 0.4 }}
+        >
           {exp.iconUrl ? (
             <Image
               src={exp.iconUrl}
@@ -53,34 +60,41 @@ function EntryNode({
               style={{ backgroundColor: accent }}
             />
           )}
-        </div>
+        </m.div>
 
         {/* Date to the right of the dot */}
-        <BracketText
-          text={formatDateLocal(exp.startDate, locale, true)}
-          accentClass={accentClass}
-          className='text-xl md:text-3xl whitespace-nowrap'
-        />
+        <m.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: isInView ? 1 : 0, x: isInView ? 0 : -20 }}
+          transition={{ duration: 0.5, delay: 0.1, ease: 'easeOut' }}
+        >
+          <BracketText
+            text={formatDateLocal(exp.startDate, locale, true)}
+            accentClass={accentClass}
+            className='text-xl md:text-3xl whitespace-nowrap'
+          />
+        </m.div>
       </div>
 
       {/* ── Col 2: title + description ───────────────── */}
-      <div className='flex flex-col gap-2'>
-        <m.h3
-          className='text-2xl md:text-4xl font-bold font-heading text-foreground leading-tight'
-          animate={{ opacity: isInView ? 1 : 0.2, y: isInView ? 0 : 8 }}
-          transition={{ duration: 0.5, ease: 'easeOut' }}
-        >
-          {title}
-        </m.h3>
+      <div className='flex flex-col gap-2 overflow-hidden'>
+        <SplitText
+          text={title}
+          tag='h3'
+          className='text-2xl md:text-3xl font-bold font-heading text-foreground leading-tight'
+          textAlign='left'
+          delay={40}
+        />
 
         {description && (
-          <m.p
-            className='text-foreground/55 text-sm md:text-base leading-relaxed max-w-prose'
-            animate={{ opacity: isInView ? 1 : 0, y: isInView ? 0 : 10 }}
-            transition={{ duration: 0.5, delay: 0.08, ease: 'easeOut' }}
+          <ScrollRevealText
+            containerClassName='!my-0 !rotate-0'
+            textClassName='text-foreground text-base md:text-lg leading-relaxed max-w-prose !font-sans !font-normal !text-left'
+            baseRotation={3}
+            blurStrength={1}
           >
             {description}
-          </m.p>
+          </ScrollRevealText>
         )}
       </div>
 

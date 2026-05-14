@@ -22,7 +22,7 @@ export default function Loading() {
         <Loader />
         
         <m.p 
-          className="mt-16 font-heading text-foreground/50 uppercase text-xs tracking-[0.25em]"
+          className="mt-10 font-heading text-foreground uppercase text-xs tracking-[0.25em]"
           animate={{ opacity: [0.3, 1, 0.3] }}
           transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
         >

@@ -100,7 +100,7 @@ export default function ProjectContent({
       {((locale === 'en' ? project.clientEn : project.clientPt) ||
         project.clientPt ||
         project.clientEn) && (
-        <div className='px-92 w-full'>
+        <div className='mx-auto'>
           <BracketText
             text={`${locale === 'en' ? 'made for' : 'feito para'} ${
               locale === 'en'
