@@ -15,13 +15,15 @@
     - [x] Photo
   - [x] Projects
     - [x] Photo
+    - [x] Component
   - [x] Tech
     - [x] Photo
+    - [x] Component
   - [ ] About
     - [x] Photo
     - [x] Text
     - [ ] Texts
-    - [ ] Timeline
+    - [x] Timeline
   - [x] Testimonial
   - [x] Contact
     - [x] Skype Photo
@@ -31,6 +33,7 @@
   - [x] Media section
   - [x] Structure
   - [x] Preview next project
+  - [ ] Change media carousel icons
   - [ ] Responsive
 - [ ] Blog
   - [x] Loading state

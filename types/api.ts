@@ -58,3 +58,14 @@ export interface Polaroid {
   textEn: string;
   textPt: string;
 }
+
+export interface Experience {
+  id: string;
+  titleEn: string;
+  titlePt: string;
+  descriptionEn: string;
+  descriptionPt: string;
+  startDate: IsoDateString;
+  iconUrl: string;
+  iconAlt: string;
+}

@@ -4,13 +4,16 @@ import { getTestimonials } from '@/actions/testimonials';
 import FlipText from '../../extra/flip-text';
 import Testimonials from './testimonials';
 import { getPolaroids } from '@/actions/polaroids';
+import { getExperience } from '@/actions/experience';
 import Myself from './myself';
+import Timeline from './timeline';
 import { getTranslations } from 'next-intl/server';
 
 export default async function About() {
-  const [testimonials, polaroids, t] = await Promise.all([
+  const [testimonials, polaroids, experience, t] = await Promise.all([
     getTestimonials(),
     getPolaroids(),
+    getExperience(),
     getTranslations('about')
   ]);
 
@@ -26,6 +29,11 @@ export default async function About() {
     >
       <FlipText text={t('title')} className='font-heading text-8xl' />
       <Myself polaroids={polaroids.data || []} />
+      {experience.data && experience.data.length > 0 && (
+        <Timeline
+          experiences={experience.data}
+        />
+      )}
       <Testimonials testimonials={displayTestimonials} />
     </section>
   );

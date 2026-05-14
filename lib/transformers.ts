@@ -3,8 +3,9 @@ import {
   ProjectExpand,
   type IconExpand,
 } from '@/lib/pocketbase';
-import { Project, Social, Technology, Testimonial, Polaroid } from '@/types/api';
+import { Project, Social, Technology, Testimonial, Polaroid, Experience } from '@/types/api';
 import {
+  ExperienceResponse,
   IconsResponse,
   ProjectsResponse,
   ProjectsProjectTypeOptions,
@@ -196,6 +197,43 @@ export function transformPolaroid(
       photoUrl: '',
       textEn: '',
       textPt: '',
+    };
+  }
+}
+
+/**
+ * Transforms a PocketBase Experience record into the Experience interface.
+ */
+export function transformExperience(
+  record: ExperienceResponse<IconExpand>,
+): Experience {
+  try {
+    const { url: iconUrl, alt: iconAlt } = transformIcon(
+      record.expand?.icon_ref,
+      record.title_en || record.title_pt || '',
+    );
+
+    return {
+      id: record.id,
+      titleEn: record.title_en || '',
+      titlePt: record.title_pt || '',
+      descriptionEn: record.description_en || '',
+      descriptionPt: record.description_pt || '',
+      startDate: record.start_date || '',
+      iconUrl,
+      iconAlt,
+    };
+  } catch (err) {
+    transformLogger.error(`[transformExperience] Failed to transform experience ${record.id}: ${err}`);
+    return {
+      id: record.id,
+      titleEn: '',
+      titlePt: '',
+      descriptionEn: '',
+      descriptionPt: '',
+      startDate: '',
+      iconUrl: '',
+      iconAlt: '',
     };
   }
 }

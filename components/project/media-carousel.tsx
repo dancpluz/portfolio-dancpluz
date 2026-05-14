@@ -14,7 +14,7 @@ interface MediaCardProps {
   onClick: (index: number) => void;
 }
 
-function MediaCard({ src, alt, index, fill = false, onClick }: MediaCardProps) {
+function MediaCard({ src, alt, index, fill = false, onClick }: Readonly<MediaCardProps>) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll({
@@ -58,14 +58,23 @@ function MediaCard({ src, alt, index, fill = false, onClick }: MediaCardProps) {
       {/* Hover overlay */}
       <div className='absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
         <div className='w-14 h-14 rounded-full bg-white/15 border border-white/30 flex items-center justify-center backdrop-blur-sm'>
-          <svg width='22' height='22' viewBox='0 0 20 20' fill='none' stroke='white' strokeWidth='1.8' strokeLinecap='round' strokeLinejoin='round'>
+          <svg
+            width='22'
+            height='22'
+            viewBox='0 0 20 20'
+            fill='none'
+            stroke='white'
+            strokeWidth='1.8'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+          >
             <path d='M3 8V3h5M17 8V3h-5M3 12v5h5M17 12v5h-5' />
           </svg>
         </div>
       </div>
 
       {/* Bottom gradient + index badge */}
-      <div className='absolute bottom-0 left-0 right-0 h-14 bg-gradient-to-t from-black/50 to-transparent flex items-end p-3'>
+      <div className='absolute bottom-0 left-0 right-0 h-14 bg-linear-to-t from-black/50 to-transparent flex items-end p-3'>
         <span className='text-white/50 text-xs font-mono tracking-widest'>
           {String(index + 1).padStart(2, '0')}
         </span>
@@ -81,7 +90,7 @@ interface LightboxProps {
   onClose: () => void;
 }
 
-function Lightbox({ images, initialIndex, onClose }: LightboxProps) {
+function Lightbox({ images, initialIndex, onClose }: Readonly<LightboxProps>) {
   const [current, setCurrent] = useState(initialIndex);
 
   const prev = useCallback(
@@ -99,8 +108,8 @@ function Lightbox({ images, initialIndex, onClose }: LightboxProps) {
       if (e.key === 'ArrowLeft') prev();
       if (e.key === 'ArrowRight') next();
     };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
+    globalThis.addEventListener('keydown', handler);
+    return () => globalThis.removeEventListener('keydown', handler);
   }, [onClose, prev, next]);
 
   useEffect(() => {
@@ -116,7 +125,7 @@ function Lightbox({ images, initialIndex, onClose }: LightboxProps) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.25 }}
-      className='fixed inset-0 z-[9999] flex items-center justify-center bg-black/92 backdrop-blur-md'
+      className='fixed inset-0 z-9999 flex items-center justify-center bg-black/92 backdrop-blur-md'
       onClick={onClose}
     >
       {/* Close */}
@@ -125,30 +134,50 @@ function Lightbox({ images, initialIndex, onClose }: LightboxProps) {
         onClick={onClose}
         aria-label='Close lightbox'
       >
-        <svg width='16' height='16' viewBox='0 0 16 16' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round'>
+        <svg
+          width='16'
+          height='16'
+          viewBox='0 0 16 16'
+          fill='none'
+          stroke='currentColor'
+          strokeWidth='2'
+          strokeLinecap='round'
+        >
           <path d='M2 2l12 12M14 2L2 14' />
         </svg>
       </button>
 
       {/* Counter */}
       <div className='absolute top-5 left-1/2 -translate-x-1/2 text-white/50 text-sm font-mono tracking-widest z-20 pointer-events-none'>
-        {String(current + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}
+        {String(current + 1).padStart(2, '0')} /{' '}
+        {String(images.length).padStart(2, '0')}
       </div>
 
       {/* Prev */}
       {images.length > 1 && (
         <button
           className='absolute left-4 md:left-8 w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-colors z-20'
-          onClick={(e) => { e.stopPropagation(); prev(); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            prev();
+          }}
           aria-label='Previous image'
         >
-          <svg width='18' height='18' viewBox='0 0 18 18' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
+          <svg
+            width='18'
+            height='18'
+            viewBox='0 0 18 18'
+            fill='none'
+            stroke='currentColor'
+            strokeWidth='2'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+          >
             <path d='M11 4L6 9l5 5' />
           </svg>
         </button>
       )}
 
-      {/* Image — use <img> so we avoid the fill+unsized container problem */}
       <AnimatePresence mode='wait'>
         <m.div
           key={current}
@@ -181,10 +210,22 @@ function Lightbox({ images, initialIndex, onClose }: LightboxProps) {
       {images.length > 1 && (
         <button
           className='absolute right-4 md:right-8 w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-colors z-20'
-          onClick={(e) => { e.stopPropagation(); next(); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            next();
+          }}
           aria-label='Next image'
         >
-          <svg width='18' height='18' viewBox='0 0 18 18' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
+          <svg
+            width='18'
+            height='18'
+            viewBox='0 0 18 18'
+            fill='none'
+            stroke='currentColor'
+            strokeWidth='2'
+            strokeLinecap='round'
+            strokeLinejoin='round'
+          >
             <path d='M7 4l5 5-5 5' />
           </svg>
         </button>
@@ -196,10 +237,15 @@ function Lightbox({ images, initialIndex, onClose }: LightboxProps) {
           {images.map((_, i) => (
             <button
               key={i}
-              onClick={(e) => { e.stopPropagation(); setCurrent(i); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setCurrent(i);
+              }}
               aria-label={`Go to image ${i + 1}`}
               className={`h-1.5 rounded-full transition-all duration-300 ${
-                i === current ? 'bg-white w-5' : 'bg-white/40 w-1.5 hover:bg-white/70'
+                i === current
+                  ? 'bg-white w-5'
+                  : 'bg-white/40 w-1.5 hover:bg-white/70'
               }`}
             />
           ))}
@@ -216,14 +262,20 @@ interface SmartGridProps {
   onCardClick: (i: number) => void;
 }
 
-function SmartGrid({ images, title, onCardClick }: SmartGridProps) {
+function SmartGrid({ images, title, onCardClick }: Readonly<SmartGridProps>) {
   const count = images.length;
 
   // 1 image → full width landscape
   if (count === 1) {
     return (
       <div className='w-full aspect-video'>
-        <MediaCard src={images[0]} alt={`${title} — 1`} index={0} fill onClick={onCardClick} />
+        <MediaCard
+          src={images[0]}
+          alt={`${title} — 1`}
+          index={0}
+          fill
+          onClick={onCardClick}
+        />
       </div>
     );
   }
@@ -234,7 +286,13 @@ function SmartGrid({ images, title, onCardClick }: SmartGridProps) {
       <div className='grid grid-cols-2 gap-3 w-full'>
         {images.map((src, i) => (
           <div key={i} className='aspect-video'>
-            <MediaCard src={src} alt={`${title} — ${i + 1}`} index={i} fill onClick={onCardClick} />
+            <MediaCard
+              src={src}
+              alt={`${title} — ${i + 1}`}
+              index={i}
+              fill
+              onClick={onCardClick}
+            />
           </div>
         ))}
       </div>
@@ -245,11 +303,23 @@ function SmartGrid({ images, title, onCardClick }: SmartGridProps) {
   return (
     <div className='grid grid-cols-2 gap-3 w-full'>
       <div className='aspect-video row-span-2'>
-        <MediaCard src={images[0]} alt={`${title} — 1`} index={0} fill onClick={onCardClick} />
+        <MediaCard
+          src={images[0]}
+          alt={`${title} — 1`}
+          index={0}
+          fill
+          onClick={onCardClick}
+        />
       </div>
       {images.slice(1).map((src, i) => (
         <div key={i + 1} className='aspect-video'>
-          <MediaCard src={src} alt={`${title} — ${i + 2}`} index={i + 1} fill onClick={onCardClick} />
+          <MediaCard
+            src={src}
+            alt={`${title} — ${i + 2}`}
+            index={i + 1}
+            fill
+            onClick={onCardClick}
+          />
         </div>
       ))}
     </div>
@@ -262,7 +332,7 @@ interface MediaCarouselProps {
   title: string;
 }
 
-export default function MediaCarousel({ images, title }: MediaCarouselProps) {
+export default function MediaCarousel({ images, title }: Readonly<MediaCarouselProps>) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
@@ -280,10 +350,12 @@ export default function MediaCarousel({ images, title }: MediaCarouselProps) {
   };
 
   const onPointerMove = (e: React.PointerEvent) => {
-    if (!trackRef.current || !trackRef.current.hasPointerCapture(e.pointerId)) return;
+    if (!trackRef.current?.hasPointerCapture(e.pointerId))
+      return;
     const dx = e.clientX - startX.current;
     if (Math.abs(dx) > 4) isDragging.current = true;
-    if (isDragging.current) trackRef.current.scrollLeft = scrollLeft.current - dx;
+    if (isDragging.current)
+      trackRef.current.scrollLeft = scrollLeft.current - dx;
   };
 
   const onPointerUp = (e: React.PointerEvent) => {
@@ -314,7 +386,11 @@ export default function MediaCarousel({ images, title }: MediaCarouselProps) {
 
         {isSmall ? (
           // ── Grid layout for ≤ 3 images ───────────────────────────────────
-          <SmartGrid images={images} title={title} onCardClick={handleCardClick} />
+          <SmartGrid
+            images={images}
+            title={title}
+            onCardClick={handleCardClick}
+          />
         ) : (
           // ── Horizontal scrollable carousel for 4+ images ─────────────────
           <div
