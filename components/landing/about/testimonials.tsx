@@ -313,7 +313,7 @@ export default function Testimonials({
   return (
     <div
       ref={containerRef}
-      className='grid [grid-template-areas:"stack"] place-items-center mx-auto w-fit my-16 perspective-[1000px]'
+      className='grid [grid-template-areas:"stack"] place-items-center mx-auto w-fit my-48 perspective-[1000px]'
     >
       {testimonials.map((testimonial, index) => {
         const isSelected = selectedIndex === index;
@@ -322,12 +322,12 @@ export default function Testimonials({
             key={testimonial.id}
             className='[grid-area:stack]'
             style={{ zIndex: isSelected ? 50 : index }}
-            initial={{ opacity: 0, x: 80, scale: 0.95 }}
+            initial={{ opacity: 0, x: 120, scale: 0.95 }}
             whileInView={{ opacity: 1, x: 0, scale: 1 }}
             viewport={{ once: false, margin: '-10% 0px -10% 0px' }}
             transition={{
               duration: 3.2,
-              delay: index * 0.15,
+              delay: index * 0.75,
               ease: [0.16, 1, 0.3, 1],
             }}
           >

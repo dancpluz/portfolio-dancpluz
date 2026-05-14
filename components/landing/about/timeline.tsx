@@ -81,9 +81,11 @@ function EntryNode({
         <SplitText
           text={title}
           tag='h3'
+          splitType='words'
           className='text-2xl md:text-3xl font-bold font-heading text-foreground leading-tight'
           textAlign='left'
-          delay={40}
+          duration={2}
+          delay={150}
         />
 
         {description && (
