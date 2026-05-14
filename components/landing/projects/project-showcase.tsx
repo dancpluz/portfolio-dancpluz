@@ -2,8 +2,7 @@
 
 import { useState, useRef, useEffect, useMemo, useCallback, memo } from 'react';
 import Image from 'next/image';
-import { lerp, isGif } from '@/lib/utils';
-import { format } from 'date-fns';
+import { lerp, isGif, formatDateLocal } from '@/lib/utils';
 import BracketText from '@/components/ui/bracket-text';
 import FlipText from '../../extra/flip-text';
 import { Project } from '@/types/api';
@@ -187,9 +186,7 @@ function ProjectRow({
 }>) {
   const locale = useLocale();
   const formattedDate = useMemo(() => {
-    const d = new Date(project.date);
-    if (Number.isNaN(d.getTime())) return project.date;
-    return format(d, 'MM / yyyy');
+    return formatDateLocal(project.date, locale, true);
   }, [project.date]);
 
   const accentColor = useMemo(() => {

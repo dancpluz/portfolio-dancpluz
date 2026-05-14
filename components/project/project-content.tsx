@@ -7,8 +7,8 @@ import BracketText from '@/components/ui/bracket-text';
 import { Project } from '@/types/api';
 import { useLocale } from 'next-intl';
 import { useMemo } from 'react';
-import { format } from 'date-fns';
 import FlipText from '../extra/flip-text';
+import { formatDateLocal } from '@/lib/utils';
 
 export default function ProjectContent({
   project,
@@ -23,9 +23,7 @@ export default function ProjectContent({
     locale === 'en' ? project.descriptionEn : project.descriptionPt;
 
   const formattedDate = useMemo(() => {
-    const d = new Date(project.date);
-    if (Number.isNaN(d.getTime())) return project.date;
-    return format(d, 'MM / yyyy');
+    return formatDateLocal(project.date, locale, true);
   }, [project.date]);
 
   return (
@@ -92,13 +90,17 @@ export default function ProjectContent({
             <ArticleRenderer dirtyHtml={description} />
           </Reveal>
         )}
-        {/* Medias */}
-        {project.medias.length > 0 && (
+      </div>
+      {/* Medias — full-bleed outside the padded column */}
+      {project.medias.length > 0 && (
+        <div className='w-full my-20 md:my-32'>
           <MediaCarousel images={project.medias} title={title} />
-        )}
-        {((locale === 'en' ? project.clientEn : project.clientPt) ||
-          project.clientPt ||
-          project.clientEn) && (
+        </div>
+      )}
+      {((locale === 'en' ? project.clientEn : project.clientPt) ||
+        project.clientPt ||
+        project.clientEn) && (
+        <div className='px-92 w-full'>
           <BracketText
             text={`${locale === 'en' ? 'made for' : 'feito para'} ${
               locale === 'en'
@@ -106,10 +108,10 @@ export default function ProjectContent({
                 : project.clientPt || project.clientEn
             }`}
             accentClass='text-accent-1'
-            className={`text-lg font-heading font-medium transition-all duration-300 ease-out`}
+            className='text-lg font-heading font-medium transition-all duration-300 ease-out'
           />
-        )}
-      </div>
+        </div>
+      )}
     </>
   );
 }

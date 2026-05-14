@@ -117,7 +117,9 @@ export function parseApiError(err: unknown, objectName: string): string {
       }
   }
 
-  serverLogger.error(`[parseApiError] ${objectName} - status: ${status ?? 'unknown'}, error: ${err}`);
+  serverLogger.error(
+    `[parseApiError] ${objectName} - status: ${status ?? 'unknown'}, error: ${err}`,
+  );
 
   return errorMessage;
 }
@@ -125,14 +127,21 @@ export function parseApiError(err: unknown, objectName: string): string {
 export function formatDateLocal(
   dateInput: string | Date,
   localeStr: string = 'pt',
+  short: boolean = false,
 ): string {
   const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
   if (Number.isNaN(date.getTime())) return '';
 
+  if (short) {
+    return format(date, 'MMM, yyyy', {
+      locale: localeStr === 'pt' ? ptBR : enUS,
+    }).toLowerCase();
+  }
+
   if (localeStr === 'pt') {
-    return format(date, "d 'de' MMMM, yyyy", { locale: ptBR });
+    return format(date, "d 'de' MMMM, yyyy", { locale: ptBR }).toLowerCase();
   } else {
-    return format(date, 'MMMM d, yyyy', { locale: enUS });
+    return format(date, 'MMMM d, yyyy', { locale: enUS }).toLowerCase();
   }
 }
 
@@ -169,7 +178,9 @@ export function processArticleHtml(htmlString: string): {
 
     return { headings, processedHtml };
   } catch (err) {
-    serverLogger.error(`[processArticleHtml] Failed to process article HTML: ${err}`);
+    serverLogger.error(
+      `[processArticleHtml] Failed to process article HTML: ${err}`,
+    );
     return { headings: [], processedHtml: htmlString };
   }
 }

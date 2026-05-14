@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useCallback, useEffect } from 'react';
+import { useRef, useState, useCallback, useEffect, memo, useMemo } from 'react';
 import Image from 'next/image';
 import { m, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import { isGif } from '@/lib/utils';
@@ -10,11 +10,17 @@ interface MediaCardProps {
   src: string;
   alt: string;
   index: number;
-  fill?: boolean; // stretch to fill grid cell
+  fill?: boolean;
   onClick: (index: number) => void;
 }
 
-function MediaCard({ src, alt, index, fill = false, onClick }: Readonly<MediaCardProps>) {
+const MediaCard = memo(function MediaCard({
+  src,
+  alt,
+  index,
+  fill = false,
+  onClick,
+}: Readonly<MediaCardProps>) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll({
@@ -25,16 +31,22 @@ function MediaCard({ src, alt, index, fill = false, onClick }: Readonly<MediaCar
   // image is 120% tall → drifts -16.67% on scroll
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '-16.6667%']);
 
+  const handleClick = useCallback(() => onClick(index), [onClick, index]);
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => e.key === 'Enter' && onClick(index),
+    [onClick, index],
+  );
+
   return (
     <div
       ref={containerRef}
-      onClick={() => onClick(index)}
+      onClick={handleClick}
       className={`relative rounded-2xl cursor-zoom-in pixel-corners-border group ${
         fill ? 'w-full h-full' : 'shrink-0 w-[480px] md:w-[600px] aspect-video'
       }`}
       role='button'
       tabIndex={0}
-      onKeyDown={(e) => e.key === 'Enter' && onClick(index)}
+      onKeyDown={handleKeyDown}
       aria-label={alt}
     >
       {/* Size placeholder (only needed in non-fill carousel mode) */}
@@ -81,7 +93,7 @@ function MediaCard({ src, alt, index, fill = false, onClick }: Readonly<MediaCar
       </div>
     </div>
   );
-}
+});
 
 // ─── Lightbox ─────────────────────────────────────────────────────────────────
 interface LightboxProps {
@@ -90,7 +102,11 @@ interface LightboxProps {
   onClose: () => void;
 }
 
-function Lightbox({ images, initialIndex, onClose }: Readonly<LightboxProps>) {
+const Lightbox = memo(function Lightbox({
+  images,
+  initialIndex,
+  onClose,
+}: Readonly<LightboxProps>) {
   const [current, setCurrent] = useState(initialIndex);
 
   const prev = useCallback(
@@ -118,6 +134,11 @@ function Lightbox({ images, initialIndex, onClose }: Readonly<LightboxProps>) {
       document.body.style.overflow = '';
     };
   }, []);
+
+  // Stable per-dot click handlers avoid allocating a new fn per dot per render
+  const goTo = useCallback((i: number) => setCurrent(i), []);
+
+  const src = images[current];
 
   return (
     <m.div
@@ -150,7 +171,7 @@ function Lightbox({ images, initialIndex, onClose }: Readonly<LightboxProps>) {
       {/* Counter */}
       <div className='absolute top-5 left-1/2 -translate-x-1/2 text-white/50 text-sm font-mono tracking-widest z-20 pointer-events-none'>
         {String(current + 1).padStart(2, '0')} /{' '}
-        {String(images.length).padStart(2, '0')}
+        {String(images.length).padStart(2, '00')}
       </div>
 
       {/* Prev */}
@@ -178,6 +199,7 @@ function Lightbox({ images, initialIndex, onClose }: Readonly<LightboxProps>) {
         </button>
       )}
 
+      {/* Image with crossfade */}
       <AnimatePresence mode='wait'>
         <m.div
           key={current}
@@ -185,23 +207,17 @@ function Lightbox({ images, initialIndex, onClose }: Readonly<LightboxProps>) {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.97 }}
           transition={{ duration: 0.18 }}
-          className='relative z-10 flex items-center justify-center'
-          style={{ maxWidth: '90vw', maxHeight: '90vh' }}
+          className='relative z-10 flex items-center justify-center w-[90vw] h-[90vh]'
           onClick={(e) => e.stopPropagation()}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={images[current]}
+          <Image
+            src={src}
             alt={`Image ${current + 1}`}
-            style={{
-              maxWidth: '90vw',
-              maxHeight: '90vh',
-              width: 'auto',
-              height: 'auto',
-              objectFit: 'contain',
-              display: 'block',
-              borderRadius: '12px',
-            }}
+            fill
+            className='object-contain rounded-xl'
+            unoptimized={isGif(src)}
+            sizes='90vw'
+            priority
           />
         </m.div>
       </AnimatePresence>
@@ -235,25 +251,44 @@ function Lightbox({ images, initialIndex, onClose }: Readonly<LightboxProps>) {
       {images.length > 1 && (
         <div className='absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20'>
           {images.map((_, i) => (
-            <button
-              key={i}
-              onClick={(e) => {
-                e.stopPropagation();
-                setCurrent(i);
-              }}
-              aria-label={`Go to image ${i + 1}`}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
-                i === current
-                  ? 'bg-white w-5'
-                  : 'bg-white/40 w-1.5 hover:bg-white/70'
-              }`}
-            />
+            <LightboxDot key={i} index={i} current={current} goTo={goTo} />
           ))}
         </div>
       )}
     </m.div>
   );
-}
+});
+
+// Extracted so goTo callback is stable and dots don't re-render each other on change
+const LightboxDot = memo(function LightboxDot({
+  index,
+  current,
+  goTo,
+}: {
+  index: number;
+  current: number;
+  goTo: (i: number) => void;
+}) {
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      goTo(index);
+    },
+    [goTo, index],
+  );
+
+  return (
+    <button
+      onClick={handleClick}
+      aria-label={`Go to image ${index + 1}`}
+      className={`h-1.5 rounded-full transition-all duration-300 ${
+        index === current
+          ? 'bg-white w-5'
+          : 'bg-white/40 w-1.5 hover:bg-white/70'
+      }`}
+    />
+  );
+});
 
 // ─── Smart Grid (≤ 3 images) ──────────────────────────────────────────────────
 interface SmartGridProps {
@@ -262,10 +297,13 @@ interface SmartGridProps {
   onCardClick: (i: number) => void;
 }
 
-function SmartGrid({ images, title, onCardClick }: Readonly<SmartGridProps>) {
+const SmartGrid = memo(function SmartGrid({
+  images,
+  title,
+  onCardClick,
+}: Readonly<SmartGridProps>) {
   const count = images.length;
 
-  // 1 image → full width landscape
   if (count === 1) {
     return (
       <div className='w-full aspect-video'>
@@ -281,42 +319,14 @@ function SmartGrid({ images, title, onCardClick }: Readonly<SmartGridProps>) {
   }
 
   // 2 images → side by side
-  if (count === 2) {
-    return (
-      <div className='grid grid-cols-2 gap-3 w-full'>
-        {images.map((src, i) => (
-          <div key={i} className='aspect-video'>
-            <MediaCard
-              src={src}
-              alt={`${title} — ${i + 1}`}
-              index={i}
-              fill
-              onClick={onCardClick}
-            />
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  // 3 images → 1 large left + 2 stacked right
   return (
     <div className='grid grid-cols-2 gap-3 w-full'>
-      <div className='aspect-video row-span-2'>
-        <MediaCard
-          src={images[0]}
-          alt={`${title} — 1`}
-          index={0}
-          fill
-          onClick={onCardClick}
-        />
-      </div>
-      {images.slice(1).map((src, i) => (
-        <div key={i + 1} className='aspect-video'>
+      {images.map((src, i) => (
+        <div key={i} className='aspect-video'>
           <MediaCard
             src={src}
-            alt={`${title} — ${i + 2}`}
-            index={i + 1}
+            alt={`${title} — ${i + 1}`}
+            index={i}
             fill
             onClick={onCardClick}
           />
@@ -324,7 +334,7 @@ function SmartGrid({ images, title, onCardClick }: Readonly<SmartGridProps>) {
       ))}
     </div>
   );
-}
+});
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 interface MediaCarouselProps {
@@ -332,57 +342,51 @@ interface MediaCarouselProps {
   title: string;
 }
 
-export default function MediaCarousel({ images, title }: Readonly<MediaCarouselProps>) {
+export default function MediaCarousel({
+  images,
+  title,
+}: Readonly<MediaCarouselProps>) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
-  // drag-to-scroll state
+  // drag-to-scroll state (refs → no re-renders)
   const isDragging = useRef(false);
   const startX = useRef(0);
   const scrollLeft = useRef(0);
 
-  const onPointerDown = (e: React.PointerEvent) => {
+  const onPointerDown = useCallback((e: React.PointerEvent) => {
     if (!trackRef.current) return;
     isDragging.current = false;
     startX.current = e.clientX;
     scrollLeft.current = trackRef.current.scrollLeft;
     trackRef.current.setPointerCapture(e.pointerId);
-  };
+  }, []);
 
-  const onPointerMove = (e: React.PointerEvent) => {
-    if (!trackRef.current?.hasPointerCapture(e.pointerId))
-      return;
+  const onPointerMove = useCallback((e: React.PointerEvent) => {
+    if (!trackRef.current?.hasPointerCapture(e.pointerId)) return;
     const dx = e.clientX - startX.current;
     if (Math.abs(dx) > 4) isDragging.current = true;
     if (isDragging.current)
       trackRef.current.scrollLeft = scrollLeft.current - dx;
-  };
+  }, []);
 
-  const onPointerUp = (e: React.PointerEvent) => {
+  const onPointerUp = useCallback((e: React.PointerEvent) => {
     if (trackRef.current) trackRef.current.releasePointerCapture(e.pointerId);
-  };
+  }, []);
 
   const handleCardClick = useCallback((index: number) => {
     if (!isDragging.current) setLightboxIndex(index);
   }, []);
 
-  if (images.length === 0) return null;
+  const closeLightbox = useCallback(() => setLightboxIndex(null), []);
 
-  const isSmall = images.length <= 3;
+  const isSmall = useMemo(() => images.length <= 2, [images.length]);
+
+  if (images.length === 0) return null;
 
   return (
     <>
       <div className='w-full flex flex-col gap-4'>
-        {/* Label row */}
-        <div className='flex items-center gap-3 px-1'>
-          <span className='text-foreground/40 text-xs font-mono tracking-[0.2em] uppercase'>
-            media
-          </span>
-          <div className='flex-1 h-px bg-foreground/10' />
-          <span className='text-foreground/40 text-xs font-mono tracking-widest'>
-            {String(images.length).padStart(2, '0')}
-          </span>
-        </div>
 
         {isSmall ? (
           // ── Grid layout for ≤ 3 images ───────────────────────────────────
@@ -422,7 +426,7 @@ export default function MediaCarousel({ images, title }: Readonly<MediaCarouselP
           <Lightbox
             images={images}
             initialIndex={lightboxIndex}
-            onClose={() => setLightboxIndex(null)}
+            onClose={closeLightbox}
           />
         )}
       </AnimatePresence>

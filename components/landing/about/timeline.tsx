@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { m, useScroll, useTransform, useInView } from 'motion/react';
 import { useLocale } from 'next-intl';
-import { format } from 'date-fns';
 import Image from 'next/image';
 import { Experience } from '@/types/api';
 import BracketText from '@/components/ui/bracket-text';
+import { formatDateLocal } from '@/lib/utils';
 
 // ─── Single entry row ─────────────────────────────────────────────────────────
 function EntryNode({
@@ -20,12 +20,6 @@ function EntryNode({
   const title = locale === 'en' ? exp.titleEn : exp.titlePt;
   const description = locale === 'en' ? exp.descriptionEn : exp.descriptionPt;
 
-  const formattedDate = (() => {
-    const d = new Date(exp.startDate);
-    if (Number.isNaN(d.getTime())) return exp.startDate;
-    return format(d, 'MM / yyyy');
-  })();
-
   const accentClasses = ['text-accent-1', 'text-accent-2', 'text-accent-3'];
   const accentClass = accentClasses[index % accentClasses.length];
   const accentColors = [
@@ -38,10 +32,10 @@ function EntryNode({
   return (
     <div
       ref={rowRef}
-      className='grid grid-cols-[auto_1fr_auto] items-center gap-6 md:gap-32 pt-20 md:pt-32 min-h-[67vh]'
+      className='grid grid-cols-[auto_1fr_auto] items-center gap-6 md:gap-32 pt-20 md:pt-32 min-h-[50vh]'
     >
       {/* ── Col 1: dot + date on the same row ─────────── */}
-      <div className='sticky top-32 self-start flex flex-row items-center gap-4 z-40 shrink-0'>
+      <div className='sticky top-32 self-start flex flex-row items-center gap-4 z-20 shrink-0'>
         {/* Circle node */}
         <div className='size-7 rounded-full bg-foreground border-2 flex items-center justify-center shrink-0 border-foreground'>
           {exp.iconUrl ? (
@@ -50,7 +44,7 @@ function EntryNode({
               alt={exp.iconAlt || title}
               width={20}
               height={20}
-              className='object-contain invert size-5'
+              className='object-contain theme-invert-0 size-5'
               unoptimized
             />
           ) : (
@@ -63,7 +57,7 @@ function EntryNode({
 
         {/* Date to the right of the dot */}
         <BracketText
-          text={formattedDate}
+          text={formatDateLocal(exp.startDate, locale, true)}
           accentClass={accentClass}
           className='text-xl md:text-3xl whitespace-nowrap'
         />
@@ -106,7 +100,7 @@ function EntryNode({
               src={exp.iconUrl}
               alt={exp.iconAlt || title}
               fill
-              className='object-contain'
+              className='object-contain theme-invert-1'
               unoptimized
             />
           </m.div>
@@ -127,7 +121,9 @@ function EntryNode({
 }
 
 // ─── Main component ───────────────────────────────────────────────────────────
-export default function Timeline({ experiences }: Readonly<{ experiences: Experience[] }>) {
+export default function Timeline({
+  experiences,
+}: Readonly<{ experiences: Experience[] }>) {
   const innerRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
