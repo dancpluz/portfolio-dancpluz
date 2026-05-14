@@ -30,7 +30,9 @@ function WordSpan({
 }>) {
   const opacity = useTransform(progress, range, [baseOpacity, 1]);
   const blur = useTransform(progress, range, [blurStrength, 0]);
-  const filter = useTransform(blur, (v) => (enableBlur ? `blur(${v}px)` : 'none'));
+  const filter = useTransform(blur, (v) =>
+    enableBlur ? `blur(${v}px)` : 'none',
+  );
 
   return (
     <m.span
@@ -42,7 +44,7 @@ function WordSpan({
   );
 }
 
-export default function ScrollReveal({
+export default function ScrollRevealText({
   children,
   enableBlur = true,
   baseOpacity = 0.1,
@@ -76,14 +78,16 @@ export default function ScrollReveal({
       className={`my-5 ${containerClassName}`}
       style={{ rotate, transformOrigin: '0% 50%' }}
     >
-      <p className={`text-[clamp(1.6rem,4vw,3rem)] leading-normal font-semibold ${textClassName}`}>
+      <p
+        className={`text-[clamp(1.6rem,4vw,3rem)] leading-normal font-semibold ${textClassName}`}
+      >
         {words.map((segment, i) => {
           if (new RegExp(/^\s+$/).exec(segment)) {
-            return <span key={`space-${i}`}>{' '}</span>;
+            return <span key={`space-${i}`}> </span>;
           }
 
           const idx = wordIndex++;
-          const start = idx / totalWords * 0.6;
+          const start = (idx / totalWords) * 0.6;
           const end = start + 0.6 / totalWords + 0.1;
 
           return (
