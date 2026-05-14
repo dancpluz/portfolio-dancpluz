@@ -14,7 +14,7 @@ import Link from 'next/link';
 import CanvasImage, { type ImageEffect } from '@/components/extra/canvas-image';
 import { useAutoFitText } from '@/hooks/use-auto-fit-text';
 import { useLocale } from 'next-intl';
-import { AnimatePresence, m } from 'motion/react';
+import { AnimatePresence, m, stagger, Variants } from 'motion/react';
 import { ExternalLink, Heart, Share } from '@/components/ui/svg';
 import { useClickOutside } from '@/hooks/use-click-outside';
 
@@ -310,10 +310,36 @@ export default function Testimonials({
 
   useClickOutside(containerRef, handleDeselect, selectedIndex !== null);
 
+  const parentVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        delayChildren: stagger(0.75),
+      },
+    },
+  };
+
+  const childVariants: Variants = {
+    hidden: { opacity: 0, x: 120, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      scale: 1,
+      transition: {
+        duration: 3.2,
+        ease: [0.16, 1, 0.3, 1] as const,
+      },
+    },
+  };
+
   return (
-    <div
+    <m.div
       ref={containerRef}
       className='grid [grid-template-areas:"stack"] place-items-center mx-auto w-fit my-48 perspective-[1000px]'
+      variants={parentVariants}
+      initial='hidden'
+      whileInView='visible'
+      viewport={{ once: false, margin: '-10% 0px -10% 0px' }}
     >
       {testimonials.map((testimonial, index) => {
         const isSelected = selectedIndex === index;
@@ -322,14 +348,7 @@ export default function Testimonials({
             key={testimonial.id}
             className='[grid-area:stack]'
             style={{ zIndex: isSelected ? 50 : index }}
-            initial={{ opacity: 0, x: 120, scale: 0.95 }}
-            whileInView={{ opacity: 1, x: 0, scale: 1 }}
-            viewport={{ once: false, margin: '-10% 0px -10% 0px' }}
-            transition={{
-              duration: 3.2,
-              delay: index * 0.75,
-              ease: [0.16, 1, 0.3, 1],
-            }}
+            variants={childVariants}
           >
             <TestimonialCard
               testimonial={testimonial}
@@ -347,6 +366,6 @@ export default function Testimonials({
           </m.div>
         );
       })}
-    </div>
+    </m.div>
   );
 }

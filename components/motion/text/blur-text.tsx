@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useMemo } from 'react';
-import { m, useInView, Transition, Easing } from 'motion/react';
+import { m, useInView, Transition, Easing, stagger } from 'motion/react';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -105,33 +105,55 @@ export default function BlurText({
     [JSON.stringify(fromSnapshot), JSON.stringify(toSnapshots)],
   );
 
+  const parentVariants = useMemo(
+    () => ({
+      hidden: {},
+      visible: {
+        transition: { delayChildren: stagger(delay / 1000) },
+      },
+    }),
+    [delay],
+  );
+
   return (
-    <p ref={ref} className={`flex flex-wrap ${className}`} aria-label={text}>
+    <m.p
+      ref={ref}
+      className={`flex flex-wrap ${className}`}
+      aria-label={text}
+      initial='hidden'
+      animate={inView ? 'visible' : 'hidden'}
+      variants={parentVariants}
+    >
       {elements.map((segment, index) => {
         const spanTransition: Transition = {
           duration: totalDuration,
           times,
-          delay: (index * delay) / 1000,
           ease: easing,
+        };
+
+        const childVariants = {
+          hidden: fromSnapshot,
+          visible: { ...animateKeyframes, transition: spanTransition },
         };
 
         return (
           <m.span
             key={index}
             aria-hidden='true'
-            initial={fromSnapshot}
-            animate={inView ? animateKeyframes : fromSnapshot}
-            transition={spanTransition}
+            variants={childVariants}
             onAnimationComplete={
               index === elements.length - 1 ? onAnimationComplete : undefined
             }
-            style={{ display: 'inline-block', willChange: 'transform, filter, opacity' }}
+            style={{
+              display: 'inline-block',
+              willChange: 'transform, filter, opacity',
+            }}
           >
             {segment === ' ' ? '\u00A0' : segment}
             {animateBy === 'words' && index < elements.length - 1 && '\u00A0'}
           </m.span>
         );
       })}
-    </p>
+    </m.p>
   );
 }

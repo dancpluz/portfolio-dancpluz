@@ -7,9 +7,8 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { AnimatePresence, m } from 'motion/react';
+import { AnimatePresence, m, stagger } from 'motion/react';
 import { shuffleArray } from '@/lib/utils';
-
 import { Technology } from '@/types/api';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
@@ -65,15 +64,20 @@ const LogoColumn: React.FC<LogoColumnProps> = React.memo(
     const innerContent = (
       <m.div
         className='relative h-14 w-24 overflow-hidden md:h-24 md:w-48 cursor-pointer select-none'
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false, margin: '0px 0px -50px 0px' }}
-        whileTap={{ scale: 0.85 }}
-        transition={{
-          delay: index * 0.08,
-          duration: 0.4,
-          ease: [0.25, 0.46, 0.45, 0.94], // easeOutQuad — smooth settle
-          scale: { type: 'spring', stiffness: 400, damping: 15 },
+        variants={{
+          hidden: { opacity: 0, y: 30 },
+          visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+              duration: 0.4,
+              ease: [0.25, 0.46, 0.45, 0.94] as const,
+            },
+          },
+        }}
+        whileTap={{
+          scale: 0.85,
+          transition: { type: 'spring', stiffness: 400, damping: 15 },
         }}
       >
         <AnimatePresence mode='popLayout'>
@@ -172,7 +176,18 @@ export default function LogoShowcase({
   }, [logos, columnCount]);
 
   return (
-    <div className='flex w-full justify-center'>
+    <m.div
+      className='flex w-full justify-center'
+      initial='hidden'
+      whileInView='visible'
+      viewport={{ once: false, margin: '0px 0px -50px 0px' }}
+      variants={{
+        hidden: {},
+        visible: {
+          transition: { delayChildren: stagger(0.08) },
+        },
+      }}
+    >
       {logoSets.map((column, index) => (
         <LogoColumn
           key={column.id}
@@ -181,6 +196,6 @@ export default function LogoShowcase({
           currentTime={currentTime}
         />
       ))}
-    </div>
+    </m.div>
   );
 }

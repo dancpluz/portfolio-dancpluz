@@ -4,7 +4,7 @@ import { useState, useMemo, useRef, useCallback } from 'react';
 import { Social } from '@/types/api';
 import { useLocale } from 'next-intl';
 import Image from 'next/image';
-import { AnimatePresence, m } from 'motion/react';
+import { AnimatePresence, m, stagger } from 'motion/react';
 import { ArrowRight } from '@/components/ui/svg';
 import Link from 'next/link';
 import { useAutoFitText } from '@/hooks/use-auto-fit-text';
@@ -22,27 +22,25 @@ const TAPE_TINTS = [
   '#00fbfe', // cyan-blue
 ];
 
-// Typewriter-style character-stagger animation
+// Typewriter-style character-stagger animation using stagger() from motion
 const charVariants = {
   hidden: { opacity: 0, y: 4 },
-  visible: (i: number) => ({
+  visible: {
     opacity: 1,
     y: 0,
     transition: {
-      delay: i * 0.025,
       duration: 0.15,
       ease: [0.22, 1, 0.36, 1] as const,
     },
-  }),
-  exit: (i: number) => ({
+  },
+  exit: {
     opacity: 0,
     y: -4,
     transition: {
-      delay: i * 0.015,
       duration: 0.1,
       ease: [0.55, 0, 1, 0.45] as const,
     },
-  }),
+  },
 };
 
 function TypewriterText({
@@ -60,12 +58,19 @@ function TypewriterText({
       initial='hidden'
       animate='visible'
       exit='exit'
-      style={fontSize ? { fontSize: `${fontSize}px`, lineHeight: 1.2 } : undefined}
+      variants={{
+        visible: { transition: { delayChildren: stagger(0.025) } },
+        exit: {
+          transition: { delayChildren: stagger(0.015, { from: 'last' }) },
+        },
+      }}
+      style={
+        fontSize ? { fontSize: `${fontSize}px`, lineHeight: 1.2 } : undefined
+      }
     >
       {text.split('').map((char, i) => (
         <m.span
           key={`${char}-${i}`}
-          custom={i}
           variants={charVariants}
           className='inline-block'
           style={{ whiteSpace: char === ' ' ? 'pre' : undefined }}
@@ -88,7 +93,7 @@ export default function VHSTape({ social, index = 0 }: Readonly<VHSTapeProps>) {
 
   const textMaxWidth = Math.max(0, (labelSize?.width ?? 200) - 16);
   const subtextMaxWidth = Math.max(0, (labelSize?.width ?? 200) - 16);
-  const textMaxHeight = Math.max(0, (labelSize?.height ?? 40));
+  const textMaxHeight = Math.max(0, labelSize?.height ?? 40);
 
   const mainFontSize = useAutoFitText({
     text: social.text,

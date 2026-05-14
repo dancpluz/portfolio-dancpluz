@@ -19,7 +19,7 @@ export default function PostCard({
 }>) {
   const locale = useLocale();
   const { id, created } = post;
-  
+
   const title = locale === 'en' ? post.title_en : post.title_pt;
   const article = locale === 'en' ? post.article_en : post.article_pt;
   const long_text = locale === 'en' ? post.long_text_en : post.long_text_pt;
