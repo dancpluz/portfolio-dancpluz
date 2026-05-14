@@ -28,7 +28,9 @@
   - [ ] Responsive
 - [ ] Project Page
   - [ ] Loading state
-  - [ ] Structure
+  - [x] Media section
+  - [x] Structure
+  - [x] Preview next project
   - [ ] Responsive
 - [ ] Blog
   - [x] Loading state

@@ -50,7 +50,7 @@ export default function Footer() {
         }
       });
 
-      t += 0.1;
+      t += 0.04;
       animationFrameRef.current = requestAnimationFrame(animateWave);
     };
 

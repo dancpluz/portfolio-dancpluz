@@ -1,7 +1,8 @@
-import { getProjects, getProjectById } from '@/actions/projects';
+import { getProjects } from '@/actions/projects';
 import Footer from '@/components/footer';
 import PageTransition from '@/components/motion/page-transition';
 import ProjectContent from '@/components/project/project-content';
+import NextProjectPreview from '@/components/project/next-project-preview';
 import { Project } from '@/types/api';
 import { getTranslations } from 'next-intl/server';
 
@@ -23,10 +24,13 @@ export default async function ProjectPage(
   }>,
 ) {
   const { id } = await props.params;
-  const [{ data: project }, t] = await Promise.all([
-    getProjectById(id) as Promise<{ data: Project | null }>,
+  const [{ data: projects }, t] = await Promise.all([
+    getProjects() as Promise<{ data: Project[] | null }>,
     getTranslations('projects'),
   ]);
+
+  const projectIndex = projects?.findIndex((p) => p.id === id) ?? -1;
+  const project = projectIndex === -1 ? null : projects![projectIndex];
 
   if (!project) {
     return (
@@ -39,12 +43,24 @@ export default async function ProjectPage(
     );
   }
 
+  const nextProject =
+    projects && projects.length > 1
+      ? projects[(projectIndex + 1) % projects.length]
+      : null;
+
   return (
     <PageTransition
       tag='main'
+      key={id}
       className='flex max-w-screen flex-col gap-4 z-10'
     >
       <ProjectContent project={project} />
+
+      {nextProject && (
+        <div className='w-full section-px'>
+          <NextProjectPreview project={nextProject} />
+        </div>
+      )}
 
       <Footer />
     </PageTransition>

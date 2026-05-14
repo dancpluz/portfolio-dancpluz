@@ -1,6 +1,6 @@
 import { ContainerScroll } from '@/components/project/container-scroll-animation';
 import ParallaxImage from '@/components/project/parallax-image';
-import ScrollParallaxImage from '@/components/project/scroll-parallax-image';
+import MediaCarousel from '@/components/project/media-carousel';
 import ArticleRenderer from '@/components/blog/post/article-renderer';
 import { Reveal } from '@/components/motion/reveal';
 import BracketText from '@/components/ui/bracket-text';
@@ -94,15 +94,7 @@ export default function ProjectContent({
         )}
         {/* Medias */}
         {project.medias.length > 0 && (
-          <div className='flex flex-col gap-4 w-full pixel-corners-border'>
-            {project.medias.map((media, index) => (
-              <ScrollParallaxImage
-                key={`${title} - ${index + 1}`}
-                src={media}
-                alt={`${title} - ${index + 1}`}
-              />
-            ))}
-          </div>
+          <MediaCarousel images={project.medias} title={title} />
         )}
         {((locale === 'en' ? project.clientEn : project.clientPt) ||
           project.clientPt ||

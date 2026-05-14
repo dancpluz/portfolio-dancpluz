@@ -11,7 +11,7 @@ import { getTranslations } from 'next-intl/server';
 
 export default async function Contact() {
   const [{ data: socials }, t] = await Promise.all([
-    getSocials(),
+    getSocials(true),
     getTranslations('contact')
   ]);
 
