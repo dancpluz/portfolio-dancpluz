@@ -4,6 +4,7 @@ import { useRef, useState, useCallback, useEffect, memo, useMemo } from 'react';
 import Image from 'next/image';
 import { m, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import { isGif } from '@/lib/utils';
+import { ChevronUp, Expand, WindowClose } from '@/components/ui/svg';
 
 // ─── Parallax Card (landscape) ────────────────────────────────────────────────
 interface MediaCardProps {
@@ -41,8 +42,8 @@ const MediaCard = memo(function MediaCard({
     <div
       ref={containerRef}
       onClick={handleClick}
-      className={`relative rounded-2xl cursor-zoom-in pixel-corners-border group ${
-        fill ? 'w-full h-full' : 'shrink-0 w-[480px] md:w-[600px] aspect-video'
+      className={`relative rounded-2xl cursor-zoom-in pixel-corners-small group ${
+        fill ? 'w-full h-full' : 'shrink-0 w-[520px] md:w-[800px] aspect-video'
       }`}
       role='button'
       tabIndex={0}
@@ -69,20 +70,7 @@ const MediaCard = memo(function MediaCard({
 
       {/* Hover overlay */}
       <div className='absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300'>
-        <div className='w-14 h-14 rounded-full bg-white/15 border border-white/30 flex items-center justify-center backdrop-blur-sm'>
-          <svg
-            width='22'
-            height='22'
-            viewBox='0 0 20 20'
-            fill='none'
-            stroke='white'
-            strokeWidth='1.8'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-          >
-            <path d='M3 8V3h5M17 8V3h-5M3 12v5h5M17 12v5h-5' />
-          </svg>
-        </div>
+        <Expand className='size-10 text-white mix-blend-difference' />
       </div>
 
       {/* Bottom gradient + index badge */}
@@ -135,7 +123,6 @@ const Lightbox = memo(function Lightbox({
     };
   }, []);
 
-  // Stable per-dot click handlers avoid allocating a new fn per dot per render
   const goTo = useCallback((i: number) => setCurrent(i), []);
 
   const src = images[current];
@@ -146,26 +133,16 @@ const Lightbox = memo(function Lightbox({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.25 }}
-      className='fixed inset-0 z-9999 flex items-center justify-center bg-black/92 backdrop-blur-md'
-      onClick={onClose}
+      className='fixed inset-0 z-9999 flex items-center justify-center bg-black/70 backdrop-blur-sm'
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       {/* Close */}
       <button
-        className='absolute top-5 right-5 w-10 h-10 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-colors z-20'
+        className='absolute top-5 right-5 z-20 text-white hover:opacity-70 transition-opacity'
         onClick={onClose}
         aria-label='Close lightbox'
       >
-        <svg
-          width='16'
-          height='16'
-          viewBox='0 0 16 16'
-          fill='none'
-          stroke='currentColor'
-          strokeWidth='2'
-          strokeLinecap='round'
-        >
-          <path d='M2 2l12 12M14 2L2 14' />
-        </svg>
+        <WindowClose className='size-7 text-white mix-blend-difference' />
       </button>
 
       {/* Counter */}
@@ -177,73 +154,54 @@ const Lightbox = memo(function Lightbox({
       {/* Prev */}
       {images.length > 1 && (
         <button
-          className='absolute left-4 md:left-8 w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-colors z-20'
+          className='absolute left-4 md:left-8 z-20 text-white hover:opacity-70 transition-opacity'
           onClick={(e) => {
             e.stopPropagation();
             prev();
           }}
           aria-label='Previous image'
         >
-          <svg
-            width='18'
-            height='18'
-            viewBox='0 0 18 18'
-            fill='none'
-            stroke='currentColor'
-            strokeWidth='2'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-          >
-            <path d='M11 4L6 9l5 5' />
-          </svg>
+          <ChevronUp className='size-7 -rotate-90' />
         </button>
       )}
 
       {/* Image with crossfade */}
-      <AnimatePresence mode='wait'>
-        <m.div
-          key={current}
-          initial={{ opacity: 0, scale: 0.97 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.97 }}
-          transition={{ duration: 0.18 }}
-          className='relative z-10 flex items-center justify-center w-[90vw] h-[90vh]'
-          onClick={(e) => e.stopPropagation()}
-        >
-          <Image
-            src={src}
-            alt={`Image ${current + 1}`}
-            fill
-            className='object-contain rounded-xl'
-            unoptimized={isGif(src)}
-            sizes='90vw'
-            priority
-          />
-        </m.div>
-      </AnimatePresence>
+      <div
+        className='relative z-10 w-[90vw] h-[90vh] flex items-center justify-center'
+      >
+        <AnimatePresence mode='wait'>
+          <m.div
+            key={current}
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.97 }}
+            transition={{ duration: 0.18 }}
+            className='absolute inset-0'
+          >
+            <Image
+              src={src}
+              alt={`Image ${current + 1}`}
+              fill
+              className='object-contain rounded-xl'
+              unoptimized={isGif(src)}
+              sizes='90vw'
+              priority
+            />
+          </m.div>
+        </AnimatePresence>
+      </div>
 
       {/* Next */}
       {images.length > 1 && (
         <button
-          className='absolute right-4 md:right-8 w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-colors z-20'
+          className='absolute right-4 md:right-8 z-20 text-white hover:opacity-70 transition-opacity'
           onClick={(e) => {
             e.stopPropagation();
             next();
           }}
           aria-label='Next image'
         >
-          <svg
-            width='18'
-            height='18'
-            viewBox='0 0 18 18'
-            fill='none'
-            stroke='currentColor'
-            strokeWidth='2'
-            strokeLinecap='round'
-            strokeLinejoin='round'
-          >
-            <path d='M7 4l5 5-5 5' />
-          </svg>
+          <ChevronUp className='size-7 rotate-90' />
         </button>
       )}
 
@@ -351,27 +309,40 @@ export default function MediaCarousel({
 
   // drag-to-scroll state (refs → no re-renders)
   const isDragging = useRef(false);
+  const isPointerDown = useRef(false);
   const startX = useRef(0);
   const scrollLeft = useRef(0);
 
   const onPointerDown = useCallback((e: React.PointerEvent) => {
     if (!trackRef.current) return;
+    isPointerDown.current = true;
     isDragging.current = false;
     startX.current = e.clientX;
     scrollLeft.current = trackRef.current.scrollLeft;
-    trackRef.current.setPointerCapture(e.pointerId);
+    // Do NOT setPointerCapture here — deferring to onPointerMove so that
+    // pure clicks never get captured, letting onClick reach the card element.
   }, []);
 
   const onPointerMove = useCallback((e: React.PointerEvent) => {
-    if (!trackRef.current?.hasPointerCapture(e.pointerId)) return;
+    if (!trackRef.current || !isPointerDown.current) return;
     const dx = e.clientX - startX.current;
-    if (Math.abs(dx) > 4) isDragging.current = true;
-    if (isDragging.current)
+    if (!isDragging.current && Math.abs(dx) > 10) {
+      isDragging.current = true;
+      // Only capture once we're sure this is a drag
+      trackRef.current.setPointerCapture(e.pointerId);
+    }
+    if (isDragging.current) {
       trackRef.current.scrollLeft = scrollLeft.current - dx;
+    }
   }, []);
 
   const onPointerUp = useCallback((e: React.PointerEvent) => {
-    if (trackRef.current) trackRef.current.releasePointerCapture(e.pointerId);
+    isPointerDown.current = false;
+    if (trackRef.current?.hasPointerCapture(e.pointerId)) {
+      trackRef.current.releasePointerCapture(e.pointerId);
+    }
+    // Reset after click event fires (click is dispatched synchronously after pointerup)
+    requestAnimationFrame(() => { isDragging.current = false; });
   }, []);
 
   const handleCardClick = useCallback((index: number) => {
@@ -399,7 +370,7 @@ export default function MediaCarousel({
           // ── Horizontal scrollable carousel for 4+ images ─────────────────
           <div
             ref={trackRef}
-            className='flex gap-3 overflow-x-auto pb-3 cursor-grab active:cursor-grabbing select-none'
+            className='flex gap-6 overflow-x-auto pb-3 cursor-grab active:cursor-grabbing select-none'
             style={{ scrollbarWidth: 'none' }}
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
