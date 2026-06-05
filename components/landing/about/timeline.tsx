@@ -1,17 +1,24 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { m, useScroll, useTransform, useInView } from 'motion/react';
-import { useLocale } from 'next-intl';
+import { useCallback, useEffect, useRef, useState, memo, useMemo } from 'react';
+import {
+  m,
+  useScroll,
+  useTransform,
+  useInView,
+  AnimatePresence,
+} from 'motion/react';
+import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { Experience } from '@/types/api';
+import { useLenis } from 'lenis/react';
 import BracketText from '@/components/ui/bracket-text';
 import { formatDateLocal } from '@/lib/utils';
 import SplitText from '@/components/motion/text/split-text';
 import ScrollRevealText from '@/components/motion/text/scroll-reveal-text';
 
 // ─── Single entry row ─────────────────────────────────────────────────────────
-function EntryNode({
+const EntryNode = memo(function EntryNode({
   exp,
   index,
 }: Readonly<{ exp: Experience; index: number }>) {
@@ -134,25 +141,54 @@ function EntryNode({
       </div>
     </div>
   );
-}
+});
 
 // ─── Main component ───────────────────────────────────────────────────────────
 export default function Timeline({
   experiences,
 }: Readonly<{ experiences: Experience[] }>) {
+  const t = useTranslations('about');
   const innerRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
+  const [fullHeight, setFullHeight] = useState(0);
+  const [collapsedHeight, setCollapsedHeight] = useState(600); // Default fallback
+
+  const [expanded, setExpanded] = useState(false);
+  const lenis = useLenis();
 
   useEffect(() => {
+    // Calculate precise collapsed height for smooth Framer Motion interpolation
+    const calcCollapsedHeight = () => {
+      const vh = window.innerHeight * 0.9;
+      return Math.min(Math.max(600, vh), 900);
+    };
+
+    setCollapsedHeight(calcCollapsedHeight());
+
+    const updateHeights = () => {
+      setCollapsedHeight(calcCollapsedHeight());
+      if (innerRef.current) {
+        const h = innerRef.current.getBoundingClientRect().height;
+        setHeight(h);
+        setFullHeight(h);
+      }
+    };
+
     if (!innerRef.current) return;
-    const observer = new ResizeObserver(() => {
-      if (innerRef.current)
-        setHeight(innerRef.current.getBoundingClientRect().height);
-    });
+
+    const observer = new ResizeObserver(updateHeights);
     observer.observe(innerRef.current);
-    setHeight(innerRef.current.getBoundingClientRect().height);
-    return () => observer.disconnect();
+
+    // Also observe window resize for the vh calculation
+    window.addEventListener('resize', updateHeights);
+
+    updateHeights();
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', updateHeights);
+    };
   }, []);
 
   const { scrollYProgress } = useScroll({
@@ -163,34 +199,136 @@ export default function Timeline({
   const heightTransform = useTransform(scrollYProgress, [0, 1], [0, height]);
   const opacityTransform = useTransform(scrollYProgress, [0, 0.05], [0, 1]);
 
+  const shouldCollapse = experiences.length > 1;
+
+  // ── Toggle with synchronized overlap and improved scroll ──────────────
+  const handleToggle = useCallback(() => {
+    const willExpand = !expanded;
+    setExpanded(willExpand);
+
+    if (!willExpand && containerRef.current) {
+      if (lenis) {
+        // Use Lenis for native buttery smooth programmatic scroll
+        lenis.scrollTo(containerRef.current, { offset: -100, duration: 1.5 });
+      } else {
+        // Fallback
+        const yOffset = -100; // Account for sticky header
+        const y = containerRef.current.getBoundingClientRect().top + window.scrollY + yOffset;
+
+        window.scrollTo({
+          top: y,
+          behavior: 'smooth'
+        });
+      }
+    }
+  }, [expanded]);
+
   if (experiences.length === 0) return null;
+
+  const sortedExperiences = [...experiences].sort((a, b) => {
+    return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+  });
 
   return (
     <div ref={containerRef} className='w-full px-8 md:px-24 lg:px-48'>
-      <div ref={innerRef} className='relative pb-20'>
-        {experiences.map((exp, index) => (
-          <EntryNode key={exp.id} exp={exp} index={index} />
-        ))}
+      {/* Clippable wrapper – animates height explicitly */}
+      <m.div
+        className='relative overflow-hidden'
+        animate={{
+          height:
+            !shouldCollapse || expanded
+              ? fullHeight + 100
+              : collapsedHeight,
+        }}
+        initial={false}
+        transition={{
+          duration: 1.5,
+          ease: [0.32, 0.72, 0, 1], // Custom smooth easing
+        }}
+      >
+        <div ref={innerRef} className='relative pb-20'>
+          {sortedExperiences.map((exp, index) => (
+            <EntryNode key={exp.id} exp={exp} index={index} />
+          ))}
 
-        {/* Vertical track */}
-        <div
-          className='absolute left-3.5 top-0 -translate-x-px w-[2px] overflow-hidden pointer-events-none'
-          style={{ height: height + 'px' }}
-        >
+          {/* Vertical track */}
           <div
-            className='absolute inset-0 w-[2px]'
-            style={{
-              background:
-                'linear-gradient(to bottom, transparent 0%, var(--color-foreground) 10%, var(--color-foreground) 90%, transparent 100%)',
-              opacity: 0.1,
-            }}
-          />
-          <m.div
-            style={{ height: heightTransform, opacity: opacityTransform }}
-            className='absolute inset-x-0 top-0 w-[2px] rounded-full bg-foreground'
-          />
+            className='absolute left-3.5 top-0 -translate-x-px w-[2px] overflow-hidden pointer-events-none'
+            style={{ height: height + 'px' }}
+          >
+            <div
+              className='absolute inset-0 w-[2px]'
+              style={{
+                background:
+                  'linear-gradient(to bottom, transparent 0%, var(--color-foreground) 10%, var(--color-foreground) 90%, transparent 100%)',
+                opacity: 0.1,
+              }}
+            />
+            <m.div
+              style={{ height: heightTransform, opacity: opacityTransform }}
+              className='absolute inset-x-0 top-0 w-[2px] rounded-full bg-foreground'
+            />
+          </div>
         </div>
-      </div>
+
+        {/* ── Gradient + blur overlay (only when collapsed) ──────────────── */}
+        <AnimatePresence>
+          {shouldCollapse && !expanded && (
+            <m.div
+              key='timeline-overlay'
+              className='absolute inset-x-0 bottom-0 pointer-events-none'
+              style={{ height: '45%' }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{
+                opacity: 1,
+                y: 0,
+                transition: { duration: 1.0, delay: 0.4, ease: 'easeOut' } // Delay fade in until collapse is mostly done
+              }}
+              exit={{
+                opacity: 0,
+                y: 30,
+                filter: 'blur(0px)',
+                transition: { duration: 1.0, delay: 0.2, ease: 'easeIn' } // Delay fade out so it stays visible while starting to expand
+              }}
+            >
+              {/* Gradient fade layer */}
+              <div
+                className='absolute inset-0'
+                style={{
+                  background:
+                    'linear-gradient(to bottom, transparent 0%, var(--color-background) 80%)',
+                }}
+              />
+              {/* Blur layer with matching gradient mask */}
+              <div
+                className='absolute inset-0'
+                style={{
+                  backdropFilter: 'blur(6px)',
+                  WebkitBackdropFilter: 'blur(6px)',
+                  maskImage:
+                    'linear-gradient(to bottom, transparent 0%, black 55%)',
+                  WebkitMaskImage:
+                    'linear-gradient(to bottom, transparent 0%, black 55%)',
+                }}
+              />
+            </m.div>
+          )}
+        </AnimatePresence>
+      </m.div>
+
+      {/* ── "See more" / "See less" button ──────────────────────────────── */}
+      {shouldCollapse && (
+        <div className='flex justify-center mt-8 mb-4'>
+          <button
+            onClick={handleToggle}
+            className='underline-magical bg-transparent border-none text-foreground font-heading text-lg md:text-xl cursor-pointer px-2 py-1'
+          >
+            {expanded ? t('see_less') : t('see_more')}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
+
+

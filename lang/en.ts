@@ -34,6 +34,8 @@ const en = {
   },
   about: {
     title: 'About',
+    see_more: 'See more',
+    see_less: 'See less',
   },
   contact: {
     title: 'Contact',

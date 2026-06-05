@@ -23,6 +23,8 @@
     - [x] Photo
     - [x] Text
     - [ ] Texts
+      - [ ] Personal points
+      - [ ] Professional/Education points
     - [x] Timeline
   - [x] Testimonial
   - [x] Contact

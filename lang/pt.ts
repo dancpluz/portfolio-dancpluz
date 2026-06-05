@@ -36,6 +36,8 @@ const pt: Translation = {
   },
   about: {
     title: 'Sobre',
+    see_more: 'Ver mais',
+    see_less: 'Ver menos',
   },
   contact: {
     title: 'Contato',
