@@ -27,11 +27,12 @@ const pt: Translation = {
     projects: 'Obras',
     about: 'Sobre',
     contact: 'Contato',
-    technologies: 'Tecnologias',
+    stack: 'Stack',
   },
   projects: {
     title: 'Obras',
     not_found: 'Projeto não encontrado.',
+    made_for: 'feito para',
   },
   about: {
     title: 'Sobre',
@@ -41,8 +42,8 @@ const pt: Translation = {
     lets_talk_1: 'BORA',
     lets_talk_2: 'CONVERSAR?',
   },
-  technologies: {
-    title: 'Tecnologias',
+  stack: {
+    title: 'Stack',
     text: 'Brinquedos que uso',
   },
   footer: {

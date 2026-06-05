@@ -46,7 +46,7 @@ export const DEFAULT_SOCIALS: Social[] = [
     id: 'instagram-default',
     url: 'https://www.instagram.com/dancpluz/',
     text: 'dancpluz',
-    subtextEn: 'Just don\'t stalk me too much',
+    subtextEn: "Just don't stalk me too much",
     subtextPt: 'Pode dar uma olhada, só não stalkeia muito',
     iconUrl:
       'https://pb.ruadebaixo.com.br/api/files/egcnloaglxen3wj/oql1nudbi61l6fo/instagram_7pan57ahig.svg',
@@ -72,9 +72,9 @@ export const ROUTES = {
     media: '/video/joias.webm',
     menu: true,
   },
-  technologies: {
-    path: '/#technologies',
-    text: 'Tecnologias',
+  stack: {
+    path: '/#stack',
+    text: 'Stack',
     media: '/video/screensaver.webm',
     menu: false,
   },

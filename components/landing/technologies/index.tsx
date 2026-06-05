@@ -9,7 +9,7 @@ import SplitText from '@/components/motion/text/split-text';
 export default async function Technologies() {
   const [{ data: technologies, error }, t] = await Promise.all([
     getTechnologies(),
-    getTranslations('technologies'),
+    getTranslations('stack'),
   ]);
 
   if (error || !technologies) {
@@ -18,7 +18,7 @@ export default async function Technologies() {
 
   return (
     <section
-      id={getSectionId(ROUTES.technologies)}
+      id={getSectionId(ROUTES.stack)}
       className='w-full flex flex-col items-center'
     >
       <FlipText text={t('title')} className='font-heading text-8xl' />

@@ -6,7 +6,7 @@ import { lerp, isGif, formatDateLocal } from '@/lib/utils';
 import BracketText from '@/components/ui/bracket-text';
 import FlipText from '../../extra/flip-text';
 import { Project } from '@/types/api';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { LineReveal } from '../../motion/reveal';
 import { AnimatePresence, m } from 'motion/react';
 import { ArrowRight } from '../../ui/svg';
@@ -185,6 +185,7 @@ function ProjectRow({
   onMouseLeave: () => void;
 }>) {
   const locale = useLocale();
+  const t = useTranslations('projects');
   const formattedDate = useMemo(() => {
     return formatDateLocal(project.date, locale, true);
   }, [project.date]);
@@ -257,7 +258,7 @@ function ProjectRow({
               <span
                 className={`text-xs font-heading font-bold tabular-nums transition-all duration-300 ease-out`}
               >
-                {locale === 'en' ? 'made for' : 'feito para'}{' '}
+                {t('made_for')}{' '}
                 {locale === 'en'
                   ? project.clientEn || project.clientPt
                   : project.clientPt || project.clientEn}

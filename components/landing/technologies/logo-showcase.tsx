@@ -177,6 +177,7 @@ export default function LogoShowcase({
 
   return (
     <m.div
+      key={logoSets.length}
       className='flex w-full justify-center'
       initial='hidden'
       whileInView='visible'

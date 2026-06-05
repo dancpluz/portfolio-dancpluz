@@ -25,11 +25,12 @@ const en = {
     projects: 'Projects',
     about: 'About',
     contact: 'Contact',
-    technologies: 'Technologies',
+    stack: 'Stack',
   },
   projects: {
     title: 'Projects',
     not_found: 'Project not found.',
+    made_for: 'made for',
   },
   about: {
     title: 'About',
@@ -39,8 +40,8 @@ const en = {
     lets_talk_1: "LET'S",
     lets_talk_2: 'TALK!',
   },
-  technologies: {
-    title: 'Technologies',
+  stack: {
+    title: 'Stack',
     text: 'Toys I play with',
   },
   footer: {
