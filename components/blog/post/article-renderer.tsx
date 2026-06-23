@@ -16,8 +16,9 @@ type ArticleRendererProps = {
 
 const renderPre = (domNode: Element, children: React.ReactNode) => {
   const codeElement = domNode.children?.find(
-    (child) => (child as Element).name === 'code',
-  ) as Element | undefined;
+    (child): child is Element =>
+      child && 'name' in child && child.name === 'code',
+  );
 
   if (codeElement) {
     const preClassName = domNode.attribs?.class || '';
@@ -28,9 +29,10 @@ const renderPre = (domNode: Element, children: React.ReactNode) => {
       languageRegex.exec(preClassName) || languageRegex.exec(codeClassName);
     const language = languageMatch ? languageMatch[1] : 'text';
 
+    const firstChild = codeElement.children?.[0];
     const codeContent =
-      codeElement.children?.[0] && 'data' in codeElement.children[0]
-        ? (codeElement.children[0].data as string)
+      firstChild && 'data' in firstChild
+        ? ((firstChild as any).data as string)
         : '';
 
     return <CodeRenderer code={codeContent} language={language} />;
@@ -164,8 +166,8 @@ const tagHandlers: Record<
   pre: renderPre,
   code: (node, children) => {
     // Só renderiza inline code se NÃO estiver dentro de um <pre>
-    const parentNode = node.parent as Element | null;
-    if (parentNode?.name !== 'pre') {
+    const parentNode = node.parent;
+    if (parentNode && 'name' in parentNode && parentNode.name !== 'pre') {
       return (
         <code className='bg-accent-1/20 px-1.5 py-0.5 rounded text-sm font-mono'>
           {children}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState, memo, useMemo } from 'react';
+import { useCallback, useEffect, useRef, useState, memo } from 'react';
 import {
   m,
   useScroll,
@@ -16,6 +16,108 @@ import BracketText from '@/components/ui/bracket-text';
 import { formatDateLocal } from '@/lib/utils';
 import SplitText from '@/components/motion/text/split-text';
 import ScrollRevealText from '@/components/motion/text/scroll-reveal-text';
+
+// ─── Sub-components to lower cognitive complexity ───────────────────────────
+const DotAndDate = memo(function DotAndDate({
+  exp,
+  title,
+  isInView,
+  accent,
+  accentClass,
+  locale,
+}: {
+  exp: Experience;
+  title: string;
+  isInView: boolean;
+  accent: string;
+  accentClass: string;
+  locale: string;
+}) {
+  return (
+    <div className='sticky top-32 self-start flex flex-row items-center gap-4 z-20 shrink-0'>
+      <m.div
+        className='size-7 rounded-full bg-foreground border-2 flex items-center justify-center shrink-0 border-foreground'
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: isInView ? 1 : 0.4, opacity: isInView ? 1 : 0 }}
+        transition={{ duration: 0.5, type: 'spring', bounce: 0.4 }}
+      >
+        {exp.iconUrl ? (
+          <Image
+            src={exp.iconUrl}
+            alt={exp.iconAlt || title}
+            width={20}
+            height={20}
+            className='object-contain theme-invert-0 size-5'
+            unoptimized
+          />
+        ) : (
+          <div
+            className='w-2.5 h-2.5 rounded-full'
+            style={{ backgroundColor: accent }}
+          />
+        )}
+      </m.div>
+
+      <m.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: isInView ? 1 : 0, x: isInView ? 0 : -20 }}
+        transition={{ duration: 0.5, delay: 0.1, ease: 'easeOut' }}
+      >
+        <BracketText
+          text={formatDateLocal(exp.startDate, locale, true)}
+          accentClass={accentClass}
+          className='text-xl md:text-3xl whitespace-nowrap'
+        />
+      </m.div>
+    </div>
+  );
+});
+
+const BigIcon = memo(function BigIcon({
+  exp,
+  title,
+  isInView,
+  accent,
+}: {
+  exp: Experience;
+  title: string;
+  isInView: boolean;
+  accent: string;
+}) {
+  return (
+    <div className='flex items-center justify-end shrink-0'>
+      {exp.iconUrl ? (
+        <m.div
+          animate={{
+            opacity: isInView ? 1 : 0,
+            scale: isInView ? 1 : 0.6,
+            filter: isInView ? 'blur(0px)' : 'blur(8px)',
+          }}
+          transition={{ duration: 0.55, ease: [0.175, 0.885, 0.32, 1.275] }}
+          className='relative w-20 h-20 md:w-28 md:h-28 shrink-0'
+        >
+          <Image
+            src={exp.iconUrl}
+            alt={exp.iconAlt || title}
+            fill
+            className='object-contain theme-invert-1'
+            unoptimized
+          />
+        </m.div>
+      ) : (
+        <m.div
+          animate={{
+            opacity: isInView ? 0.15 : 0,
+            scale: isInView ? 1 : 0.5,
+          }}
+          transition={{ duration: 0.45 }}
+          className='w-20 h-20 md:w-28 md:h-28 rounded-full border-2'
+          style={{ borderColor: accent }}
+        />
+      )}
+    </div>
+  );
+});
 
 // ─── Single entry row ─────────────────────────────────────────────────────────
 const EntryNode = memo(function EntryNode({
@@ -44,44 +146,14 @@ const EntryNode = memo(function EntryNode({
       className='grid grid-cols-[auto_1fr_auto] items-center justify-center gap-6 md:gap-32 pt-20 md:pt-32 min-h-[80vh]'
     >
       {/* ── Col 1: dot + date on the same row ─────────── */}
-      <div className='sticky top-32 self-start flex flex-row items-center gap-4 z-20 shrink-0'>
-        {/* Circle node */}
-        <m.div
-          className='size-7 rounded-full bg-foreground border-2 flex items-center justify-center shrink-0 border-foreground'
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: isInView ? 1 : 0.4, opacity: isInView ? 1 : 0 }}
-          transition={{ duration: 0.5, type: 'spring', bounce: 0.4 }}
-        >
-          {exp.iconUrl ? (
-            <Image
-              src={exp.iconUrl}
-              alt={exp.iconAlt || title}
-              width={20}
-              height={20}
-              className='object-contain theme-invert-0 size-5'
-              unoptimized
-            />
-          ) : (
-            <div
-              className='w-2.5 h-2.5 rounded-full'
-              style={{ backgroundColor: accent }}
-            />
-          )}
-        </m.div>
-
-        {/* Date to the right of the dot */}
-        <m.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: isInView ? 1 : 0, x: isInView ? 0 : -20 }}
-          transition={{ duration: 0.5, delay: 0.1, ease: 'easeOut' }}
-        >
-          <BracketText
-            text={formatDateLocal(exp.startDate, locale, true)}
-            accentClass={accentClass}
-            className='text-xl md:text-3xl whitespace-nowrap'
-          />
-        </m.div>
-      </div>
+      <DotAndDate
+        exp={exp}
+        title={title}
+        isInView={isInView}
+        accent={accent}
+        accentClass={accentClass}
+        locale={locale}
+      />
 
       {/* ── Col 2: title + description ───────────────── */}
       <div className='flex flex-col gap-2 overflow-hidden'>
@@ -108,37 +180,7 @@ const EntryNode = memo(function EntryNode({
       </div>
 
       {/* ── Col 3: big icon with spring in/out animation ─ */}
-      <div className='flex items-center justify-end shrink-0'>
-        {exp.iconUrl ? (
-          <m.div
-            animate={{
-              opacity: isInView ? 1 : 0,
-              scale: isInView ? 1 : 0.6,
-              filter: isInView ? 'blur(0px)' : 'blur(8px)',
-            }}
-            transition={{ duration: 0.55, ease: [0.175, 0.885, 0.32, 1.275] }}
-            className='relative w-20 h-20 md:w-28 md:h-28 shrink-0'
-          >
-            <Image
-              src={exp.iconUrl}
-              alt={exp.iconAlt || title}
-              fill
-              className='object-contain theme-invert-1'
-              unoptimized
-            />
-          </m.div>
-        ) : (
-          <m.div
-            animate={{
-              opacity: isInView ? 0.15 : 0,
-              scale: isInView ? 1 : 0.5,
-            }}
-            transition={{ duration: 0.45 }}
-            className='w-20 h-20 md:w-28 md:h-28 rounded-full border-2'
-            style={{ borderColor: accent }}
-          />
-        )}
-      </div>
+      <BigIcon exp={exp} title={title} isInView={isInView} accent={accent} />
     </div>
   );
 });
@@ -282,13 +324,13 @@ export default function Timeline({
               animate={{
                 opacity: 1,
                 y: 0,
-                transition: { duration: 1.0, delay: 0.4, ease: 'easeOut' } // Delay fade in until collapse is mostly done
+                transition: { duration: 1, delay: 0.4, ease: 'easeOut' } // Delay fade in until collapse is mostly done
               }}
               exit={{
                 opacity: 0,
                 y: 30,
                 filter: 'blur(0px)',
-                transition: { duration: 1.0, delay: 0.2, ease: 'easeIn' } // Delay fade out so it stays visible while starting to expand
+                transition: { duration: 1, delay: 0.2, ease: 'easeIn' } // Delay fade out so it stays visible while starting to expand
               }}
             >
               {/* Gradient fade layer */}

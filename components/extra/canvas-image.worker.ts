@@ -1,5 +1,4 @@
 // Canvas image effect processing in a Web Worker via OffscreenCanvas
-export {};
 
 // --- Effect type definitions (mirrored from canvas-image.tsx) ---
 
@@ -230,7 +229,7 @@ function processPixels(data: Uint8ClampedArray, effects: ImageEffect[]) {
 
 // --- Main worker handler ---
 
-self.onmessage = async (e: MessageEvent<ProcessMessage>) => {
+globalThis.onmessage = async (e: MessageEvent<ProcessMessage>) => {
   const { src, effects } = e.data;
 
   try {
@@ -242,14 +241,14 @@ self.onmessage = async (e: MessageEvent<ProcessMessage>) => {
     const w = bitmap.width;
     const h = bitmap.height;
     if (w === 0 || h === 0) {
-      self.postMessage({ type: 'error', error: 'Image has zero dimensions' });
+      globalThis.postMessage({ type: 'error', error: 'Image has zero dimensions' });
       return;
     }
 
     const canvas = new OffscreenCanvas(w, h);
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
     if (!ctx) {
-      self.postMessage({ type: 'error', error: 'Could not get 2d context' });
+      globalThis.postMessage({ type: 'error', error: 'Could not get 2d context' });
       return;
     }
 
@@ -277,11 +276,11 @@ self.onmessage = async (e: MessageEvent<ProcessMessage>) => {
 
     // Transfer the result back as an ImageBitmap (zero-copy)
     const resultBitmap = canvas.transferToImageBitmap();
-    self.postMessage({ type: 'done', bitmap: resultBitmap }, [resultBitmap] as any);
+    globalThis.postMessage({ type: 'done', bitmap: resultBitmap }, [resultBitmap] as any);
 
     bitmap.close();
   } catch (err) {
-    self.postMessage({
+    globalThis.postMessage({
       type: 'error',
       error: err instanceof Error ? err.message : String(err),
     });

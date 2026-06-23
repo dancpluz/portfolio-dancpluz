@@ -11,7 +11,10 @@ import { useSectionScroll } from '@/hooks/use-section-scroll';
 import { ArrowRight } from '../ui/svg';
 
 const BAR_COUNT = 23;
-const WAVES = Array.from({ length: BAR_COUNT });
+const WAVES = Array.from({ length: BAR_COUNT }, (_, index) => ({
+  id: `wave-${index}`,
+  height: index + 1,
+}));
 
 export default function Footer() {
   const waveRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -113,14 +116,14 @@ export default function Footer() {
 
       <div aria-hidden='true' style={{ overflow: 'hidden', height: 200 }}>
         <div>
-          {WAVES.map((_, index) => (
+          {WAVES.map((wave, index) => (
             <div
-              key={index}
+              key={wave.id}
               ref={(el) => {
                 waveRefs.current[index] = el;
               }}
               style={{
-                height: `${index + 1}px`,
+                height: `${wave.height}px`,
                 backgroundColor: 'var(--color-foreground)',
                 transition: 'transform 0.1s ease',
                 willChange: 'transform',

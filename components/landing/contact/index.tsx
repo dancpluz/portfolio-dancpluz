@@ -27,7 +27,7 @@ export default async function Contact() {
           once={false}
           className='w-1/2 min-w-1/2'
         >
-          <div className='relative w-full aspect-square -my-[5%]'>
+          <div className='relative w-full aspect-square my-[-5%]'>
             <div
               className='absolute z-10'
               style={{ top: '14%', bottom: '27%', left: '10%', right: '10%' }}

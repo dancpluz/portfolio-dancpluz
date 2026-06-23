@@ -4,7 +4,7 @@ import { Polaroid } from '@/types/api';
 import Image from 'next/image';
 import Folder from './folder';
 import { m, useMotionValue, useSpring, useTransform } from 'motion/react';
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useCallback, useEffect } from 'react';
 
 export default function Myself({
   polaroids,
@@ -18,19 +18,32 @@ export default function Myself({
   const smoothMouseX = useSpring(mouseX, springConfig);
   const smoothMouseY = useSpring(mouseY, springConfig);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+  const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!ref.current) return;
     const { left, top, width, height } = ref.current.getBoundingClientRect();
     const x = (e.clientX - left - width / 2) / (width / 2);
     const y = (e.clientY - top - height / 2) / (height / 2);
     mouseX.set(x);
     mouseY.set(y);
-  };
+  }, [mouseX, mouseY]);
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = useCallback(() => {
     mouseX.set(0);
     mouseY.set(0);
-  };
+  }, [mouseX, mouseY]);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    el.addEventListener('mousemove', handleMouseMove);
+    el.addEventListener('mouseleave', handleMouseLeave);
+
+    return () => {
+      el.removeEventListener('mousemove', handleMouseMove);
+      el.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, [handleMouseMove, handleMouseLeave]);
 
   // Green
   const x1 = useTransform(smoothMouseX, [-1, 1], [-20, 20]);
@@ -64,9 +77,6 @@ export default function Myself({
       <div
         ref={ref}
         className='w-full flex justify-center'
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        role='presentation'
       >
         <div className='relative w-110 max-w-full aspect-11/15'>
           {/* Folders with Parallax (Rendered behind the image) */}
@@ -81,7 +91,7 @@ export default function Myself({
 
           {/* Pink */}
           <m.div
-            className='absolute top-1/2 -right-[11%] z-0 pointer-events-auto'
+            className='absolute top-1/2 right-[-11%] z-0 pointer-events-auto'
             style={{ x: x2, y: y2 }}
           >
             <Folder color='#ff00ff' size={1.1} polaroids={f2Polaroids} />
@@ -89,7 +99,7 @@ export default function Myself({
 
           {/* Cyan */}
           <m.div
-            className='absolute bottom-[4%] -left-[2%] z-15 pointer-events-auto shadow-xl'
+            className='absolute bottom-[4%] left-[-2%] z-15 pointer-events-auto shadow-xl'
             style={{ x: x3, y: y3 }}
           >
             <Folder color='#00fbfe' size={1.25} polaroids={f3Polaroids} />
