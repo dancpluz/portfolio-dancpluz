@@ -62,13 +62,17 @@ export default function ScrollRevealText({
 
   const rotate = useTransform(scrollYProgress, [0, 0.5], [baseRotation, 0]);
 
-  const words = useMemo(() => {
+  const wordsWithIds = useMemo(() => {
     const text = typeof children === 'string' ? children : '';
-    return text.split(/(\s+)/).filter(Boolean);
+    const rawWords = text.split(/(\s+)/).filter(Boolean);
+    return rawWords.map((word, idx) => ({
+      id: `scroll-reveal-${idx}-${word}`,
+      word,
+      isSpace: !!new RegExp(/^\s+$/).exec(word),
+    }));
   }, [children]);
 
-  const nonSpaceWords = words.filter((w) => !new RegExp(/^\s+$/).exec(w));
-  const totalWords = nonSpaceWords.length;
+  const totalWords = useMemo(() => wordsWithIds.filter((w) => !w.isSpace).length, [wordsWithIds]);
 
   let wordIndex = 0;
 
@@ -81,9 +85,9 @@ export default function ScrollRevealText({
       <p
         className={`text-[clamp(1.6rem,4vw,3rem)] leading-normal font-semibold ${textClassName}`}
       >
-        {words.map((segment, i) => {
-          if (new RegExp(/^\s+$/).exec(segment)) {
-            return <span key={`space-${i}`}> </span>;
+        {wordsWithIds.map((item) => {
+          if (item.isSpace) {
+            return <span key={item.id}> </span>;
           }
 
           const idx = wordIndex++;
@@ -92,8 +96,8 @@ export default function ScrollRevealText({
 
           return (
             <WordSpan
-              key={`word-${i}`}
-              word={segment}
+              key={item.id}
+              word={item.word}
               progress={scrollYProgress}
               range={[Math.min(start, 0.9), Math.min(end, 1)]}
               baseOpacity={baseOpacity}

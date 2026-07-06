@@ -13,9 +13,9 @@ export const PEG_SCORES: Record<string, number> = {
 
 // Peg color distribution (must sum to 1.0)
 export const PEG_DISTRIBUTION = {
-  green: 0.80,  // ~80% green
-  pink: 0.10,   // ~10% pink (objective)
-  cyan: 0.10,   // ~10% cyan (bonus)
+  green: 0.8,  // ~80% green
+  pink: 0.1,   // ~10% pink (objective)
+  cyan: 0.1,   // ~10% cyan (bonus)
 };
 
 // Game config

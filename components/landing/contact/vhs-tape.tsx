@@ -86,8 +86,6 @@ export default function VHSTape({ social, index = 0 }: Readonly<VHSTapeProps>) {
   const locale = useLocale();
   const subtext = locale === 'en' ? social.subtextEn : social.subtextPt;
   const [isFlipped, setIsFlipped] = useState(false);
-  const [isIconHovered, setIsIconHovered] = useState(false);
-  const showArrow = isFlipped || isIconHovered;
   const labelRef = useRef<HTMLDivElement>(null);
   const labelSize = useResizeObserver(labelRef);
 
@@ -222,24 +220,19 @@ export default function VHSTape({ social, index = 0 }: Readonly<VHSTapeProps>) {
 
           {/* Icon on middle-right of the tape body (past the label) */}
           <div
-            className='absolute z-10 flex items-center justify-center cursor-pointer'
+            className='absolute z-10 flex items-center justify-center group/icon'
             style={{
               top: '15%',
               bottom: '15%',
               right: '2%',
               width: '10%',
             }}
-            onMouseEnter={() => setIsIconHovered(true)}
-            onMouseLeave={() => setIsIconHovered(false)}
           >
             {/* Background Social Icon fades/shrinks slightly */}
-            <m.div
-              animate={{
-                opacity: showArrow ? 0 : 1,
-                scale: showArrow ? 0.7 : 1,
-              }}
-              transition={{ duration: 0.3 }}
-              className='relative size-6 sm:size-8 md:size-10'
+            <div
+              className={`relative size-6 sm:size-8 md:size-10 transition-all duration-300 ${
+                isFlipped ? 'opacity-0 scale-75' : 'group-hover/icon:opacity-0 group-hover/icon:scale-75'
+              }`}
             >
               <Image
                 src={social.iconUrl}
@@ -247,31 +240,23 @@ export default function VHSTape({ social, index = 0 }: Readonly<VHSTapeProps>) {
                 fill
                 className='object-contain invert'
               />
-            </m.div>
+            </div>
 
-            {/* Arrow */}
-            <AnimatePresence>
-              {showArrow && (
-                <m.div
-                  className='absolute inset-0 flex items-center justify-center z-20'
-                  initial={{ opacity: 0, scale: 0.2, rotate: -30 }}
-                  animate={{ opacity: 1, scale: 1.2, rotate: 0 }}
-                  exit={{ opacity: 0, scale: 0.2, rotate: 30 }}
-                  transition={{ type: 'spring', stiffness: 450, damping: 20 }}
-                >
-                  <Link
-                    href={social.url}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                    aria-label={`Visit ${social.text}`}
-                    className='flex items-center justify-center size-full pointer-events-auto hover:scale-[1.15] active:scale-95 transition-all drop-shadow-md'
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <ArrowRight className='size-8 text-white drop-shadow-lg -rotate-45' />
-                  </Link>
-                </m.div>
-              )}
-            </AnimatePresence>
+            {/* Arrow Link */}
+            <Link
+              href={social.url}
+              target='_blank'
+              rel='noopener noreferrer'
+              aria-label={`Visit ${social.text}`}
+              className={`absolute inset-0 flex items-center justify-center pointer-events-none transition-all duration-300 size-full hover:scale-[1.15] active:scale-95 drop-shadow-md ${
+                isFlipped
+                  ? 'opacity-100 scale-100 rotate-0 pointer-events-auto'
+                  : 'opacity-0 scale-50 rotate-[-30deg] group-hover/icon:opacity-100 group-hover/icon:scale-100 group-hover/icon:rotate-0 group-hover/icon:pointer-events-auto'
+              }`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <ArrowRight className='size-8 text-white drop-shadow-lg -rotate-45' />
+            </Link>
           </div>
         </div>
       </m.div>

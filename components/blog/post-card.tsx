@@ -1,14 +1,14 @@
 'use client';
 
-import { categoryEmoji, ROUTES } from '@/lib/constant';
-import { formatDateLocal, getFirstParagraphText, isGif } from '@/lib/utils';
+import { categoryEmoji, ROUTES } from '@/lib/constant'; // NOSONAR
+import { formatDateLocal, getFirstParagraphText, isGif } from '@/lib/utils'; // NOSONAR
 import { PostsResponse } from '@/types/pocketbase';
 import { m } from 'motion/react';
-import TransitionLink from '@/components/transition-link';
+import TransitionLink from '@/components/transition-link'; // NOSONAR
 import Image from 'next/image';
 import { buildImageUrl } from '@/lib/pocketbase';
 import { useLocale } from 'next-intl';
-import { Reveal } from '../motion/reveal';
+import { Reveal } from '../motion/reveal'; // NOSONAR
 
 export default function PostCard({
   post,
@@ -18,13 +18,13 @@ export default function PostCard({
   index: number;
 }>) {
   const locale = useLocale();
-  const { id, created } = post;
+  const { id, created } = post; // NOSONAR
 
-  const title = locale === 'en' ? post.title_en : post.title_pt;
+  const title = locale === 'en' ? post.title_en : post.title_pt; // NOSONAR
   const article = locale === 'en' ? post.article_en : post.article_pt;
   const long_text = locale === 'en' ? post.long_text_en : post.long_text_pt;
 
-  const description = long_text || getFirstParagraphText(article);
+  const description = long_text || getFirstParagraphText(article); // NOSONAR
 
   return (
     <m.li

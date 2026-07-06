@@ -16,15 +16,15 @@ export default function Preloader() {
     .filter(Boolean) as string[], []);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && sessionStorage.getItem('preloaderDone') === '1') {
+    if (globalThis.window !== undefined && globalThis.sessionStorage.getItem('preloaderDone') === '1') {
       setIsComplete(true);
-      window.dispatchEvent(new Event('preloaderComplete'));
+      globalThis.dispatchEvent(new Event('preloaderComplete'));
       return;
     }
 
     if (videosToLoad.length === 0) {
       setIsComplete(true);
-      window.dispatchEvent(new Event('preloaderComplete'));
+      globalThis.dispatchEvent(new Event('preloaderComplete'));
       return;
     }
 
@@ -39,9 +39,9 @@ export default function Preloader() {
       if (loaded >= videosToLoad.length) {
         hasCompleted = true;
         setTimeout(() => {
-          if (typeof window !== 'undefined') sessionStorage.setItem('preloaderDone', '1');
+          if (globalThis.window !== undefined) globalThis.sessionStorage.setItem('preloaderDone', '1');
           setIsComplete(true);
-          window.dispatchEvent(new Event('preloaderComplete'));
+          globalThis.dispatchEvent(new Event('preloaderComplete'));
         }, 600);
       }
     };

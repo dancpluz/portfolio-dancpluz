@@ -25,7 +25,7 @@ export function MenuProvider({
   socials,
 }: Readonly<{ children: ReactNode; socials: Social[] }>) {
   const [isOpen, setIsOpen] = useState<MenuContextType['isOpen']>(false);
-  const [hoverMedia, setHoverMedia] = useState<MenuContextType['hoverMedia']>({ src: '/video/universe.webm', isVideo: true }); // TODO: Change Later
+  const [hoverMedia, setHoverMedia] = useState<MenuContextType['hoverMedia']>({ src: '/video/universe.webm', isVideo: true });
 
   const toggleMenu = useCallback(() => setIsOpen((prev) => !prev), []);
   const closeMenu = useCallback(() => setIsOpen(false), []);

@@ -70,10 +70,13 @@ export default function BlurText({
     margin: rootMargin as `${number}px ${number}px ${number}px ${number}px`,
   });
 
-  const elements = useMemo(
-    () => (animateBy === 'words' ? text.split(' ') : text.split('')),
-    [text, animateBy],
-  );
+  const segmentsWithIds = useMemo(() => {
+    const rawElements = animateBy === 'words' ? text.split(' ') : text.split('');
+    return rawElements.map((segment, index) => ({
+      id: `blur-${animateBy}-${index}-${segment}`,
+      segment,
+    }));
+  }, [text, animateBy]);
 
   const defaultFrom = useMemo<AnimationSnapshot>(
     () =>
@@ -124,7 +127,7 @@ export default function BlurText({
       animate={inView ? 'visible' : 'hidden'}
       variants={parentVariants}
     >
-      {elements.map((segment, index) => {
+      {segmentsWithIds.map((item, index) => {
         const spanTransition: Transition = {
           duration: totalDuration,
           times,
@@ -138,19 +141,19 @@ export default function BlurText({
 
         return (
           <m.span
-            key={index}
+            key={item.id}
             aria-hidden='true'
             variants={childVariants}
             onAnimationComplete={
-              index === elements.length - 1 ? onAnimationComplete : undefined
+              index === segmentsWithIds.length - 1 ? onAnimationComplete : undefined
             }
             style={{
               display: 'inline-block',
               willChange: 'transform, filter, opacity',
             }}
           >
-            {segment === ' ' ? '\u00A0' : segment}
-            {animateBy === 'words' && index < elements.length - 1 && '\u00A0'}
+            {item.segment === ' ' ? '\u00A0' : item.segment}
+            {animateBy === 'words' && index < segmentsWithIds.length - 1 && '\u00A0'}
           </m.span>
         );
       })}

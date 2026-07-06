@@ -1,5 +1,5 @@
 // VCR tape-age / tracking effect rendered in a Web Worker via OffscreenCanvas
-export {};
+export type { VCRMessage };
 
 function getRandomInt(min: number, max: number): number {
   return (
@@ -57,7 +57,8 @@ function renderTail(
   for (let i = 0; i < n; i++) {
     const r = Math.max(0, radius - 0.1 * i);
     const dx = getRandomInt(1, 4) * dir;
-    ctx.fillRect((x += dx), y, r, r);
+    x += dx;
+    ctx.fillRect(x, y, r, r);
   }
   ctx.fill();
 }
@@ -100,7 +101,7 @@ function startAnimation() {
   rafId = requestAnimationFrame(draw);
 }
 
-self.onmessage = (e: MessageEvent<VCRMessage>) => {
+globalThis.onmessage = (e: MessageEvent<VCRMessage>) => {
   const msg = e.data;
 
   switch (msg.type) {

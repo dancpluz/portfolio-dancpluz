@@ -5,7 +5,6 @@ import About from '@/components/landing/about';
 import ScrollToHash from '@/components/extra/scroll-to-hash';
 import Contact from '@/components/landing/contact';
 import Footer from '@/components/footer';
-// import Hero from '@/components/landing/hero';
 
 export default async function HomePage() {
   return (

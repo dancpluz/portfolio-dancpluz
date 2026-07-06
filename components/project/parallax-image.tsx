@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState, useCallback, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 import { m, useMotionValue, useSpring, useTransform } from 'motion/react';
 import { isGif } from '@/lib/utils';
@@ -45,21 +45,29 @@ export default function ParallaxImage({
   const x = useTransform(smoothX, [0, 1], [0, -overflowPercent]);
   const y = useTransform(smoothY, [0, 1], [0, -overflowPercent]);
 
-  const handleLocalMouseMove = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      if (global || !containerRef.current) return;
-      const { left, top, width, height } =
-        containerRef.current.getBoundingClientRect();
+  useEffect(() => {
+    if (global || !containerRef.current) return;
+
+    const el = containerRef.current;
+
+    const onLocalMouseMove = (e: MouseEvent) => {
+      const { left, top, width, height } = el.getBoundingClientRect();
       mouseX.set((e.clientX - left) / width);
       mouseY.set((e.clientY - top) / height);
-    },
-    [global, mouseX, mouseY],
-  );
+    };
 
-  const handleMouseLeave = useCallback(() => {
-    if (global) return;
-    mouseX.set(0.5);
-    mouseY.set(0.5);
+    const onLocalMouseLeave = () => {
+      mouseX.set(0.5);
+      mouseY.set(0.5);
+    };
+
+    el.addEventListener('mousemove', onLocalMouseMove, { passive: true });
+    el.addEventListener('mouseleave', onLocalMouseLeave, { passive: true });
+
+    return () => {
+      el.removeEventListener('mousemove', onLocalMouseMove);
+      el.removeEventListener('mouseleave', onLocalMouseLeave);
+    };
   }, [global, mouseX, mouseY]);
 
   useEffect(() => {
@@ -80,9 +88,6 @@ export default function ParallaxImage({
     <div
       ref={containerRef}
       className={`relative w-full h-full overflow-hidden ${className}`}
-      onMouseMove={handleLocalMouseMove}
-      onMouseLeave={handleMouseLeave}
-      role='presentation'
     >
       <m.div
         className='absolute top-0 left-0'

@@ -92,6 +92,23 @@ export default function SplitText({
 
   const tokens = useMemo(() => getTokens(text, splitType), [text, splitType]);
 
+  const tokensWithIds = useMemo(() => {
+    return tokens.map((token, wordIdx) => {
+      const isWhitespace = token.trim().length === 0;
+      const chars = splitType === 'chars' && !isWhitespace ? Array.from(token).map((char, charIdx) => ({
+        id: `char-${wordIdx}-${charIdx}-${char}`,
+        char
+      })) : [];
+
+      return {
+        id: `word-${wordIdx}-${token}`,
+        token,
+        isWhitespace,
+        chars
+      };
+    });
+  }, [tokens, splitType]);
+
   // Count total animatable elements to know when the animation is complete
   const visibleCount = useMemo(() => {
     if (splitType === 'chars') {
@@ -111,31 +128,28 @@ export default function SplitText({
       style={{ textAlign, wordWrap: 'break-word' }}
       aria-label={text}
     >
-      {tokens.map((token, wordIdx) => {
-        const isWhitespace = token.trim().length === 0;
-
-        if (isWhitespace) {
+      {tokensWithIds.map((item) => {
+        if (item.isWhitespace) {
           return splitType === 'lines' ? (
-            <br key={wordIdx} />
+            <br key={item.id} />
           ) : (
-            <span key={wordIdx} aria-hidden='true'>
-              {token}
+            <span key={item.id} aria-hidden='true'>
+              {item.token}
             </span>
           );
         }
 
         if (splitType === 'chars') {
-          const chars = Array.from(token);
           return (
-            <span key={wordIdx} className='inline-block whitespace-nowrap'>
-              {chars.map((char, charIdx) => {
+            <span key={item.id} className='inline-block whitespace-nowrap'>
+              {item.chars.map((charItem) => {
                 const tokenIndex = visibleIndex++;
                 const staggerSec = (delay / 1000) * tokenIndex;
                 const isLast = tokenIndex === visibleCount - 1;
 
                 return (
                   <m.span
-                    key={charIdx}
+                    key={charItem.id}
                     aria-hidden='true'
                     className='inline-block will-change-[transform,opacity]'
                     initial={from}
@@ -151,7 +165,7 @@ export default function SplitText({
                         : undefined
                     }
                   >
-                    {char}
+                    {charItem.char}
                   </m.span>
                 );
               })}
@@ -166,7 +180,7 @@ export default function SplitText({
 
         return (
           <m.span
-            key={wordIdx}
+            key={item.id}
             aria-hidden='true'
             className='inline-block will-change-[transform,opacity]'
             initial={from}
@@ -182,10 +196,11 @@ export default function SplitText({
                 : undefined
             }
           >
-            {token}
+            {item.token}
           </m.span>
         );
       })}
     </Tag>
   );
 }
+

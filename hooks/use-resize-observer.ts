@@ -17,7 +17,7 @@ export function useResizeObserver(ref: RefObject<HTMLElement | null>): Size | nu
       if (entry) {
         const { width, height } = entry.contentRect;
         setSize((prev) => {
-          if (prev && prev.width === width && prev.height === height) return prev;
+          if (prev?.width === width && prev?.height === height) return prev;
           return { width, height };
         });
       }

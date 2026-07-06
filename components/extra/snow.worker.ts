@@ -30,14 +30,15 @@ function generateNoise(w: number, h: number): OffscreenCanvas {
   const offscreenH = h * 2;
   const oc = new OffscreenCanvas(offscreenW, offscreenH);
   const octx = oc.getContext('2d', { alpha: true });
-  if (!octx) return oc;
 
-  const d = octx.createImageData(offscreenW, offscreenH);
-  const b = new Uint32Array(d.data.buffer);
-  for (let i = 0; i < b.length; i++) {
-    b[i] = Math.trunc(255 * Math.random()) << 24;
+  if (octx) {
+    const d = octx.createImageData(offscreenW, offscreenH);
+    const b = new Uint32Array(d.data.buffer);
+    for (let i = 0; i < b.length; i++) {
+      b[i] = Math.trunc(255 * Math.random()) << 24;
+    }
+    octx.putImageData(d, 0, 0);
   }
-  octx.putImageData(d, 0, 0);
   return oc;
 }
 

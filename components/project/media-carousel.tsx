@@ -22,7 +22,7 @@ const MediaCard = memo(function MediaCard({
   fill = false,
   onClick,
 }: Readonly<MediaCardProps>) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLButtonElement>(null);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -33,21 +33,15 @@ const MediaCard = memo(function MediaCard({
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '-16.6667%']);
 
   const handleClick = useCallback(() => onClick(index), [onClick, index]);
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => e.key === 'Enter' && onClick(index),
-    [onClick, index],
-  );
 
   return (
-    <div
+    <button
       ref={containerRef}
       onClick={handleClick}
-      className={`relative rounded-2xl cursor-zoom-in pixel-corners-small group ${
+      type='button'
+      className={`relative rounded-2xl cursor-zoom-in pixel-corners-small group block border-0 p-0 text-left bg-transparent ${
         fill ? 'w-full h-full' : 'shrink-0 w-[520px] md:w-[800px] aspect-video'
       }`}
-      role='button'
-      tabIndex={0}
-      onKeyDown={handleKeyDown}
       aria-label={alt}
     >
       {/* Size placeholder (only needed in non-fill carousel mode) */}
@@ -79,7 +73,7 @@ const MediaCard = memo(function MediaCard({
           {String(index + 1).padStart(2, '0')}
         </span>
       </div>
-    </div>
+    </button>
   );
 });
 
@@ -208,8 +202,8 @@ const Lightbox = memo(function Lightbox({
       {/* Dot indicators */}
       {images.length > 1 && (
         <div className='absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20'>
-          {images.map((_, i) => (
-            <LightboxDot key={i} index={i} current={current} goTo={goTo} />
+          {images.map((src, i) => (
+            <LightboxDot key={src} index={i} current={current} goTo={goTo} />
           ))}
         </div>
       )}
@@ -280,7 +274,7 @@ const SmartGrid = memo(function SmartGrid({
   return (
     <div className='grid grid-cols-2 gap-3 w-full'>
       {images.map((src, i) => (
-        <div key={i} className='aspect-video'>
+        <div key={src} className='aspect-video'>
           <MediaCard
             src={src}
             alt={`${title} — ${i + 1}`}

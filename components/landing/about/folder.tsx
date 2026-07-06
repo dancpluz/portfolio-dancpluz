@@ -133,7 +133,7 @@ const PaperItem = memo(function PaperItem({
   }, [open]);
 
   const handleMouseMove = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
+    (e: React.MouseEvent) => {
       if (!open) return;
       const rect = e.currentTarget.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
@@ -166,28 +166,16 @@ const PaperItem = memo(function PaperItem({
     : undefined;
 
   return (
-    <div
-      role='button'
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          e.stopPropagation();
-          if (open) {
-            onZoom(index);
-          } else {
-            onClickFolder();
-          }
-        }
-      }}
+    <button
+      type='button'
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onClick={handleClick}
-      className={`absolute z-20 bottom-[10%] left-1/2 transition-all duration-300 ease-in-out focus:outline-none ${
+      className={`absolute z-20 bottom-[10%] left-1/2 transition-all duration-300 ease-in-out focus:outline-none border-0 p-[4px] flex flex-col ${
         open
           ? 'hover:scale-110 hover:z-40 cursor-pointer shadow-md'
           : 'transform -translate-x-1/2 translate-y-[10%] group-hover:translate-y-0 shadow-sm'
-      } aspect-4/5 w-[60px] p-[4px] flex flex-col`}
+      } aspect-4/5 w-[60px]`}
       style={{
         ...(open ? { transform: transformStyle } : {}),
         backgroundColor: paperColor,
@@ -205,7 +193,7 @@ const PaperItem = memo(function PaperItem({
           </span>
         </div>
       )}
-    </div>
+    </button>
   );
 });
 
@@ -286,22 +274,13 @@ export default function Folder({
   return (
     <div ref={containerRef} style={scaleStyle} className={className}>
       <div
-        role='button'
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            handleClick();
-          }
-        }}
-        className={`group relative transition-all duration-200 ease-in cursor-pointer text-left focus:outline-none ${
+        className={`group relative transition-all duration-200 ease-in text-left ${
           open ? '' : 'hover:-translate-y-2'
         }`}
         style={{
           ...folderStyle,
           transform: open ? 'translateY(-8px)' : undefined,
         }}
-        onClick={handleClick}
       >
         <div
           className='relative w-[100px] h-[80px] rounded-tl-0 rounded-tr-[10px] rounded-br-[10px] rounded-bl-[10px]'
@@ -346,27 +325,39 @@ export default function Folder({
             }}
           ></div>
         </div>
+
+        {/* Folder Toggle Button (overlay covering the folder area) */}
+        <button
+          type='button'
+          aria-label={open ? 'Close folder' : 'Open folder'}
+          className='absolute inset-0 w-full h-full bg-transparent border-0 cursor-pointer focus:outline-none'
+          style={{
+            zIndex: open ? 10 : 40,
+          }}
+          onClick={handleClick}
+        />
       </div>
       {mounted &&
         zoomedIndex !== null &&
         createPortal(
-          <div
-            role='button'
-            tabIndex={0}
+          <button
+            type='button'
             onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === 'Escape') {
+              if (e.key === 'Escape') {
                 e.stopPropagation();
                 setZoomedIndex(null);
               }
             }}
             className='fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-md cursor-zoom-out animate-in fade-in duration-300 w-full h-full border-none m-0 p-0 focus:outline-none'
             onClick={(e) => {
-              e.stopPropagation();
-              setZoomedIndex(null);
+              if (e.target === e.currentTarget) {
+                e.stopPropagation();
+                setZoomedIndex(null);
+              }
             }}
           >
             <div
-              className='p-[16px] shadow-2xl flex flex-col transition-transform scale-100 hover:scale-[1.02] max-h-[95vh] overflow-y-auto scrollbar-hide'
+              className='p-[16px] shadow-2xl flex flex-col transition-transform scale-100 hover:scale-[1.02] max-h-[95vh] overflow-y-auto scrollbar-hide text-left cursor-default'
               style={{
                 width: '328px',
                 minHeight: '400px',
@@ -387,7 +378,7 @@ export default function Folder({
                 </div>
               )}
             </div>
-          </div>,
+          </button>,
           document.body,
         )}
     </div>
