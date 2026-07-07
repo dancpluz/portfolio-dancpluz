@@ -36,6 +36,8 @@ const pt: Translation = {
   },
   about: {
     title: 'Sobre',
+    name: 'Daniel Luz',
+    tagline: 'Um desenvolvedor que não se prende a rótulos, _a criatividade é o limite._',
     see_more: 'Ver mais',
     see_less: 'Ver menos',
   },
@@ -46,7 +48,6 @@ const pt: Translation = {
   },
   stack: {
     title: 'Stack',
-    text: 'Brinquedos que uso',
   },
   footer: {
     back_to_top: '\u2191 Voltar ao topo',

@@ -54,6 +54,31 @@ export const DEFAULT_SOCIALS: Social[] = [
   },
 ];
 
+// Identity labels for the About intro's floating "balloon" field.
+// Rendered between quotes and popped subtly — labels that never stick.
+export const ABOUT_LABELS: string[] = [
+  'programador',
+  'frontend',
+  'backend',
+  'fullstack',
+  'designer',
+  'dev',
+  'criativo',
+  'react',
+  'typescript',
+  'engenheiro',
+  'artista',
+  'curioso',
+  'maker',
+  'indie',
+  'generalista',
+  'ui',
+  'ux',
+  'sonhador',
+  'pixel-perfect',
+  'nerd',
+];
+
 export const ROUTES = {
   landing: {
     path: '/',

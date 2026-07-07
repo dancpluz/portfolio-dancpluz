@@ -2,6 +2,7 @@
 
 import React, { useRef, useMemo } from 'react';
 import { m, useScroll, useTransform, MotionValue } from 'motion/react';
+import { cn } from '@/lib/utils';
 
 interface ScrollRevealProps {
   children: React.ReactNode;
@@ -20,6 +21,7 @@ function WordSpan({
   baseOpacity,
   enableBlur,
   blurStrength,
+  isItalic,
 }: Readonly<{
   word: string;
   progress: MotionValue<number>;
@@ -27,6 +29,7 @@ function WordSpan({
   baseOpacity: number;
   enableBlur: boolean;
   blurStrength: number;
+  isItalic?: boolean;
 }>) {
   const opacity = useTransform(progress, range, [baseOpacity, 1]);
   const blur = useTransform(progress, range, [blurStrength, 0]);
@@ -36,7 +39,10 @@ function WordSpan({
 
   return (
     <m.span
-      className='inline-block will-change-[opacity,filter]'
+      className={cn(
+        'inline-block will-change-[opacity,filter]',
+        isItalic && 'italic'
+      )}
       style={{ opacity, filter }}
     >
       {word}
@@ -60,16 +66,43 @@ export default function ScrollRevealText({
     offset: ['start end', 'end start'],
   });
 
-  const rotate = useTransform(scrollYProgress, [0, 0.5], [baseRotation, 0]);
+  const rotate = useTransform(scrollYProgress, [0, 0.45], [baseRotation, 0]);
 
   const wordsWithIds = useMemo(() => {
     const text = typeof children === 'string' ? children : '';
     const rawWords = text.split(/(\s+)/).filter(Boolean);
-    return rawWords.map((word, idx) => ({
-      id: `scroll-reveal-${idx}-${word}`,
-      word,
-      isSpace: !!new RegExp(/^\s+$/).exec(word),
-    }));
+    
+    let isItalicActive = false;
+
+    return rawWords.map((word, idx) => {
+      let cleanWord = word;
+      let isItalic = isItalicActive;
+
+      if (cleanWord.startsWith('_')) {
+        isItalicActive = true;
+        isItalic = true;
+        cleanWord = cleanWord.substring(1);
+      }
+
+      let endsWithUnderscore = false;
+      if (cleanWord.endsWith('_')) {
+        endsWithUnderscore = true;
+        cleanWord = cleanWord.substring(0, cleanWord.length - 1);
+      }
+
+      const result = {
+        id: `scroll-reveal-${idx}-${word}`,
+        word: cleanWord,
+        isSpace: !!new RegExp(/^\s+$/).exec(word),
+        isItalic,
+      };
+
+      if (endsWithUnderscore) {
+        isItalicActive = false;
+      }
+
+      return result;
+    });
   }, [children]);
 
   const totalWords = useMemo(() => wordsWithIds.filter((w) => !w.isSpace).length, [wordsWithIds]);
@@ -91,8 +124,8 @@ export default function ScrollRevealText({
           }
 
           const idx = wordIndex++;
-          const start = (idx / totalWords) * 0.6;
-          const end = start + 0.6 / totalWords + 0.1;
+          const start = (idx / totalWords) * 0.35;
+          const end = start + 0.35 / totalWords + 0.08;
 
           return (
             <WordSpan
@@ -103,6 +136,7 @@ export default function ScrollRevealText({
               baseOpacity={baseOpacity}
               enableBlur={enableBlur}
               blurStrength={blurStrength}
+              isItalic={item.isItalic}
             />
           );
         })}

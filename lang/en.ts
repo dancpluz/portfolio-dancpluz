@@ -34,6 +34,8 @@ const en = {
   },
   about: {
     title: 'About',
+    name: 'Daniel Luz',
+    tagline: 'A developer who refuses to be boxed in, _creativity is the limit._',
     see_more: 'See more',
     see_less: 'See less',
   },
@@ -44,7 +46,6 @@ const en = {
   },
   stack: {
     title: 'Stack',
-    text: 'Toys I play with',
   },
   footer: {
     back_to_top: '\u2191 Back to top',

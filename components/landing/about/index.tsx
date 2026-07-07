@@ -5,8 +5,8 @@ import FlipText from '../../extra/flip-text';
 import Testimonials from './testimonials';
 import { getPolaroids } from '@/actions/polaroids';
 import { getExperience } from '@/actions/experience';
-import Myself from './myself';
 import Timeline from './timeline';
+import AboutIntro from './intro';
 import { getTranslations } from 'next-intl/server';
 
 export default async function About() {
@@ -28,7 +28,11 @@ export default async function About() {
       className='flex w-full flex-col'
     >
       <FlipText text={t('title')} className='font-heading text-8xl' />
-      <Myself polaroids={polaroids.data || []} />
+      <AboutIntro
+        name={t('name')}
+        tagline={t('tagline')}
+        polaroids={polaroids.data || []}
+      />
       {experience.data && experience.data.length > 0 && (
         <Timeline
           experiences={experience.data}
