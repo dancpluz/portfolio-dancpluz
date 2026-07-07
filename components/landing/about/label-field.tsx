@@ -96,8 +96,8 @@ function makeSeed(cfg: ResolvedConfig, initial: boolean, activeSet?: Set<string>
 
   // Zoned spawn positions to avoid the center area of the photo and folders
   const zone = pick([1, 2, 3]); // 1: Left, 2: Right, 3: Center Top/Bottom
-  let xPct = 50;
-  let yPct = 50;
+  let xPct: number;
+  let yPct: number;
 
   if (zone === 1) {
     // Left column
@@ -222,31 +222,31 @@ export default function LabelField(props: Readonly<LabelFieldConfig>) {
         config.className,
       )}
     >
-      {!mounted
-        ? null
-        : reduce
-        ? staticSeeds.map((seed) => (
-            <span
-              key={seed.id}
-              className={cn(
-                'absolute block -translate-x-1/2 -translate-y-1/2 whitespace-nowrap',
-                config.fontClassName,
-                seed.size,
-              )}
-              style={{
-                left: `${seed.xPct}%`,
-                top: `${seed.yPct}%`,
-                color: seed.color,
-                opacity: seed.opacity,
-                rotate: `${seed.rotate}deg`,
-              }}
-            >
-              &quot;{seed.label}&quot;
-            </span>
-          ))
-        : slots.map((i) => (
-            <LabelBalloon key={i} config={config} activeSet={activeLabelsRef.current} />
-          ))}
+      {mounted
+        ? reduce
+          ? staticSeeds.map((seed) => (
+              <span
+                key={seed.id}
+                className={cn(
+                  'absolute block -translate-x-1/2 -translate-y-1/2 whitespace-nowrap',
+                  config.fontClassName,
+                  seed.size,
+                )}
+                style={{
+                  left: `${seed.xPct}%`,
+                  top: `${seed.yPct}%`,
+                  color: seed.color,
+                  opacity: seed.opacity,
+                  rotate: `${seed.rotate}deg`,
+                }}
+              >
+                &quot;{seed.label}&quot;
+              </span>
+            ))
+          : slots.map((i) => (
+              <LabelBalloon key={i} config={config} activeSet={activeLabelsRef.current} />
+            ))
+        : null}
     </div>
   );
 }

@@ -40,10 +40,10 @@ const FlowingNav = React.memo(function FlowingNav({
   }, []);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof globalThis.window === 'undefined') return;
 
     const handleScroll = () => {
-      const path = window.location.pathname;
+      const path = globalThis.location.pathname;
       if (path !== '/') {
         setActiveSection(path);
         return;
