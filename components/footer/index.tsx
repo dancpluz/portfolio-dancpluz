@@ -41,6 +41,9 @@ export default function Footer() {
 
   useEffect(() => {
     let t = 0;
+    // Smaller wave amplitude on narrow viewports so bars stay inside the band.
+    const amplitude =
+      globalThis.matchMedia?.('(max-width: 639px)').matches ? 10 : 20;
 
     const animateWave = () => {
       const waveElements = waveRefs.current;
@@ -48,7 +51,7 @@ export default function Footer() {
 
       waveElements.forEach((element, index) => {
         if (element) {
-          offset += Math.max(0, 20 * Math.sin((t + index) * 0.3));
+          offset += Math.max(0, amplitude * Math.sin((t + index) * 0.3));
           element.style.transform = `translateY(${index + offset}px)`;
         }
       });
@@ -82,25 +85,25 @@ export default function Footer() {
   return (
     <footer
       ref={footerRef}
-      className='bg-background text-foreground relative flex flex-col w-full justify-between select-none mt-20'
+      className='bg-background text-foreground relative flex flex-col w-full justify-between select-none mt-10 md:mt-20'
     >
-      <div className='flex flex-col md:flex-row justify-between w-full gap-8 pb-24 pt-8 section-px'>
-        <div className='space-y-4'>
+      <div className='flex flex-col md:flex-row justify-between items-center md:items-start w-full gap-8 pb-12 md:pb-24 pt-8 section-px text-center md:text-left'>
+        <div className='space-y-4 flex flex-col items-center md:items-start'>
           <nav>
-            <ul className='flex flex-wrap gap-x-6 gap-y-2'>
+            <ul className='flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-2'>
               {navLinks.map(([key, route]) => (
                 <FooterLink key={route.path} route={route} text={tNav(key)} />
               ))}
             </ul>
           </nav>
-          <p className='text-sm font-heading flex items-center gap-x-1'>
+          <p className='text-sm font-heading flex items-center justify-center md:justify-start gap-x-1'>
             {t('rights', { year: new Date().getFullYear() })}
           </p>
         </div>
 
-        <div className='space-y-4'>
+        <div className='space-y-4 flex flex-col items-center md:items-end'>
           <Socials />
-          <div className='md:text-right'>
+          <div className='text-center md:text-right'>
             <m.button
               onClick={scrollToTop}
               className='font-heading text-sm cursor-pointer'

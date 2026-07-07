@@ -35,7 +35,7 @@ function ScrollName({ text }: Readonly<{ text: string }>) {
     <m.h3
       ref={ref}
       style={{ opacity, y, filter }}
-      className='font-heading text-9xl uppercase leading-[0.9] will-change-[transform,opacity,filter] flex flex-col items-center lg:items-start text-center lg:text-left gap-1'
+      className='font-heading text-5xl sm:text-7xl lg:text-9xl uppercase leading-[0.9] will-change-[transform,opacity,filter] flex flex-col items-center lg:items-start text-center lg:text-left gap-1'
     >
       {words.map((word, i) => (
         <span key={`${word}-${i}`} className='block'>
@@ -78,7 +78,7 @@ export default function AboutIntro({
             blurStrength={6}
             baseRotation={2}
             containerClassName='!my-1 max-w-3xl overflow-visible py-2'
-            textClassName='text-sm md:text-3xl font-text text-foreground text-center lg:text-right !leading-tight'
+            textClassName='text-2xl sm:text-3xl lg:text-4xl font-text font-bold text-foreground text-center lg:text-right !leading-tight'
           >
             {tagline}
           </ScrollRevealText>

@@ -1,4 +1,4 @@
-import { ROUTES, MOCK_TESTIMONIALS } from '@/lib/constant';
+import { ROUTES, MOCK_TESTIMONIALS, SECTION_TITLE_CLASS } from '@/lib/constant';
 import { getSectionId } from '@/lib/utils';
 import { getTestimonials } from '@/actions/testimonials';
 import FlipText from '../../extra/flip-text';
@@ -27,7 +27,7 @@ export default async function About() {
       id={getSectionId(ROUTES.about)}
       className='flex w-full flex-col'
     >
-      <FlipText text={t('title')} className='font-heading text-8xl' />
+      <FlipText text={t('title')} className={SECTION_TITLE_CLASS} />
       <AboutIntro
         name={t('name')}
         tagline={t('tagline')}

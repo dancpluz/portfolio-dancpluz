@@ -109,6 +109,8 @@ export default function ScrollRevealText({
 
   let wordIndex = 0;
 
+  const hasCustomTextSize = textClassName.includes('text-');
+
   return (
     <m.h2
       ref={containerRef}
@@ -116,7 +118,11 @@ export default function ScrollRevealText({
       style={{ rotate, transformOrigin: '0% 50%' }}
     >
       <p
-        className={`text-[clamp(1.6rem,4vw,3rem)] leading-normal font-semibold ${textClassName}`}
+        className={cn(
+          !hasCustomTextSize && 'text-[clamp(1.6rem,4vw,3rem)] font-semibold',
+          'leading-normal',
+          textClassName
+        )}
       >
         {wordsWithIds.map((item) => {
           if (item.isSpace) {

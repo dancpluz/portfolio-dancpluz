@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, ReactNode } from 'react';
 import { uiLogger } from '@/lib/logger';
+import { useIsTouch, usePrefersReducedMotion } from '@/hooks/use-is-touch';
 
 interface VCRConfig {
   scanlines?: boolean;
@@ -202,10 +203,34 @@ export default function VCREffect({
   config: externalConfig,
   className = '',
 }: Readonly<VCREffectProps>) {
+  const isTouch = useIsTouch();
+  const reduceMotion = usePrefersReducedMotion();
   const cfg: Required<VCRConfig> = { ...defaultConfig, ...externalConfig };
+
+  // Mobile/reduced-motion: cut the most expensive bits (glitch + wobble) and,
+  // when the user asked for reduced motion, drop the animated noise entirely.
+  if (isTouch) {
+    cfg.glitch = false;
+    cfg.wobbleX = false;
+    cfg.wobbleY = false;
+  }
+  if (reduceMotion) {
+    cfg.glitch = false;
+    cfg.wobbleX = false;
+    cfg.wobbleY = false;
+    cfg.snow = false;
+  }
+
+  // Lower canvas resolution on touch — the effect stretches to fill via CSS, so
+  // a smaller backing store is cheaper with negligible visual loss.
+  const pixelScale = isTouch ? 2 : 1;
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState<CanvasSize>({ width: 640, height: 360 });
+  const renderSize: CanvasSize = {
+    width: Math.max(1, Math.round(size.width / pixelScale)),
+    height: Math.max(1, Math.round(size.height / pixelScale)),
+  };
 
   useEffect(() => {
     const el = containerRef.current;
@@ -290,8 +315,8 @@ export default function VCREffect({
               {cfg.snow && (
                 <SnowCanvas
                   opacity={cfg.snowOpacity}
-                  width={size.width}
-                  height={size.height}
+                  width={renderSize.width}
+                  height={renderSize.height}
                 />
               )}
 
@@ -301,8 +326,8 @@ export default function VCREffect({
                   blur={cfg.vcrBlur}
                   tracking={cfg.tracking}
                   tapeAge={cfg.tapeAge}
-                  width={size.width}
-                  height={size.height}
+                  width={renderSize.width}
+                  height={renderSize.height}
                 />
               )}
 

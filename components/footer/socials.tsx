@@ -10,7 +10,7 @@ export default function FooterSocials() {
   const { socials } = useMenu();
 
   return (
-    <ul className='flex flex-wrap gap-8'>
+    <ul className='flex flex-wrap justify-center md:justify-start gap-4 sm:gap-8'>
       {socials.map((social) => (
         <m.li
           key={social.id}

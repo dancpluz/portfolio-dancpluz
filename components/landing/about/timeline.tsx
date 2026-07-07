@@ -34,7 +34,7 @@ const DotAndDate = memo(function DotAndDate({
   locale: string;
 }) {
   return (
-    <div className='sticky top-32 self-start flex flex-row items-center gap-4 z-20 shrink-0'>
+    <div className='md:sticky md:top-32 self-start flex flex-row items-center gap-4 z-20 shrink-0'>
       <m.div
         className='size-7 rounded-full bg-foreground border-2 flex items-center justify-center shrink-0 border-foreground'
         initial={{ scale: 0, opacity: 0 }}
@@ -66,7 +66,7 @@ const DotAndDate = memo(function DotAndDate({
         <BracketText
           text={formatDateLocal(exp.startDate, locale, true)}
           accentClass={accentClass}
-          className='text-xl md:text-3xl whitespace-nowrap'
+          className='text-base sm:text-lg md:text-3xl whitespace-nowrap'
         />
       </m.div>
     </div>
@@ -143,7 +143,7 @@ const EntryNode = memo(function EntryNode({
   return (
     <div
       ref={rowRef}
-      className='grid grid-cols-[auto_1fr_auto] items-center justify-center gap-6 md:gap-32 pt-20 md:pt-32 min-h-[80vh]'
+      className='flex flex-col md:grid md:grid-cols-[auto_1fr_auto] items-start md:items-center justify-start md:justify-center gap-4 md:gap-12 lg:gap-32 pt-8 md:pt-32 min-h-0 md:min-h-[80dvh] relative'
     >
       {/* ── Col 1: dot + date on the same row ─────────── */}
       <DotAndDate
@@ -155,22 +155,28 @@ const EntryNode = memo(function EntryNode({
         locale={locale}
       />
 
-      {/* ── Col 2: title + description ───────────────── */}
-      <div className='flex flex-col gap-2 overflow-hidden'>
-        <SplitText
-          text={title}
-          tag='h3'
-          splitType='words'
-          className='text-2xl md:text-3xl font-bold font-heading text-foreground leading-tight'
-          textAlign='left'
-          duration={2}
-          delay={150}
-        />
+      {/* ── Col 2: title + description + mobile icon ──── */}
+      <div className='pl-11 md:pl-0 flex flex-col gap-2 overflow-hidden w-full'>
+        <div className='flex flex-row justify-between items-start gap-4'>
+          <SplitText
+            text={title}
+            tag='h3'
+            splitType='words'
+            className='text-xl sm:text-2xl md:text-4xl font-bold font-heading text-foreground leading-tight'
+            textAlign='left'
+            duration={2}
+            delay={150}
+          />
+          {/* Mobile-only icon (visible below md) */}
+          <div className='block md:hidden shrink-0 scale-75 origin-top-right'>
+            <BigIcon exp={exp} title={title} isInView={isInView} accent={accent} />
+          </div>
+        </div>
 
         {description && (
           <ScrollRevealText
             containerClassName='!my-0 !rotate-0'
-            textClassName='text-foreground text-base md:text-lg leading-relaxed max-w-prose !font-sans !font-normal !text-left'
+            textClassName='text-foreground text-sm sm:text-base md:text-lg leading-relaxed max-w-prose !font-sans !font-normal !text-left'
             baseRotation={3}
             blurStrength={1}
           >
@@ -179,8 +185,10 @@ const EntryNode = memo(function EntryNode({
         )}
       </div>
 
-      {/* ── Col 3: big icon with spring in/out animation ─ */}
-      <BigIcon exp={exp} title={title} isInView={isInView} accent={accent} />
+      {/* ── Col 3: Desktop-only icon (hidden on mobile) ─ */}
+      <div className='hidden md:block'>
+        <BigIcon exp={exp} title={title} isInView={isInView} accent={accent} />
+      </div>
     </div>
   );
 });
@@ -272,7 +280,7 @@ export default function Timeline({
   });
 
   return (
-    <div ref={containerRef} className='w-full px-8 md:px-24 lg:px-48'>
+    <div ref={containerRef} className='w-full px-4 sm:px-8 md:px-24 lg:px-48'>
       {/* Clippable wrapper – animates height explicitly */}
       <m.div
         className='relative overflow-hidden'
@@ -360,7 +368,7 @@ export default function Timeline({
 
       {/* ── "See more" / "See less" button ──────────────────────────────── */}
       {shouldCollapse && (
-        <div className='flex justify-center mt-8 mb-4'>
+        <div className='flex justify-center mt-4 md:mt-8 mb-2 md:mb-4'>
           <button
             onClick={handleToggle}
             className='underline-magical bg-transparent border-none text-foreground font-heading text-lg md:text-xl cursor-pointer px-2 py-1'

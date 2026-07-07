@@ -1,5 +1,5 @@
 import { getSectionId } from '@/lib/utils';
-import { ROUTES } from '@/lib/constant';
+import { ROUTES, SECTION_TITLE_CLASS } from '@/lib/constant';
 import FlipText from '../../extra/flip-text';
 import DvdLogo from './dvd-logo';
 import VHSTape from './vhs-tape';
@@ -18,14 +18,14 @@ export default async function Contact() {
   return (
     <section id={getSectionId(ROUTES.contact)} className='w-full'>
       <Reveal direction='up' once={false}>
-        <FlipText text={t('title')} className='font-heading text-8xl mb-6' />
+        <FlipText text={t('title')} className={`${SECTION_TITLE_CLASS} mb-6`} />
       </Reveal>
-      <div className='flex gap-6'>
+      <div className='flex flex-col md:flex-row gap-6'>
         <Reveal
           direction='up'
           delay={0.2}
           once={false}
-          className='w-1/2 min-w-1/2'
+          className='w-full md:w-1/2 md:min-w-1/2'
         >
           <div className='relative w-full aspect-square my-[-5%]'>
             <div
@@ -38,7 +38,7 @@ export default async function Contact() {
                   className='absolute inset-0 w-full h-full'
                 >
                   <div className='absolute inset-0 flex items-center justify-center pointer-events-none opacity-20'>
-                    <span className='font-heading text-7xl text-center font-bold leading-tight whitespace-nowrap text-black uppercase'>
+                    <span className='font-heading text-2xl sm:text-4xl lg:text-7xl text-center font-bold leading-tight whitespace-nowrap text-black uppercase'>
                       {t('lets_talk_1')}
                       <br />
                       {t('lets_talk_2')}

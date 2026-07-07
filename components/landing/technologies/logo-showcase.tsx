@@ -13,6 +13,7 @@ import { Technology } from '@/types/api';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
 import Tooltip from '../../ui/tooltip';
+import { useMediaQuery } from '@/hooks/use-media-query';
 
 const CYCLE_INTERVAL = 6000;
 const COLUMN_DELAY = 600;
@@ -140,9 +141,19 @@ interface LogoShowcaseProps {
 }
 
 export default function LogoShowcase({
-  columnCount = 2,
+  columnCount = 5,
   logos,
 }: Readonly<LogoShowcaseProps>) {
+  // Responsive column count: too many logos overflow narrow viewports.
+  // `columnCount` is the desktop (lg+) maximum; step down on smaller screens.
+  const isSm = useMediaQuery('(min-width: 640px)');
+  const isLg = useMediaQuery('(min-width: 1024px)');
+  const effectiveColumnCount = useMemo(() => {
+    if (isLg) return columnCount;
+    if (isSm) return Math.min(3, columnCount);
+    return Math.min(2, columnCount);
+  }, [isLg, isSm, columnCount]);
+
   const [logoSets, setLogoSets] = useState<
     { id: string; items: Technology[] }[]
   >([]);
@@ -167,13 +178,13 @@ export default function LogoShowcase({
   useEffect(() => {
     if (!logos || logos.length === 0) return;
 
-    const distributedLogos = distributeLogos(logos, columnCount);
+    const distributedLogos = distributeLogos(logos, effectiveColumnCount);
     const columnsWithIds = distributedLogos.map((items, i) => ({
       id: `column-${i}-${items.map((l) => l.id).join('-')}`,
       items,
     }));
     setLogoSets(columnsWithIds);
-  }, [logos, columnCount]);
+  }, [logos, effectiveColumnCount]);
 
   return (
     <m.div

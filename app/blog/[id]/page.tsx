@@ -67,7 +67,7 @@ export default async function Article(props: Readonly<{
           duration={0.8}
           className='flex flex-col gap-2 relative z-10 w-full'
         >
-          <h1 className='font-heading uppercase font-bold text-5xl leading-none underline-magical-2'>
+          <h1 className='font-heading uppercase font-bold text-3xl md:text-5xl leading-none underline-magical-2'>
             {title}
           </h1>
           <time className='text-foreground/70 text-sm'>

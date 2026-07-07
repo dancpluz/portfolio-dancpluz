@@ -6,25 +6,42 @@ import { useMenu } from '@/hooks/use-menu';
 import Socials from './socials';
 import Image from 'next/image';
 import { ROUTES } from '@/lib/constant';
+import { useEffect } from 'react';
+import { useLenis } from 'lenis/react';
 
 export default function MenuOverlay() {
   const { isOpen, closeMenu, hoverMedia, setHoverMedia } = useMenu();
+  const lenis = useLenis();
+
+  useEffect(() => {
+    if (isOpen) {
+      lenis?.stop();
+      document.body.style.overflow = 'hidden';
+    } else {
+      lenis?.start();
+      document.body.style.overflow = '';
+    }
+    return () => {
+      lenis?.start();
+      document.body.style.overflow = '';
+    };
+  }, [isOpen, lenis]);
 
   return (
     <AnimatePresence>
       {isOpen && (
         <m.div
-          className={`h-screen w-full fixed inset-0 bg-surface z-30 origin-top flex flex-col lg:flex-row`}
+          className={`h-dvh w-full fixed inset-0 bg-surface z-30 origin-top flex flex-col lg:flex-row`}
           initial={{ scaleY: 0 }}
           animate={{ scaleY: 1 }}
           exit={{ scaleY: 0 }}
           transition={{ duration: 1.2, ease: 'circInOut' }}
         >
-          <div className='w-full lg:w-1/2 relative border-r border-foreground pt-26'>
-            <div className='w-full h-4/5'>
+          <div className='w-full lg:w-1/2 h-full relative lg:border-r lg:border-foreground pt-20 lg:pt-26 flex flex-col justify-between overflow-hidden bg-surface'>
+            <div className='w-full flex-1 flex flex-col min-h-0'>
               <FlowingNav onItemClick={closeMenu} setHoverMedia={setHoverMedia} />
             </div>
-            <div className='w-full h-1/5'>
+            <div className='w-full py-4 bg-surface shrink-0 border-t border-foreground lg:border-none z-10 pointer-events-auto'>
               <Socials />
             </div>
           </div>

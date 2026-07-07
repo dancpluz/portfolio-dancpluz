@@ -84,7 +84,7 @@ export const ROUTES = {
     path: '/',
     text: 'Início',
     media: '/video/universe.webm',
-    menu: true,
+    menu: false,
   },
   // blog: {
   //   path: '/blog',
@@ -116,6 +116,8 @@ export const ROUTES = {
     menu: true,
   },
 } as const;
+
+export const SECTION_TITLE_CLASS = 'font-heading text-6xl sm:text-7xl lg:text-8xl';
 
 export const MOCK_TESTIMONIALS: Testimonial[] = [
   {

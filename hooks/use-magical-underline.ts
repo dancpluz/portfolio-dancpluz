@@ -73,8 +73,37 @@ export function useMagicalUnderline() {
     // Event delegation dynamically handles any current or newly generated elements without direct iteration mapping!
     document.addEventListener('mouseover', handleMouseOver);
 
+    // Touch devices never fire `mouseover` — cycle the accents on an interval
+    // so the underlines still feel alive instead of frozen on one color.
+    const isTouch = globalThis.matchMedia?.(
+      '(hover: none), (pointer: coarse)',
+    ).matches;
+    let cycleTimer: ReturnType<typeof setInterval> | undefined;
+    if (isTouch) {
+      const colors = [
+        'var(--color-accent-1)',
+        'var(--color-accent-2)',
+        'var(--color-accent-3)',
+      ];
+      cycleTimer = setInterval(() => {
+        document
+          .querySelectorAll('.underline-magical, .underline-magical-2')
+          .forEach((el) => {
+            const current = (el as HTMLElement).style.getPropertyValue(
+              '--magical-accent',
+            );
+            let next;
+            do {
+              next = colors[Math.floor(Math.random() * colors.length)];
+            } while (next === current);
+            (el as HTMLElement).style.setProperty('--magical-accent', next);
+          });
+      }, 2500);
+    }
+
     return () => {
       clearTimeout(initTimer);
+      if (cycleTimer) clearInterval(cycleTimer);
       if (observer) observer.disconnect();
       document.removeEventListener('mouseover', handleMouseOver);
     };

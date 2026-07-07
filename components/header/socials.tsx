@@ -12,7 +12,7 @@ export default function Socials() {
   const delay = isOpen ? 1 : 0.3;
 
   return (
-    <div className='px-6 py-4 border-t border-foreground text-foreground flex flex-col items-center justify-center h-full tracking-wider'>
+    <div className='px-6 py-4 border-t border-foreground text-foreground flex flex-col gap-4 md:gap-6 items-center justify-center h-full tracking-wider'>
       <ul className='w-full flex items-center justify-around gap-2 h-full'>
         {socials.map((social) => (
           <m.li
@@ -48,7 +48,7 @@ export default function Socials() {
                 direction='up'
                 exit={{ opacity: 0, y: 40 }}
               >
-                <p className='underline-magical font-heading text-lg'>
+                <p className='underline-magical font-heading text-lg hidden sm:block'>
                   {social.text}
                 </p>
               </Reveal>
@@ -56,7 +56,7 @@ export default function Socials() {
           </m.li>
         ))}
       </ul>
-      <div className='w-full flex items-center justify-center'>
+      <div className='w-full flex items-center justify-center mt-4 md:mt-6'>
         <Reveal
           delay={delay + 0.6}
           duration={1}

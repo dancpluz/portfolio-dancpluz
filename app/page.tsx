@@ -10,11 +10,11 @@ export default async function HomePage() {
   return (
     <PageTransition
       tag='main'
-      className='flex max-w-screen flex-col gap-20 mt-32 z-10'
+      className='flex max-w-screen flex-col gap-12 mt-24 md:gap-20 md:mt-32 z-10'
     >
       <ScrollToHash />
       {/* <Hero /> */}
-      <div className='flex flex-col gap-20 section-px'>
+      <div className='flex flex-col gap-8 md:gap-20 section-px'>
         <Projects />
         <Technologies />
         <About />

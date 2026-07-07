@@ -6,7 +6,6 @@ import React, {
   useMemo,
   useState,
   useRef,
-  useEffect,
 } from 'react';
 import { cn, formatDateLocal } from '@/lib/utils';
 import { Testimonial } from '@/types/api';
@@ -17,6 +16,7 @@ import { useLocale } from 'next-intl';
 import { AnimatePresence, m, stagger, Variants } from 'motion/react';
 import { ExternalLink, Heart, Share } from '@/components/ui/svg';
 import { useClickOutside } from '@/hooks/use-click-outside';
+import { useMediaQuery } from '@/hooks/use-media-query';
 
 const PROFILE_EFFECTS: ImageEffect[] = [
   {
@@ -254,14 +254,7 @@ export default function Testimonials({
   const total = testimonials.length;
   const focusedIndex = selectedIndex === null ? hoveredIndex : null;
 
-  const [isSm, setIsSm] = useState(false);
-
-  useEffect(() => {
-    const updateSize = () => setIsSm(globalThis.window.innerWidth >= 640);
-    updateSize();
-    globalThis.addEventListener('resize', updateSize);
-    return () => globalThis.removeEventListener('resize', updateSize);
-  }, []);
+  const isSm = useMediaQuery('(min-width: 640px)');
 
   const cardPositions = useMemo(() => {
     const xStep = isSm ? SM_X_STEP : X_STEP;
@@ -335,7 +328,7 @@ export default function Testimonials({
   return (
     <m.div
       ref={containerRef}
-      className='grid [grid-template-areas:"stack"] place-items-center mx-auto w-fit my-48 perspective-[1000px]'
+      className='grid [grid-template-areas:"stack"] place-items-center mx-auto w-fit my-20 md:my-48 perspective-[1000px]'
       variants={parentVariants}
       initial='hidden'
       whileInView='visible'

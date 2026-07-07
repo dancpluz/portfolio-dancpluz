@@ -35,7 +35,7 @@ export default function ProjectContent({
               text={title}
               duration={0.25}
               staggerDelay={0.03}
-              className='text-4xl uppercase md:text-8xl font-bold font-heading text-foreground px-32 mx-auto'
+              className='text-4xl uppercase md:text-8xl font-bold font-heading text-foreground px-6 md:px-32 mx-auto'
             />
             <BracketText
               text={subtitle}

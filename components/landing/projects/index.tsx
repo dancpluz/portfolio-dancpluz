@@ -1,6 +1,6 @@
 import ProjectShowcase from './project-showcase';
 import FlipText from '../../extra/flip-text';
-import { ROUTES } from '@/lib/constant';
+import { ROUTES, SECTION_TITLE_CLASS } from '@/lib/constant';
 import { getSectionId } from '@/lib/utils';
 import { getProjects } from '@/actions/projects';
 import { getTranslations } from 'next-intl/server';
@@ -13,7 +13,7 @@ export default async function Projects() {
 
   return (
     <section id={getSectionId(ROUTES.projects)} className='w-full'>
-      <FlipText className='text-8xl font-heading' text={t('title')} />
+      <FlipText className={SECTION_TITLE_CLASS} text={t('title')} />
       <ProjectShowcase projects={projects.data || []} />
     </section>
   );

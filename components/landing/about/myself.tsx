@@ -3,13 +3,21 @@
 import { Polaroid } from '@/types/api';
 import Image from 'next/image';
 import Folder from './folder';
-import { m, useMotionValue, useSpring, useTransform } from 'motion/react';
+import {
+  m,
+  useMotionValue,
+  useScroll,
+  useSpring,
+  useTransform,
+} from 'motion/react';
 import React, { useRef, useMemo, useCallback, useEffect } from 'react';
+import { useIsTouch } from '@/hooks/use-is-touch';
 
 export default function Myself({
   polaroids,
 }: Readonly<{ polaroids: Polaroid[] }>) {
   const ref = useRef<HTMLDivElement>(null);
+  const isTouch = useIsTouch();
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -33,6 +41,9 @@ export default function Myself({
   }, [mouseX, mouseY]);
 
   useEffect(() => {
+    // Touch devices have no cursor — skip the mouse parallax entirely and let
+    // the scroll-driven drift below take over.
+    if (isTouch) return;
     const el = ref.current;
     if (!el) return;
 
@@ -43,19 +54,38 @@ export default function Myself({
       el.removeEventListener('mousemove', handleMouseMove);
       el.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, [handleMouseMove, handleMouseLeave]);
+  }, [handleMouseMove, handleMouseLeave, isTouch]);
 
+  // Scroll-driven drift for touch devices (no cursor). Smaller magnitudes so
+  // folders never overflow the narrow mobile column.
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start end', 'end start'],
+  });
+  const sy1 = useTransform(scrollYProgress, [0, 1], [24, -24]);
+  const sy2 = useTransform(scrollYProgress, [0, 1], [16, -16]);
+  const sy3 = useTransform(scrollYProgress, [0, 1], [40, -40]);
+
+  // Mouse parallax (desktop).
   // Green
-  const x1 = useTransform(smoothMouseX, [-1, 1], [-20, 20]);
-  const y1 = useTransform(smoothMouseY, [-1, 1], [-20, 20]);
+  const mx1 = useTransform(smoothMouseX, [-1, 1], [-20, 20]);
+  const my1 = useTransform(smoothMouseY, [-1, 1], [-20, 20]);
 
   // Pink
-  const x2 = useTransform(smoothMouseX, [-1, 1], [-10, 10]);
-  const y2 = useTransform(smoothMouseY, [-1, 1], [-10, 10]);
+  const mx2 = useTransform(smoothMouseX, [-1, 1], [-10, 10]);
+  const my2 = useTransform(smoothMouseY, [-1, 1], [-10, 10]);
 
   // Cyan
-  const x3 = useTransform(smoothMouseX, [-1, 1], [-80, 80]);
-  const y3 = useTransform(smoothMouseY, [-1, 1], [-40, 40]);
+  const mx3 = useTransform(smoothMouseX, [-1, 1], [-80, 80]);
+  const my3 = useTransform(smoothMouseY, [-1, 1], [-40, 40]);
+
+  // On touch, x stays put and y follows scroll; on desktop, both follow cursor.
+  const x1 = isTouch ? 0 : mx1;
+  const y1 = isTouch ? sy1 : my1;
+  const x2 = isTouch ? 0 : mx2;
+  const y2 = isTouch ? sy2 : my2;
+  const x3 = isTouch ? 0 : mx3;
+  const y3 = isTouch ? sy3 : my3;
 
   const [f1Polaroids, f2Polaroids, f3Polaroids] = useMemo(() => {
     const list1: Polaroid[] = [];

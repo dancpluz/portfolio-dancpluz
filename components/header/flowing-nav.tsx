@@ -18,6 +18,7 @@ const FlowingNav = React.memo(function FlowingNav({
   setHoverMedia
 }: Readonly<{ speed?: number; onItemClick?: () => void; setHoverMedia: (m: HoverMedia) => void; }>) {
   const t = useTranslations('nav');
+  const [activeSection, setActiveSection] = useState<string>('/');
 
   useEffect(() => {
     Object.values(ROUTES).forEach((item) => {
@@ -38,6 +39,46 @@ const FlowingNav = React.memo(function FlowingNav({
     });
   }, []);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleScroll = () => {
+      const path = window.location.pathname;
+      if (path !== '/') {
+        setActiveSection(path);
+        return;
+      }
+
+      const sections = [
+        { id: 'projects', path: '/#projects' },
+        { id: 'stack', path: '/#stack' },
+        { id: 'about', path: '/#about' },
+        { id: 'contact', path: '/#contact' },
+      ];
+
+      let active = '/';
+      const triggerLine = window.scrollY + window.innerHeight * 0.45; // 45% down viewport
+
+      sections.forEach((sec) => {
+        const el = document.getElementById(sec.id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          const topPos = rect.top + window.scrollY;
+          if (triggerLine >= topPos) {
+            active = sec.path;
+          }
+        }
+      });
+
+      setActiveSection(active);
+    };
+
+    handleScroll();
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <div className='w-full h-full overflow-hidden'>
       <nav className='flex flex-col h-full m-0 p-0'>
@@ -50,6 +91,7 @@ const FlowingNav = React.memo(function FlowingNav({
             speed={speed}
             onClick={onItemClick}
             setHoverMedia={setHoverMedia}
+            isActive={activeSection === item.path}
           />
         ))}
       </nav>
@@ -62,8 +104,15 @@ const MenuItem = React.memo(function MenuItem({
   route,
   speed,
   onClick,
-  setHoverMedia
-}: Readonly<{ route: Omit<RouteItem, 'text'> & { text: string }; speed: number; onClick?: () => void; setHoverMedia: (m: HoverMedia) => void; }>) {
+  setHoverMedia,
+  isActive
+}: Readonly<{
+  route: Omit<RouteItem, 'text'> & { text: string };
+  speed: number;
+  onClick?: () => void;
+  setHoverMedia: (m: HoverMedia) => void;
+  isActive: boolean;
+}>) {
   const itemRef = useRef<HTMLDivElement>(null);
   const marqueeRef = useRef<HTMLDivElement>(null);
   const marqueeInnerRef = useRef<HTMLDivElement>(null);
@@ -202,8 +251,34 @@ const MenuItem = React.memo(function MenuItem({
       className={`flex-1 relative overflow-hidden text-center border-t border-foreground`}
       ref={itemRef}
     >
+      {/* Mobile background video/image (only visible on mobile when this item is active) */}
+      {isActive && (
+        <div className='absolute inset-0 md:hidden pointer-events-none z-0 overflow-hidden bg-black/60'>
+          {isVideo ? (
+            <video
+              src={media}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className='w-full h-full object-cover opacity-45'
+            />
+          ) : (
+            <Image
+              src={media || '/placeholder.jpg'}
+              alt='Background'
+              fill
+              className='object-cover opacity-45'
+              unoptimized
+            />
+          )}
+        </div>
+      )}
+
       <LinkComponent
-        className='flex items-center justify-center h-full relative cursor-pointer uppercase no-underline font-heading font-bold text-5xl text-foreground'
+        className={`flex items-center justify-center h-full relative cursor-pointer uppercase no-underline font-heading font-bold text-3xl sm:text-5xl z-10 transition-colors duration-300 ${
+          isActive ? 'text-white md:text-foreground' : 'text-foreground'
+        }`}
         href={path}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -217,7 +292,7 @@ const MenuItem = React.memo(function MenuItem({
       </LinkComponent>
 
       <div
-        className='absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none bg-foreground'
+        className='absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none bg-foreground z-20'
         ref={marqueeRef}
         style={{
           transform: 'translateY(101%)',
