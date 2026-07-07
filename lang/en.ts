@@ -25,22 +25,31 @@ const en = {
     projects: 'Projects',
     about: 'About',
     contact: 'Contact',
+    stack: 'Stack',
   },
   projects: {
     title: 'Projects',
     not_found: 'Project not found.',
+    made_for: 'made for',
   },
   about: {
     title: 'About',
+    name: 'Daniel Luz',
+    tagline: 'A developer who refuses to be boxed in, _creativity is the limit._',
+    see_more: 'See more',
+    see_less: 'See less',
   },
   contact: {
     title: 'Contact',
     lets_talk_1: "LET'S",
     lets_talk_2: 'TALK!',
   },
-  technologies: {
-    title: 'Technologies',
-    text: 'Toys I play with',
+  stack: {
+    title: 'Stack',
+  },
+  footer: {
+    back_to_top: '\u2191 Back to top',
+    rights: '\u00A9 {year} Daniel Luz',
   },
 };
 

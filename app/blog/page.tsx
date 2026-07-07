@@ -1,10 +1,6 @@
 import PostList from '@/components/blog/post-list';
 import BlogSection from '@/components/blog/blog-section';
-import {
-  createLoader,
-  parseAsStringEnum,
-  SearchParams,
-} from 'nuqs/server';
+import { createLoader, parseAsStringEnum, SearchParams } from 'nuqs/server';
 import { PostsCategoryOptions } from '@/types/pocketbase';
 import { getPostCategories } from '@/lib/utils';
 import { getTranslations } from 'next-intl/server';
@@ -12,7 +8,7 @@ import { getPosts } from '@/actions/posts';
 
 export async function generateMetadata() {
   const t = await getTranslations('blog');
-  
+
   return {
     title: t('title'),
     description: t('description'),
@@ -23,7 +19,7 @@ export const revalidate = 30;
 
 const loadCategoryParams = createLoader({
   categoria: parseAsStringEnum<PostsCategoryOptions>(
-    Object.values(PostsCategoryOptions)
+    Object.values(PostsCategoryOptions),
   ),
 });
 
@@ -35,7 +31,7 @@ export default async function Blog({
   const [{ categoria }, t, { data: posts, error }] = await Promise.all([
     loadCategoryParams(searchParams),
     getTranslations('blog'),
-    getPosts()
+    getPosts(),
   ]);
 
   if (error) {

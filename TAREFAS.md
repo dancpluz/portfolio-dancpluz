@@ -6,26 +6,36 @@
 - [ ] Error Page
 - [x] Smooth scroll
 - [x] Logo
+- [x] Footer
 - [x] Header
-  - [ ] Images from routes
+  - [x] Images from routes
 - [ ] Landing Page
   - [x] Loading state
   - [ ] Hero
-    - [ ] Photo
+    - [x] Photo
   - [x] Projects
-    - [ ] Photo
+    - [x] Photo
+    - [x] Component
   - [x] Tech
-    - [ ] Photo
+    - [x] Photo
+    - [x] Component
   - [ ] About
-    - [ ] Photo
-    - [ ] Text
+    - [x] Photo
+    - [x] Text
+    - [ ] Texts
+      - [ ] Personal points
+      - [ ] Professional/Education points
+    - [x] Timeline
   - [x] Testimonial
   - [x] Contact
-    - [ ] Skype Photo
+    - [x] Skype Photo
   - [ ] Responsive
 - [ ] Project Page
   - [ ] Loading state
-  - [ ] Structure
+  - [x] Media section
+  - [x] Structure
+  - [x] Preview next project
+  - [ ] Change media carousel icons
   - [ ] Responsive
 - [ ] Blog
   - [x] Loading state

@@ -10,6 +10,7 @@ import TransitionLink from '../transition-link';
 import { ROUTES } from '@/lib/constant';
 import { RouteItem } from '@/types/utils';
 import { useTranslations } from 'next-intl';
+import Loader from '@/components/ui/loader';
 
 const FlowingNav = React.memo(function FlowingNav({
   speed = 15,
@@ -17,6 +18,7 @@ const FlowingNav = React.memo(function FlowingNav({
   setHoverMedia
 }: Readonly<{ speed?: number; onItemClick?: () => void; setHoverMedia: (m: HoverMedia) => void; }>) {
   const t = useTranslations('nav');
+  const [activeSection, setActiveSection] = useState<string>('/');
 
   useEffect(() => {
     Object.values(ROUTES).forEach((item) => {
@@ -37,16 +39,59 @@ const FlowingNav = React.memo(function FlowingNav({
     });
   }, []);
 
+  useEffect(() => {
+    if (typeof globalThis.window === 'undefined') return;
+
+    const handleScroll = () => {
+      const path = globalThis.location.pathname;
+      if (path !== '/') {
+        setActiveSection(path);
+        return;
+      }
+
+      const sections = [
+        { id: 'projects', path: '/#projects' },
+        { id: 'stack', path: '/#stack' },
+        { id: 'about', path: '/#about' },
+        { id: 'contact', path: '/#contact' },
+      ];
+
+      let active = '/';
+      const triggerLine = window.scrollY + window.innerHeight * 0.45; // 45% down viewport
+
+      sections.forEach((sec) => {
+        const el = document.getElementById(sec.id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          const topPos = rect.top + window.scrollY;
+          if (triggerLine >= topPos) {
+            active = sec.path;
+          }
+        }
+      });
+
+      setActiveSection(active);
+    };
+
+    handleScroll();
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
     <div className='w-full h-full overflow-hidden'>
       <nav className='flex flex-col h-full m-0 p-0'>
-        {Object.entries(ROUTES).map(([key, item]) => (
+        {Object.entries(ROUTES)
+          .filter(([_, item]) => item.menu)
+          .map(([key, item]) => (
           <MenuItem
             key={item.path}
             route={{ ...item, text: t(key) }}
             speed={speed}
             onClick={onItemClick}
             setHoverMedia={setHoverMedia}
+            isActive={activeSection === item.path}
           />
         ))}
       </nav>
@@ -59,8 +104,15 @@ const MenuItem = React.memo(function MenuItem({
   route,
   speed,
   onClick,
-  setHoverMedia
-}: Readonly<{ route: Omit<RouteItem, 'text'> & { text: string }; speed: number; onClick?: () => void; setHoverMedia: (m: HoverMedia) => void; }>) {
+  setHoverMedia,
+  isActive
+}: Readonly<{
+  route: Omit<RouteItem, 'text'> & { text: string };
+  speed: number;
+  onClick?: () => void;
+  setHoverMedia: (m: HoverMedia) => void;
+  isActive: boolean;
+}>) {
   const itemRef = useRef<HTMLDivElement>(null);
   const marqueeRef = useRef<HTMLDivElement>(null);
   const marqueeInnerRef = useRef<HTMLDivElement>(null);
@@ -199,8 +251,34 @@ const MenuItem = React.memo(function MenuItem({
       className={`flex-1 relative overflow-hidden text-center border-t border-foreground`}
       ref={itemRef}
     >
+      {/* Mobile background video/image (only visible on mobile when this item is active) */}
+      {isActive && (
+        <div className='absolute inset-0 md:hidden pointer-events-none z-0 overflow-hidden bg-black/60'>
+          {isVideo ? (
+            <video
+              src={media}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className='w-full h-full object-cover opacity-45'
+            />
+          ) : (
+            <Image
+              src={media || '/placeholder.jpg'}
+              alt='Background'
+              fill
+              className='object-cover opacity-45'
+              unoptimized
+            />
+          )}
+        </div>
+      )}
+
       <LinkComponent
-        className='flex items-center justify-center h-full relative cursor-pointer uppercase no-underline font-heading font-bold text-5xl text-foreground'
+        className={`flex items-center justify-center h-full relative cursor-pointer uppercase no-underline font-heading font-bold text-3xl sm:text-5xl z-10 transition-colors duration-300 ${
+          isActive ? 'text-white md:text-foreground' : 'text-foreground'
+        }`}
         href={path}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -214,7 +292,7 @@ const MenuItem = React.memo(function MenuItem({
       </LinkComponent>
 
       <div
-        className='absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none bg-foreground'
+        className='absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none bg-foreground z-20'
         ref={marqueeRef}
         style={{
           transform: 'translateY(101%)',
@@ -230,29 +308,60 @@ const MenuItem = React.memo(function MenuItem({
                 {text}
               </span>
               <div className='relative w-[200px] h-[7vh] my-[2em] mx-[2vw] py-[1em] pixel-corners-small overflow-hidden shrink-0'>
-                {isVideo ? (
-                  <video
-                    src={media}
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    className='object-cover w-full h-full absolute inset-0'
-                  />
-                ) : (
-                  <Image
-                    src={media || '/placeholder.svg'}
-                    alt={text}
-                    fill
-                    sizes='200px'
-                    className='object-cover'
-                  />
-                )}
+                <MediaContent isVideo={isVideo} media={media} text={text} />
               </div>
             </div>
           ))}
         </div>
       </div>
     </div>
+  );
+});
+
+const MediaContent = React.memo(function MediaContent({
+  isVideo,
+  media,
+  text,
+}: {
+  isVideo: boolean;
+  media: string;
+  text: string;
+}) {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  return (
+    <>
+      {!isLoaded && (
+        <div className='absolute inset-0 flex items-center justify-center -z-10'>
+          <div className='scale-50'>
+            <Loader />
+          </div>
+        </div>
+      )}
+      {isVideo ? (
+        <video
+          src={media}
+          autoPlay
+          loop
+          muted
+          playsInline
+          onLoadedData={() => setIsLoaded(true)}
+          className={`object-cover w-full h-full absolute inset-0 transition-opacity duration-300 ease-in-out ${
+            isLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
+      ) : (
+        <Image
+          src={media}
+          alt={text}
+          fill
+          sizes='200px'
+          onLoad={() => setIsLoaded(true)}
+          className={`object-cover transition-opacity duration-300 ease-in-out ${
+            isLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
+      )}
+    </>
   );
 });

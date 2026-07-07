@@ -1,17 +1,26 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import type { Metadata, Viewport } from 'next';
+import { Inter, Permanent_Marker } from 'next/font/google';
 import localFont from 'next/font/local';
 import './globals.css';
-import { ReactLenis } from 'lenis/react';
-import Header from '@/components/header/header';
+import Header from '@/components/header';
 import ClientProviders from './client-providers';
 import ServerProviders from './server-providers';
+import Preloader from '@/components/ui/preloader';
+import { getSocials } from '@/actions/socials';
+import { MenuProvider } from '@/hooks/use-menu';
 
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-text',
   preload: true,
+});
+
+const permanentMarker = Permanent_Marker({
+  weight: '400',
+  subsets: ['latin'],
+  variable: '--font-marker',
+  display: 'swap',
 });
 
 const offBit = localFont({
@@ -47,18 +56,31 @@ export const metadata: Metadata = {
   description: 'Bem vindo ao meu portfólio',
 };
 
-export default function RootLayout({
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+};
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const socials = await getSocials(true);
+
   return (
-    <html lang='pt-BR' suppressHydrationWarning>
-      <body className={`${inter.variable} ${offBit.variable}`}>
+    <html lang='pt-BR' suppressHydrationWarning data-scroll-behavior='smooth'>
+      <body
+        className={`${inter.variable} ${offBit.variable} ${permanentMarker.variable}`}
+      >
         <ServerProviders>
           <ClientProviders>
-            <Header />
-            <ReactLenis root>{children}</ReactLenis>
+            <MenuProvider socials={socials.data || []}>
+              <Preloader />
+              <Header />
+              {children}
+            </MenuProvider>
           </ClientProviders>
         </ServerProviders>
       </body>

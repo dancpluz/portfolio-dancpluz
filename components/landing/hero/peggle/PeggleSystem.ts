@@ -226,18 +226,22 @@ export class PeggleSystem {
     Matter.Composite.add(this.world, this.cannon);
   }
 
-  private createPegs() {
+  private isPegPositionValid(x: number, col: number, isRectRow: boolean): boolean {
+    if (x > this.width - 15 || x < 15) return false;
+    if (!isRectRow && Math.random() > 0.8) return false;
+    if (isRectRow && col % 5 === 0) return false;
+    return true;
+  }
+
+  private collectPegPositions(): { x: number; y: number; isRectRow: boolean }[] {
     const cols = PEG_COLS;
     const rows = PEG_ROWS;
     const startY = PEG_START_Y;
     const spacingY = PEG_SPACING_Y;
-
-    // Pass 1: collect all valid peg positions
     const positions: { x: number; y: number; isRectRow: boolean }[] = [];
 
     for (let row = 0; row < rows; row++) {
       const isRectRow = row % 3 === 2;
-
       let currentCols: number;
       let spacingX: number;
 
@@ -255,13 +259,16 @@ export class PeggleSystem {
         const x = (col + 1) * spacingX + offsetX;
         const y = startY + row * spacingY;
 
-        if (x > this.width - 15 || x < 15) continue;
-        if (!isRectRow && Math.random() > 0.8) continue;
-        if (isRectRow && col % 5 === 0) continue;
+        if (!this.isPegPositionValid(x, col, isRectRow)) continue;
 
         positions.push({ x, y, isRectRow });
       }
     }
+    return positions;
+  }
+
+  private createPegs() {
+    const positions = this.collectPegPositions();
 
     // Pass 2: build color array with exact distribution
     const total = positions.length;
@@ -417,14 +424,20 @@ export class PeggleSystem {
     Matter.Events.on(this.engine, 'collisionStart', (event) => {
       event.pairs.forEach((pair) => {
         const { bodyA, bodyB } = pair;
-        const pegBody =
-          bodyA.label === 'peg' ? bodyA : bodyB.label === 'peg' ? bodyB : null;
-        const ball =
-          bodyA.label === 'ball'
-            ? bodyA
-            : bodyB.label === 'ball'
-              ? bodyB
-              : null;
+        
+        let pegBody: Matter.Body | null = null;
+        if (bodyA.label === 'peg') {
+          pegBody = bodyA;
+        } else if (bodyB.label === 'peg') {
+          pegBody = bodyB;
+        }
+
+        let ball: Matter.Body | null = null;
+        if (bodyA.label === 'ball') {
+          ball = bodyA;
+        } else if (bodyB.label === 'ball') {
+          ball = bodyB;
+        }
 
         if (pegBody && ball) {
           const pegObj = (pegBody.plugin as Record<string, unknown>)
@@ -440,14 +453,20 @@ export class PeggleSystem {
     Matter.Events.on(this.engine, 'collisionActive', (event) => {
       event.pairs.forEach((pair) => {
         const { bodyA, bodyB } = pair;
-        const pegBody =
-          bodyA.label === 'peg' ? bodyA : bodyB.label === 'peg' ? bodyB : null;
-        const ball =
-          bodyA.label === 'ball'
-            ? bodyA
-            : bodyB.label === 'ball'
-              ? bodyB
-              : null;
+
+        let pegBody: Matter.Body | null = null;
+        if (bodyA.label === 'peg') {
+          pegBody = bodyA;
+        } else if (bodyB.label === 'peg') {
+          pegBody = bodyB;
+        }
+
+        let ball: Matter.Body | null = null;
+        if (bodyA.label === 'ball') {
+          ball = bodyA;
+        } else if (bodyB.label === 'ball') {
+          ball = bodyB;
+        }
 
         if (pegBody && ball) {
           const speed = Matter.Vector.magnitude(ball.velocity);

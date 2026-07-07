@@ -5,21 +5,22 @@
 import type PocketBase from 'pocketbase'
 import type { RecordService } from 'pocketbase'
 
-export enum Collections {
-	Authorigins = "_authOrigins",
-	Externalauths = "_externalAuths",
-	Mfas = "_mfas",
-	Otps = "_otps",
-	Superusers = "_superusers",
-	Experience = "experience",
-	Icons = "icons",
-	Polaroids = "polaroids",
-	Posts = "posts",
-	Projects = "projects",
-	Socials = "socials",
-	Technologies = "technologies",
-	Testimonials = "testimonials",
-}
+export const Collections = {
+	Authorigins: "_authOrigins",
+	Externalauths: "_externalAuths",
+	Mfas: "_mfas",
+	Otps: "_otps",
+	Superusers: "_superusers",
+	Experience: "experience",
+	Icons: "icons",
+	Polaroids: "polaroids",
+	Posts: "posts",
+	Projects: "projects",
+	Socials: "socials",
+	Technologies: "technologies",
+	Testimonials: "testimonials",
+} as const
+export type Collections = typeof Collections[keyof typeof Collections]
 
 // Alias types for improved usability
 export type IsoDateString = string
@@ -101,11 +102,13 @@ export type SuperusersRecord = {
 
 export type ExperienceRecord = {
 	created: IsoAutoDateString
-	end_date?: IsoDateString
+	description_en?: string
+	description_pt?: string
 	icon_ref: RecordIdString
 	id: string
 	start_date: IsoDateString
-	title: string
+	title_en: string
+	title_pt: string
 	updated: IsoAutoDateString
 }
 
@@ -126,17 +129,18 @@ export type PolaroidsRecord = {
 	updated: IsoAutoDateString
 }
 
-export enum PostsCategoryOptions {
-	"tutorial" = "tutorial",
-	"notícias" = "notícias",
-	"opinião" = "opinião",
-	"carreira" = "carreira",
-	"histórias" = "histórias",
-	"desenvolvimento" = "desenvolvimento",
-	"curiosidades" = "curiosidades",
-}
+export const PostsCategoryOptions = {
+	"tutorial": "tutorial",
+	"notícias": "notícias",
+	"opinião": "opinião",
+	"carreira": "carreira",
+	"histórias": "histórias",
+	"desenvolvimento": "desenvolvimento",
+	"curiosidades": "curiosidades",
+} as const
+export type PostsCategoryOptions = typeof PostsCategoryOptions[keyof typeof PostsCategoryOptions]
 export type PostsRecord<Tkeywords_en = unknown, Tkeywords_pt = unknown> = {
-	article_en: HTMLString
+	article_en?: HTMLString
 	article_pt: HTMLString
 	category: PostsCategoryOptions
 	created: IsoAutoDateString
@@ -149,36 +153,39 @@ export type PostsRecord<Tkeywords_en = unknown, Tkeywords_pt = unknown> = {
 	long_text_pt?: string
 	long_video?: FileNameString
 	short_video?: FileNameString
-	title_en: string
+	title_en?: string
 	title_pt: string
 	updated: IsoAutoDateString
 	video_caption_en?: string
 	video_caption_pt?: string
 }
 
-export enum ProjectsProjectTypeOptions {
-	"web_app" = "web_app",
-	"mobile_app" = "mobile_app",
-	"landing_page" = "landing_page",
-	"e_commerce" = "e_commerce",
-	"api" = "api",
-	"open_source" = "open_source",
-	"saas" = "saas",
-	"videos" = "videos",
-}
+export const ProjectsProjectTypeOptions = {
+	"web_app": "web_app",
+	"mobile_app": "mobile_app",
+	"landing_page": "landing_page",
+	"e_commerce": "e_commerce",
+	"api": "api",
+	"open_source": "open_source",
+	"saas": "saas",
+	"videos": "videos",
+} as const
+export type ProjectsProjectTypeOptions = typeof ProjectsProjectTypeOptions[keyof typeof ProjectsProjectTypeOptions]
 
-export enum ProjectsCategoriesOptions {
-	"frontend" = "frontend",
-	"backend" = "backend",
-	"fullstack" = "fullstack",
-	"ui_ux" = "ui_ux",
-	"cloud" = "cloud",
-	"mobile" = "mobile",
-	"game" = "game",
-}
+export const ProjectsCategoriesOptions = {
+	"frontend": "frontend",
+	"backend": "backend",
+	"fullstack": "fullstack",
+	"ui_ux": "ui_ux",
+	"cloud": "cloud",
+	"mobile": "mobile",
+	"game": "game",
+} as const
+export type ProjectsCategoriesOptions = typeof ProjectsCategoriesOptions[keyof typeof ProjectsCategoriesOptions]
 export type ProjectsRecord = {
 	categories?: ProjectsCategoriesOptions[]
-	client?: string
+	client_en?: string
+	client_pt?: string
 	cover: FileNameString
 	created: IsoAutoDateString
 	date: IsoDateString
@@ -188,9 +195,9 @@ export type ProjectsRecord = {
 	medias?: FileNameString[]
 	project_type: ProjectsProjectTypeOptions
 	social_refs?: RecordIdString[]
-	subtitle_en: string
+	subtitle_en?: string
 	subtitle_pt: string
-	title_en: string
+	title_en?: string
 	title_pt: string
 	updated: IsoAutoDateString
 	url?: string

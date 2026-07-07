@@ -167,3 +167,79 @@ export function Copy({
     </svg>
   );
 }
+
+export function PixelPoint({
+  className,
+  ...props
+}: Readonly<SVGProps<SVGSVGElement>>) {
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      viewBox='0 0 8 8'
+      className={className}
+      {...props}
+    >
+      <path
+        className='fill-current'
+        d='M6,8H2v-2h4v2ZM2,6H0V2h2v4ZM8,6h-2V2h2v4ZM6,2H2V0h4v2Z'
+      />
+    </svg>
+  );
+}
+
+export function Expand({
+  className,
+  ...props
+}: Readonly<SVGProps<SVGSVGElement>>) {
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      viewBox='0 0 24 24'
+      className={className}
+      {...props}
+    >
+      <polygon className='fill-current' points='9 20 9 23 2 23 2 22 1 22 1 15 4 15 4 20 9 20' />
+      <polygon className='fill-current' points='9 1 9 4 4 4 4 9 1 9 1 2 2 2 2 1 9 1' />
+      <polygon className='fill-current' points='23 15 23 22 22 22 22 23 15 23 15 20 20 20 20 15 23 15' />
+      <polygon className='fill-current' points='23 2 23 9 20 9 20 4 15 4 15 1 22 1 22 2 23 2' />
+    </svg>
+  );
+}
+
+export function WindowClose({
+  className,
+  ...props
+}: Readonly<SVGProps<SVGSVGElement>>) {
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      viewBox='0 0 24 24'
+      className={className}
+      {...props}
+    >
+      <path
+        className='fill-current'
+        d='m22,2v-1H2v1h-1v20h1v1h20v-1h1V2h-1Zm-4,7h-1v1h-1v1h-1v2h1v1h1v1h1v1h-1v1h-1v1h-1v-1h-1v-1h-1v-1h-2v1h-1v1h-1v1h-1v-1h-1v-1h-1v-1h1v-1h1v-1h1v-2h-1v-1h-1v-1h-1v-1h1v-1h1v-1h1v1h1v1h1v1h2v-1h1v-1h1v-1h1v1h1v1h1v1Z'
+      />
+    </svg>
+  );
+}
+
+export function ChevronUp({
+  className,
+  ...props
+}: Readonly<SVGProps<SVGSVGElement>>) {
+  return (
+    <svg
+      xmlns='http://www.w3.org/2000/svg'
+      viewBox='0 0 24 24'
+      className={className}
+      {...props}
+    >
+      <polygon
+        className='fill-current'
+        points='22 16 22 18 20 18 20 17 19 17 19 16 18 16 18 15 17 15 17 14 16 14 16 13 15 13 15 12 14 12 14 11 13 11 13 10 11 10 11 11 10 11 10 12 9 12 9 13 8 13 8 14 7 14 7 15 6 15 6 16 5 16 5 17 4 17 4 18 2 18 2 16 3 16 3 15 4 15 4 14 5 14 5 13 6 13 6 12 7 12 7 11 8 11 8 10 9 10 9 9 10 9 10 8 11 8 11 7 13 7 13 8 14 8 14 9 15 9 15 10 16 10 16 11 17 11 17 12 18 12 18 13 19 13 19 14 20 14 20 15 21 15 21 16 22 16'
+      />
+    </svg>
+  );
+}

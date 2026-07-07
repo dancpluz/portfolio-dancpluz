@@ -1,5 +1,6 @@
 import { cookies, headers } from 'next/headers';
 import { getRequestConfig } from 'next-intl/server';
+import { i18nLogger } from '@/lib/logger';
 
 // Automatically detects the best language for the user
 export default getRequestConfig(async () => {
@@ -8,7 +9,9 @@ export default getRequestConfig(async () => {
 
   let locale = cookieLocale;
 
-  if (!locale) {
+  if (locale) {
+    i18nLogger.debug(`[i18n] Locale resolved from cookie: ${locale}`);
+  } else {
     const headersList = await headers();
     const acceptLanguage = headersList.get('accept-language');
     if (acceptLanguage) {
@@ -16,14 +19,27 @@ export default getRequestConfig(async () => {
       
       if (['en', 'pt'].includes(preferredLanguage)) {
         locale = preferredLanguage;
+        i18nLogger.debug(`[i18n] Locale resolved from accept-language header: ${locale}`);
       }
     }
   }
 
-  locale = locale || 'en';
+  if (!locale) {
+    locale = 'en';
+    i18nLogger.debug(`[i18n] No locale detected, falling back to default: ${locale}`);
+  }
 
-  return {
-    locale,
-    messages: (await import(`./${locale}`)).default
-  };
+  try {
+    return {
+      locale,
+      messages: (await import(`./${locale}`)).default
+    };
+  } catch (err) {
+    i18nLogger.error(`[i18n] Failed to load messages for locale "${locale}": ${err}`);
+    return {
+      locale: 'en',
+      messages: (await import('./en')).default
+    };
+  }
 });
+

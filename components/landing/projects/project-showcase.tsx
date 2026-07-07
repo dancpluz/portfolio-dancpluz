@@ -2,14 +2,16 @@
 
 import { useState, useRef, useEffect, useMemo, useCallback, memo } from 'react';
 import Image from 'next/image';
-import { lerp, isGif } from '@/lib/utils';
+import { lerp, isGif, formatDateLocal } from '@/lib/utils';
+import BracketText from '@/components/ui/bracket-text';
 import FlipText from '../../extra/flip-text';
 import { Project } from '@/types/api';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { LineReveal } from '../../motion/reveal';
 import { AnimatePresence, m } from 'motion/react';
 import { ArrowRight } from '../../ui/svg';
 import TransitionLink from '../../transition-link';
+import { useIsTouch } from '@/hooks/use-is-touch';
 
 export default function ProjectShowcase({
   projects = [],
@@ -25,6 +27,7 @@ export default function ProjectShowcase({
     });
   }, [projects]);
 
+  const isTouch = useIsTouch();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -51,6 +54,8 @@ export default function ProjectShowcase({
   }, []);
 
   useEffect(() => {
+    // Cursor-follow preview is pointer-only; touch devices get inline covers.
+    if (isTouch) return;
     const animate = () => {
       smoothPos.current = {
         x: lerp(smoothPos.current.x, mousePos.current.x, 0.15),
@@ -67,9 +72,10 @@ export default function ProjectShowcase({
     return () => {
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
-  }, []);
+  }, [isTouch]);
 
   useEffect(() => {
+    if (isTouch) return;
     const container = containerRef.current;
     if (!container) return;
 
@@ -84,7 +90,7 @@ export default function ProjectShowcase({
 
     container.addEventListener('mousemove', handleMouseMove, { passive: true });
     return () => container.removeEventListener('mousemove', handleMouseMove);
-  }, []);
+  }, [isTouch]);
 
   useEffect(() => {
     updateContainerRect();
@@ -115,40 +121,42 @@ export default function ProjectShowcase({
 
   return (
     <div ref={containerRef} className='relative w-full mx-auto'>
-      <div
-        ref={cursorRef}
-        className='pointer-events-none fixed z-20 overflow-hidden shadow-2xl'
-        style={{
-          left: containerRect.current?.left ?? 0,
-          top: containerRect.current?.top ?? 0,
-          opacity: isVisible ? 1 : 0,
-          scale: isVisible ? 1 : 0.8,
-          transition:
-            'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), scale 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        }}
-      >
-        <div className='relative aspect-3/2 w-[360px] pixel-corners-big bg-secondary overflow-hidden'>
-          {sortedProjects.map((project, index) => {
-            if (!visibleImageIndices.has(index)) return null;
-            return (
-              <Image
-                key={`img-${project.id}`}
-                src={project.coverUrl || '/placeholder.svg'}
-                alt={locale === 'en' ? project.titleEn : project.titlePt}
-                fill
-                unoptimized={isGif(project.coverUrl)}
-                className='absolute inset-0 w-full h-full object-cover transition-all duration-500 ease-out'
-                style={{
-                  opacity: hoveredIndex === index ? 1 : 0,
-                  scale: hoveredIndex === index ? 1 : 1.1,
-                  filter: hoveredIndex === index ? 'none' : 'blur(10px)',
-                }}
-              />
-            );
-          })}
-          <div className='absolute inset-0 bg-linear-to-t from-background/20 to-transparent' />
+      {!isTouch && (
+        <div
+          ref={cursorRef}
+          className='pointer-events-none fixed z-20 overflow-hidden shadow-2xl'
+          style={{
+            left: containerRect.current?.left ?? 0,
+            top: containerRect.current?.top ?? 0,
+            opacity: isVisible ? 1 : 0,
+            scale: isVisible ? 1 : 0.8,
+            transition:
+              'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), scale 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          }}
+        >
+          <div className='relative aspect-3/2 w-[360px] pixel-corners-big bg-secondary overflow-hidden'>
+            {sortedProjects.map((project, index) => {
+              if (!visibleImageIndices.has(index)) return null;
+              return (
+                <Image
+                  key={`img-${project.id}`}
+                  src={project.coverUrl || '/placeholder.svg'}
+                  alt={locale === 'en' ? project.titleEn : project.titlePt}
+                  fill
+                  unoptimized={isGif(project.coverUrl)}
+                  className='absolute inset-0 w-full h-full object-cover transition-all duration-500 ease-out'
+                  style={{
+                    opacity: hoveredIndex === index ? 1 : 0,
+                    scale: hoveredIndex === index ? 1 : 1.1,
+                    filter: hoveredIndex === index ? 'none' : 'blur(10px)',
+                  }}
+                />
+              );
+            })}
+            <div className='absolute inset-0 bg-linear-to-t from-background/20 to-transparent' />
+          </div>
         </div>
-      </div>
+      )}
 
       <div className='space-y-0'>
         {sortedProjects.map((project, index) => (
@@ -157,6 +165,7 @@ export default function ProjectShowcase({
             project={project}
             index={index}
             isHovered={hoveredIndex === index}
+            showInlineCover={isTouch}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           />
@@ -174,21 +183,21 @@ function ProjectRow({
   project,
   index,
   isHovered,
+  showInlineCover = false,
   onMouseEnter,
   onMouseLeave,
 }: Readonly<{
   project: Project;
   index: number;
   isHovered: boolean;
+  showInlineCover?: boolean;
   onMouseEnter: (index: number) => void;
   onMouseLeave: () => void;
 }>) {
   const locale = useLocale();
+  const t = useTranslations('projects');
   const formattedDate = useMemo(() => {
-    const d = new Date(project.date);
-    if (Number.isNaN(d.getTime())) return project.date;
-    const month = (d.getMonth() + 1).toString().padStart(2, '0');
-    return `${month} / ${d.getFullYear()}`;
+    return formatDateLocal(project.date, locale, true);
   }, [project.date]);
 
   const accentColor = useMemo(() => {
@@ -210,6 +219,19 @@ function ProjectRow({
     >
       <LineReveal className='bg-foreground/50' delay={index * 0.1} />
       <div className='relative py-5 transition-all duration-300 ease-out'>
+        {showInlineCover && (
+          <div className='relative aspect-3/2 w-full pixel-corners-big bg-secondary overflow-hidden mb-3'>
+            <Image
+              src={project.coverUrl || '/placeholder.svg'}
+              alt={locale === 'en' ? project.titleEn : project.titlePt}
+              fill
+              sizes='100vw'
+              unoptimized={isGif(project.coverUrl)}
+              className='object-cover'
+            />
+            <div className='absolute inset-0 bg-linear-to-t from-background/20 to-transparent' />
+          </div>
+        )}
         <div className='relative flex items-stretch justify-between gap-4'>
           <div className='flex-1 min-w-0'>
             <div className='inline-flex items-center gap-2'>
@@ -234,10 +256,11 @@ function ProjectRow({
                 isHovered={isHovered}
               />
               {project.projectType && (
-                <div className='px-2 py-0.5 text-lg font-heading font-bold tracking-wider text-foreground'>
-                  <span className={accentColor}>[</span> {project.projectType}{' '}
-                  <span className={accentColor}>]</span>
-                </div>
+                <BracketText
+                  text={project.projectType}
+                  accentClass={accentColor}
+                  className='px-2 py-0.5'
+                />
               )}
             </div>
             <p
@@ -252,11 +275,16 @@ function ProjectRow({
             >
               {formattedDate}
             </span>
-            {project.client && (
+            {((locale === 'en' ? project.clientEn : project.clientPt) ||
+              project.clientPt ||
+              project.clientEn) && (
               <span
                 className={`text-xs font-heading font-bold tabular-nums transition-all duration-300 ease-out`}
               >
-                made for {project.client}
+                {t('made_for')}{' '}
+                {locale === 'en'
+                  ? project.clientEn || project.clientPt
+                  : project.clientPt || project.clientEn}
               </span>
             )}
           </div>

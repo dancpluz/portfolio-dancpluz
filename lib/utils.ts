@@ -7,6 +7,7 @@ import slugify from 'slugify';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { ROUTES } from './constant';
+import { serverLogger } from './logger';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -116,20 +117,31 @@ export function parseApiError(err: unknown, objectName: string): string {
       }
   }
 
+  serverLogger.error(
+    `[parseApiError] ${objectName} - status: ${status ?? 'unknown'}, error: ${err}`,
+  );
+
   return errorMessage;
 }
 
 export function formatDateLocal(
   dateInput: string | Date,
   localeStr: string = 'pt',
+  short: boolean = false,
 ): string {
   const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
   if (Number.isNaN(date.getTime())) return '';
 
+  if (short) {
+    return format(date, 'MMM, yyyy', {
+      locale: localeStr === 'pt' ? ptBR : enUS,
+    }).toLowerCase();
+  }
+
   if (localeStr === 'pt') {
-    return format(date, "d 'de' MMMM, yyyy", { locale: ptBR });
+    return format(date, "d 'de' MMMM, yyyy", { locale: ptBR }).toLowerCase();
   } else {
-    return format(date, 'MMMM d, yyyy', { locale: enUS });
+    return format(date, 'MMMM d, yyyy', { locale: enUS }).toLowerCase();
   }
 }
 
@@ -146,24 +158,31 @@ export function processArticleHtml(htmlString: string): {
   headings: Heading[];
   processedHtml: string;
 } {
-  const headings: Heading[] = [];
-  const $ = cheerio.load(htmlString);
+  try {
+    const headings: Heading[] = [];
+    const $ = cheerio.load(htmlString);
 
-  $('h1, h2, h3, h4').each((_, element) => {
-    const level = Number.parseInt(element.tagName.replace('h', ''), 10);
-    const text = $(element).text();
-    const id = slugify(text);
+    $('h1, h2, h3, h4').each((_, element) => {
+      const level = Number.parseInt(element.tagName.replace('h', ''), 10);
+      const text = $(element).text();
+      const id = slugify(text);
 
-    if (text) {
-      $(element).attr('id', id);
+      if (text) {
+        $(element).attr('id', id);
 
-      headings.push({ id, text, level });
-    }
-  });
+        headings.push({ id, text, level });
+      }
+    });
 
-  const processedHtml = $('body').html() || '';
+    const processedHtml = $('body').html() || '';
 
-  return { headings, processedHtml };
+    return { headings, processedHtml };
+  } catch (err) {
+    serverLogger.error(
+      `[processArticleHtml] Failed to process article HTML: ${err}`,
+    );
+    return { headings: [], processedHtml: htmlString };
+  }
 }
 
 export function getFirstParagraphText(htmlString: string): string {

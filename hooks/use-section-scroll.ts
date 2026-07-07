@@ -1,34 +1,34 @@
 import { useLenis } from 'lenis/react';
+import { useCallback } from 'react';
 
 export function useSectionScroll() {
   const lenis = useLenis();
 
-  const handleScroll = (path: string, onClick?: () => void) => {
-    return (e: React.MouseEvent<HTMLAnchorElement | HTMLDivElement>) => {
-      const isHome = globalThis.window?.location.pathname === '/';
+  const handleScroll = useCallback((path: string, onClick?: () => void, timeoutMs: number = 500) => {
+    return (e: React.MouseEvent<HTMLAnchorElement | HTMLDivElement | HTMLButtonElement>) => {
+      const currentPath = globalThis.window?.location.pathname;
+      const pathBase = path.split('#')[0];
+      const isTargetingCurrentPage =
+        path === currentPath ||
+        (path.includes('#') &&
+          (pathBase === currentPath ||
+            (pathBase === '' && currentPath === '/')));
 
-      if (path.includes('#') && isHome) {
+      if (isTargetingCurrentPage) {
         e.preventDefault();
         if (onClick) onClick();
-        const hash = path.substring(path.indexOf('#'));
-        setTimeout(() => {
-          lenis?.scrollTo(hash, { duration: 3 });
-        }, 500);
-        return;
-      }
 
-      if (path === '/' && isHome) {
-        e.preventDefault();
-        if (onClick) onClick();
+        const target = path.includes('#') ? path.substring(path.indexOf('#')) : 0;
+
         setTimeout(() => {
-          lenis?.scrollTo(0, { duration: 3 });
-        }, 500);
+          lenis?.scrollTo(target, { duration: 3 });
+        }, timeoutMs);
         return;
       }
 
       if (onClick) onClick();
     };
-  };
+  }, [lenis]);
 
   return handleScroll;
 }

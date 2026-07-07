@@ -2,11 +2,13 @@ import parse, {
   HTMLReactParserOptions,
   domToReact,
   Element,
+  DOMNode,
 } from 'html-react-parser';
 import Image from 'next/image';
 import Link from 'next/link';
 import CodeRenderer from './code-renderer';
 import { isGif } from '@/lib/utils';
+import { PixelPoint } from '@/components/ui/svg';
 
 type ArticleRendererProps = {
   dirtyHtml: string;
@@ -14,8 +16,9 @@ type ArticleRendererProps = {
 
 const renderPre = (domNode: Element, children: React.ReactNode) => {
   const codeElement = domNode.children?.find(
-    (child) => child instanceof Element && child.name === 'code',
-  ) as Element | undefined;
+    (child): child is Element =>
+      child && 'name' in child && child.name === 'code',
+  );
 
   if (codeElement) {
     const preClassName = domNode.attribs?.class || '';
@@ -26,9 +29,10 @@ const renderPre = (domNode: Element, children: React.ReactNode) => {
       languageRegex.exec(preClassName) || languageRegex.exec(codeClassName);
     const language = languageMatch ? languageMatch[1] : 'text';
 
+    const firstChild = codeElement.children?.[0];
     const codeContent =
-      codeElement.children?.[0] && 'data' in codeElement.children[0]
-        ? (codeElement.children[0].data as string)
+      firstChild && 'data' in firstChild
+        ? ((firstChild as any).data as string)
         : '';
 
     return <CodeRenderer code={codeContent} language={language} />;
@@ -119,22 +123,51 @@ const tagHandlers: Record<
     </blockquote>
   ),
   ul: (_, children) => (
-    <ul className='list-disc list-outside marker:text-accent-1 ml-6 mb-4 space-y-1'>
+    <ul className='list-none ml-2 mb-4 space-y-2'>
       {children}
     </ul>
   ),
   ol: (_, children) => (
-    <ol className='list-decimal marker:text-accent-1 list-outside ml-6 mb-4 space-y-1'>
+    <ol className='list-decimal list-outside ml-6 mb-4 space-y-1'>
       {children}
     </ol>
   ),
-  li: (_, children) => (
-    <li className='mt-1 leading-relaxed text-base md:text-lg'>{children}</li>
-  ),
+  li: (node, children) => {
+    // Calcula o índice relativo apenas entre os elementos <li> para ignorar nós de texto/espaçamentos
+    const parent = node.parent as Element;
+    const parentChildren = parent?.children || [];
+    const liElements = parentChildren.filter(
+      (child) => (child as Element).name === 'li',
+    );
+    const relativeIndex = liElements.indexOf(node);
+
+    const accents = [
+      'text-accent-1',
+      'text-accent-2',
+      'text-accent-3',
+    ];
+    const accentClass = accents[relativeIndex % accents.length];
+
+    if (parent?.name === 'ol') {
+      return (
+        <li className={`mt-1 leading-relaxed text-base md:text-lg marker:${accentClass}`}>
+          {children}
+        </li>
+      );
+    }
+
+    return (
+      <li className='flex gap-3 items-start mt-1 leading-relaxed text-base md:text-lg'>
+        <PixelPoint className={`size-2 shrink-0 mt-3 ${accentClass}`} />
+        <span>{children}</span>
+      </li>
+    );
+  },
   pre: renderPre,
   code: (node, children) => {
     // Só renderiza inline code se NÃO estiver dentro de um <pre>
-    if (!(node.parent instanceof Element && node.parent.name === 'pre')) {
+    const parentNode = node.parent;
+    if (parentNode && 'name' in parentNode && parentNode.name !== 'pre') {
       return (
         <code className='bg-accent-1/20 px-1.5 py-0.5 rounded text-sm font-mono'>
           {children}
@@ -148,17 +181,13 @@ const tagHandlers: Record<
 // 4. A função principal agora é minúscula e limpa
 const options: HTMLReactParserOptions = {
   replace: (domNode) => {
-    if (
-      domNode instanceof Element &&
-      domNode.attribs &&
-      domNode.name in tagHandlers
-    ) {
-      // Pré-processamos os filhos usando o domToReact
-      // @ts-expect-error (O tipo do children pode ser chato no TS aqui)
-      const children = domToReact(domNode.children, options);
+    const element = domNode as Element;
+    if (element.attribs && element.name && element.name in tagHandlers) {
+      // Pré-processamos os filhos usando o domToReact com a tipagem recomendada (v6)
+      const children = domToReact(element.children as DOMNode[], options);
 
       // Chamamos a função correspondente no nosso dicionário
-      return tagHandlers[domNode.name](domNode, children);
+      return tagHandlers[element.name](element, children);
     }
   },
 };
@@ -175,7 +204,7 @@ export default function ArticleRenderer({
 
   return (
     <article className='prose prose-lg max-w-none'>
-      <div className='max-w-3xl mx-auto'>{reactElement}</div>
+      <div className='mx-auto'>{reactElement}</div>
     </article>
   );
 }

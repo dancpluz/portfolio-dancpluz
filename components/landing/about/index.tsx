@@ -1,16 +1,19 @@
-import { ROUTES, MOCK_TESTIMONIALS } from '@/lib/constant';
+import { ROUTES, MOCK_TESTIMONIALS, SECTION_TITLE_CLASS } from '@/lib/constant';
 import { getSectionId } from '@/lib/utils';
 import { getTestimonials } from '@/actions/testimonials';
 import FlipText from '../../extra/flip-text';
 import Testimonials from './testimonials';
 import { getPolaroids } from '@/actions/polaroids';
-import Myself from './myself';
+import { getExperience } from '@/actions/experience';
+import Timeline from './timeline';
+import AboutIntro from './intro';
 import { getTranslations } from 'next-intl/server';
 
 export default async function About() {
-  const [testimonials, polaroids, t] = await Promise.all([
+  const [testimonials, polaroids, experience, t] = await Promise.all([
     getTestimonials(),
     getPolaroids(),
+    getExperience(),
     getTranslations('about')
   ]);
 
@@ -24,8 +27,17 @@ export default async function About() {
       id={getSectionId(ROUTES.about)}
       className='flex w-full flex-col'
     >
-      <FlipText text={t('title')} className='font-heading text-8xl' />
-      <Myself polaroids={polaroids.data || []} />
+      <FlipText text={t('title')} className={SECTION_TITLE_CLASS} />
+      <AboutIntro
+        name={t('name')}
+        tagline={t('tagline')}
+        polaroids={polaroids.data || []}
+      />
+      {experience.data && experience.data.length > 0 && (
+        <Timeline
+          experiences={experience.data}
+        />
+      )}
       <Testimonials testimonials={displayTestimonials} />
     </section>
   );

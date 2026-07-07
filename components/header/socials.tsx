@@ -2,25 +2,17 @@
 
 import { useMenu } from '@/hooks/use-menu';
 import Link from 'next/link';
-import { useTheme } from 'next-themes';
 import { m } from 'motion/react';
 import { Reveal } from '../motion/reveal';
-import { useState, useEffect } from 'react';
 import MotionImage from '../motion/motion-image';
 
 export default function Socials() {
   const { socials, isOpen } = useMenu();
-  const { theme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const delay = isOpen ? 1 : 0.3;
 
   return (
-    <div className='px-6 py-4 border-t border-foreground text-foreground flex flex-col items-center justify-center h-full'>
+    <div className='px-6 py-4 border-t border-foreground text-foreground flex flex-col gap-4 md:gap-6 items-center justify-center h-full tracking-wider'>
       <ul className='w-full flex items-center justify-around gap-2 h-full'>
         {socials.map((social) => (
           <m.li
@@ -47,9 +39,7 @@ export default function Socials() {
                 width={24}
                 height={24}
                 src={social.iconUrl}
-                style={{
-                  filter: mounted && theme === 'dark' ? 'invert(1)' : '',
-                }}
+                className='theme-invert-0'
                 alt={social.iconAlt}
               />
               <Reveal
@@ -58,7 +48,7 @@ export default function Socials() {
                 direction='up'
                 exit={{ opacity: 0, y: 40 }}
               >
-                <p className='underline-magical font-heading text-lg'>
+                <p className='underline-magical font-heading text-lg hidden sm:block'>
                   {social.text}
                 </p>
               </Reveal>
@@ -66,7 +56,7 @@ export default function Socials() {
           </m.li>
         ))}
       </ul>
-      <div className='w-full flex items-center justify-center'>
+      <div className='w-full flex items-center justify-center mt-4 md:mt-6'>
         <Reveal
           delay={delay + 0.6}
           duration={1}

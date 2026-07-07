@@ -27,22 +27,31 @@ const pt: Translation = {
     projects: 'Obras',
     about: 'Sobre',
     contact: 'Contato',
+    stack: 'Stack',
   },
   projects: {
     title: 'Obras',
     not_found: 'Projeto não encontrado.',
+    made_for: 'feito para',
   },
   about: {
     title: 'Sobre',
+    name: 'Daniel Luz',
+    tagline: 'Um desenvolvedor que não se prende a rótulos, _a criatividade é o limite._',
+    see_more: 'Ver mais',
+    see_less: 'Ver menos',
   },
   contact: {
     title: 'Contato',
     lets_talk_1: 'BORA',
     lets_talk_2: 'CONVERSAR?',
   },
-  technologies: {
-    title: 'Tecnologias',
-    text: 'Brinquedos que uso',
+  stack: {
+    title: 'Stack',
+  },
+  footer: {
+    back_to_top: '\u2191 Voltar ao topo',
+    rights: '\u00A9 {year} Daniel Luz',
   },
 };
 

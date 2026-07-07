@@ -1,0 +1,162 @@
+'use client';
+
+import { useRef, useMemo } from 'react';
+import { m, useInView, Transition, Easing, stagger } from 'motion/react';
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+type AnimationSnapshot = Record<string, string | number>;
+
+export interface BlurTextProps {
+  text?: string;
+  /** Stagger between tokens in **milliseconds**. Default 200. */
+  delay?: number;
+  className?: string;
+  animateBy?: 'words' | 'letters';
+  direction?: 'top' | 'bottom';
+  threshold?: number;
+  rootMargin?: string;
+  animationFrom?: AnimationSnapshot;
+  animationTo?: AnimationSnapshot[];
+  easing?: Easing | Easing[];
+  onAnimationComplete?: () => void;
+  /** Duration of a single animation step in seconds. Default 0.35. */
+  stepDuration?: number;
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+/**
+ * Builds a keyframes object accepted by Motion's `animate` prop.
+ * Each key maps to an array: [fromValue, ...stepValues].
+ */
+function buildKeyframes(
+  from: AnimationSnapshot,
+  steps: AnimationSnapshot[],
+): Record<string, (string | number)[]> {
+  const keys = new Set<string>([
+    ...Object.keys(from),
+    ...steps.flatMap((s) => Object.keys(s)),
+  ]);
+
+  const keyframes: Record<string, (string | number)[]> = {};
+  keys.forEach((k) => {
+    keyframes[k] = [from[k], ...steps.map((s) => s[k])];
+  });
+  return keyframes;
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
+
+export default function BlurText({
+  text = '',
+  delay = 200,
+  className = '',
+  animateBy = 'words',
+  direction = 'top',
+  threshold = 0.1,
+  rootMargin = '0px',
+  animationFrom,
+  animationTo,
+  easing = (t: number) => t,
+  onAnimationComplete,
+  stepDuration = 0.35,
+}: Readonly<BlurTextProps>) {
+  const ref = useRef<HTMLParagraphElement>(null);
+
+  const inView = useInView(ref, {
+    once: true,
+    amount: threshold,
+    margin: rootMargin as `${number}px ${number}px ${number}px ${number}px`,
+  });
+
+  const segmentsWithIds = useMemo(() => {
+    const rawElements = animateBy === 'words' ? text.split(' ') : text.split('');
+    return rawElements.map((segment, index) => ({
+      id: `blur-${animateBy}-${index}-${segment}`,
+      segment,
+    }));
+  }, [text, animateBy]);
+
+  const defaultFrom = useMemo<AnimationSnapshot>(
+    () =>
+      direction === 'top'
+        ? { filter: 'blur(10px)', opacity: 0, y: -50 }
+        : { filter: 'blur(10px)', opacity: 0, y: 50 },
+    [direction],
+  );
+
+  const defaultTo = useMemo<AnimationSnapshot[]>(
+    () => [
+      { filter: 'blur(5px)', opacity: 0.5, y: direction === 'top' ? 5 : -5 },
+      { filter: 'blur(0px)', opacity: 1, y: 0 },
+    ],
+    [direction],
+  );
+
+  const fromSnapshot = animationFrom ?? defaultFrom;
+  const toSnapshots = animationTo ?? defaultTo;
+
+  const stepCount = toSnapshots.length + 1;
+  const totalDuration = stepDuration * (stepCount - 1);
+  const times = Array.from({ length: stepCount }, (_, i) =>
+    stepCount === 1 ? 0 : i / (stepCount - 1),
+  );
+
+  const animateKeyframes = useMemo(
+    () => buildKeyframes(fromSnapshot, toSnapshots),
+    [JSON.stringify(fromSnapshot), JSON.stringify(toSnapshots)],
+  );
+
+  const parentVariants = useMemo(
+    () => ({
+      hidden: {},
+      visible: {
+        transition: { delayChildren: stagger(delay / 1000) },
+      },
+    }),
+    [delay],
+  );
+
+  return (
+    <m.p
+      ref={ref}
+      className={`flex flex-wrap ${className}`}
+      aria-label={text}
+      initial='hidden'
+      animate={inView ? 'visible' : 'hidden'}
+      variants={parentVariants}
+    >
+      {segmentsWithIds.map((item, index) => {
+        const spanTransition: Transition = {
+          duration: totalDuration,
+          times,
+          ease: easing,
+        };
+
+        const childVariants = {
+          hidden: fromSnapshot,
+          visible: { ...animateKeyframes, transition: spanTransition },
+        };
+
+        return (
+          <m.span
+            key={item.id}
+            aria-hidden='true'
+            variants={childVariants}
+            onAnimationComplete={
+              index === segmentsWithIds.length - 1 ? onAnimationComplete : undefined
+            }
+            style={{
+              display: 'inline-block',
+              willChange: 'transform, filter, opacity',
+            }}
+          >
+            {item.segment === ' ' ? '\u00A0' : item.segment}
+            {animateBy === 'words' && index < segmentsWithIds.length - 1 && '\u00A0'}
+          </m.span>
+        );
+      })}
+    </m.p>
+  );
+}

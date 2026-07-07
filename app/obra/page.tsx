@@ -1,5 +1,6 @@
+import { ROUTES } from '@/lib/constant';
 import { redirect } from 'next/navigation';
 
 export default function ObraPage() {
-  redirect('/#projects');
+  redirect(ROUTES.projects.path);
 }

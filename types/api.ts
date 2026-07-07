@@ -38,7 +38,8 @@ export interface Project {
   date: IsoDateString;
   categories: ProjectsCategoriesOptions[];
   medias: string[];
-  client: string;
+  clientEn: string;
+  clientPt: string;
 }
 
 export interface Testimonial {
@@ -56,4 +57,15 @@ export interface Polaroid {
   photoUrl: string;
   textEn: string;
   textPt: string;
+}
+
+export interface Experience {
+  id: string;
+  titleEn: string;
+  titlePt: string;
+  descriptionEn: string;
+  descriptionPt: string;
+  startDate: IsoDateString;
+  iconUrl: string;
+  iconAlt: string;
 }

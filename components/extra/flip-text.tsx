@@ -1,8 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { m, type Variants } from 'motion/react';
-import { stagger } from 'motion';
+import { m, type Variants, stagger } from 'motion/react';
 import TransitionLink from '../transition-link';
 
 interface FlipTextProps {

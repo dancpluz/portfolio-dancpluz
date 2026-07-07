@@ -6,7 +6,6 @@ import React, {
   useMemo,
   useState,
   useRef,
-  useEffect,
 } from 'react';
 import { cn, formatDateLocal } from '@/lib/utils';
 import { Testimonial } from '@/types/api';
@@ -14,9 +13,10 @@ import Link from 'next/link';
 import CanvasImage, { type ImageEffect } from '@/components/extra/canvas-image';
 import { useAutoFitText } from '@/hooks/use-auto-fit-text';
 import { useLocale } from 'next-intl';
-import { AnimatePresence, m } from 'motion/react';
+import { AnimatePresence, m, stagger, Variants } from 'motion/react';
 import { ExternalLink, Heart, Share } from '@/components/ui/svg';
 import { useClickOutside } from '@/hooks/use-click-outside';
+import { useMediaQuery } from '@/hooks/use-media-query';
 
 const PROFILE_EFFECTS: ImageEffect[] = [
   {
@@ -162,7 +162,6 @@ const TestimonialCard = memo(function TestimonialCard({
         y: isSelected ? 0 : y,
         skewY: isSelected ? 0 : SKEW,
         scale: isSelected ? 1.05 : 1,
-        zIndex: isSelected ? 50 : index,
       }}
       transition={{
         type: 'spring',
@@ -170,7 +169,7 @@ const TestimonialCard = memo(function TestimonialCard({
         damping: 28,
       }}
       className={cn(
-        '[grid-area:stack] relative flex h-auto min-h-[140px] sm:min-h-[180px] w-[260px] sm:w-[380px] select-none flex-col pixel-corners-border backdrop-blur-sm px-3 sm:px-4 py-3 sm:py-4 cursor-pointer font-heading transition-[filter] duration-500',
+        'relative flex h-auto min-h-[140px] sm:min-h-[180px] w-[260px] sm:w-[380px] select-none flex-col pixel-corners-border backdrop-blur-sm px-3 sm:px-4 py-3 sm:py-4 cursor-pointer font-heading transition-[filter] duration-500',
         isSelected && 'shadow-xl z-50',
         !isLast && !isSelected && OVERLAY_CLASSES,
       )}
@@ -255,14 +254,7 @@ export default function Testimonials({
   const total = testimonials.length;
   const focusedIndex = selectedIndex === null ? hoveredIndex : null;
 
-  const [isSm, setIsSm] = useState(false);
-
-  useEffect(() => {
-    const updateSize = () => setIsSm(globalThis.window.innerWidth >= 640);
-    updateSize();
-    globalThis.addEventListener('resize', updateSize);
-    return () => globalThis.removeEventListener('resize', updateSize);
-  }, []);
+  const isSm = useMediaQuery('(min-width: 640px)');
 
   const cardPositions = useMemo(() => {
     const xStep = isSm ? SM_X_STEP : X_STEP;
@@ -311,27 +303,62 @@ export default function Testimonials({
 
   useClickOutside(containerRef, handleDeselect, selectedIndex !== null);
 
+  const parentVariants = {
+    hidden: {},
+    visible: {
+      transition: {
+        delayChildren: stagger(0.75),
+      },
+    },
+  };
+
+  const childVariants: Variants = {
+    hidden: { opacity: 0, x: 120, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      scale: 1,
+      transition: {
+        duration: 3.2,
+        ease: [0.16, 1, 0.3, 1] as const,
+      },
+    },
+  };
+
   return (
-    <div
+    <m.div
       ref={containerRef}
-      className='grid [grid-template-areas:"stack"] place-items-center opacity-100 animate-in fade-in-0 duration-700 mx-auto w-fit my-16'
+      className='grid [grid-template-areas:"stack"] place-items-center mx-auto w-fit my-20 md:my-48 perspective-[1000px]'
+      variants={parentVariants}
+      initial='hidden'
+      whileInView='visible'
+      viewport={{ once: false, margin: '-10% 0px -10% 0px' }}
     >
-      {testimonials.map((testimonial, index) => (
-        <TestimonialCard
-          key={testimonial.id}
-          testimonial={testimonial}
-          index={index}
-          x={cardPositions[index].x}
-          y={cardPositions[index].y}
-          isLast={index === total - 1}
-          isSelected={selectedIndex === index}
-          isSm={isSm}
-          onSelect={handleSelect}
-          onDeselect={handleDeselect}
-          onHover={() => handleHover(index)}
-          onLeave={handleLeave}
-        />
-      ))}
-    </div>
+      {testimonials.map((testimonial, index) => {
+        const isSelected = selectedIndex === index;
+        return (
+          <m.div
+            key={testimonial.id}
+            className='[grid-area:stack]'
+            style={{ zIndex: isSelected ? 50 : index }}
+            variants={childVariants}
+          >
+            <TestimonialCard
+              testimonial={testimonial}
+              index={index}
+              x={cardPositions[index].x}
+              y={cardPositions[index].y}
+              isLast={index === total - 1}
+              isSelected={isSelected}
+              isSm={isSm}
+              onSelect={handleSelect}
+              onDeselect={handleDeselect}
+              onHover={() => handleHover(index)}
+              onLeave={handleLeave}
+            />
+          </m.div>
+        );
+      })}
+    </m.div>
   );
 }

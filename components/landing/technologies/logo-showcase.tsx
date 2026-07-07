@@ -7,14 +7,13 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { AnimatePresence, m } from 'motion/react';
+import { AnimatePresence, m, stagger } from 'motion/react';
 import { shuffleArray } from '@/lib/utils';
-
 import { Technology } from '@/types/api';
 import Image from 'next/image';
-import { useTheme } from 'next-themes';
 import { useLocale } from 'next-intl';
 import Tooltip from '../../ui/tooltip';
+import { useMediaQuery } from '@/hooks/use-media-query';
 
 const CYCLE_INTERVAL = 6000;
 const COLUMN_DELAY = 600;
@@ -59,27 +58,27 @@ const LogoColumn: React.FC<LogoColumnProps> = React.memo(
       () => logos[currentIndex],
       [logos, currentIndex],
     );
-    const { theme } = useTheme();
     const locale = useLocale();
-    const [mounted, setMounted] = useState(false);
-
-    useEffect(() => {
-      setMounted(true);
-    }, []);
 
     if (!currentLogo) return null;
 
     const innerContent = (
       <m.div
         className='relative h-14 w-24 overflow-hidden md:h-24 md:w-48 cursor-pointer select-none'
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        whileTap={{ scale: 0.85 }}
-        transition={{
-          delay: index * 0.08,
-          duration: 0.4,
-          ease: [0.25, 0.46, 0.45, 0.94], // easeOutQuad — smooth settle
-          scale: { type: 'spring', stiffness: 400, damping: 15 },
+        variants={{
+          hidden: { opacity: 0, y: 30 },
+          visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+              duration: 0.4,
+              ease: [0.25, 0.46, 0.45, 0.94] as const,
+            },
+          },
+        }}
+        whileTap={{
+          scale: 0.85,
+          transition: { type: 'spring', stiffness: 400, damping: 15 },
         }}
       >
         <AnimatePresence mode='popLayout'>
@@ -116,9 +115,8 @@ const LogoColumn: React.FC<LogoColumnProps> = React.memo(
               style={{
                 width: 'auto',
                 height: 'auto',
-                filter: mounted && theme === 'dark' ? 'invert(0)' : 'invert(1)',
               }}
-              className='pointer-events-none h-20 w-20 max-h-[80%] max-w-[80%] object-contain md:h-32 md:w-32'
+              className='pointer-events-none h-20 w-20 max-h-[80%] max-w-[80%] object-contain md:h-32 md:w-32 theme-invert-1 transition-all duration-300'
             />
           </m.div>
         </AnimatePresence>
@@ -126,8 +124,6 @@ const LogoColumn: React.FC<LogoColumnProps> = React.memo(
     );
 
     const tooltipText = locale === 'en' ? currentLogo.tooltipEn : currentLogo.tooltipPt;
-
-    console.log(currentLogo);
 
     return tooltipText ? (
       <Tooltip name={tooltipText} alt={currentLogo.alt}>{innerContent}</Tooltip>
@@ -145,9 +141,19 @@ interface LogoShowcaseProps {
 }
 
 export default function LogoShowcase({
-  columnCount = 2,
+  columnCount = 5,
   logos,
 }: Readonly<LogoShowcaseProps>) {
+  // Responsive column count: too many logos overflow narrow viewports.
+  // `columnCount` is the desktop (lg+) maximum; step down on smaller screens.
+  const isSm = useMediaQuery('(min-width: 640px)');
+  const isLg = useMediaQuery('(min-width: 1024px)');
+  const effectiveColumnCount = useMemo(() => {
+    if (isLg) return columnCount;
+    if (isSm) return Math.min(3, columnCount);
+    return Math.min(2, columnCount);
+  }, [isLg, isSm, columnCount]);
+
   const [logoSets, setLogoSets] = useState<
     { id: string; items: Technology[] }[]
   >([]);
@@ -172,16 +178,28 @@ export default function LogoShowcase({
   useEffect(() => {
     if (!logos || logos.length === 0) return;
 
-    const distributedLogos = distributeLogos(logos, columnCount);
+    const distributedLogos = distributeLogos(logos, effectiveColumnCount);
     const columnsWithIds = distributedLogos.map((items, i) => ({
       id: `column-${i}-${items.map((l) => l.id).join('-')}`,
       items,
     }));
     setLogoSets(columnsWithIds);
-  }, [logos, columnCount]);
+  }, [logos, effectiveColumnCount]);
 
   return (
-    <div className='flex w-full justify-center'>
+    <m.div
+      key={logoSets.length}
+      className='flex w-full justify-center'
+      initial='hidden'
+      whileInView='visible'
+      viewport={{ once: false, margin: '0px 0px -50px 0px' }}
+      variants={{
+        hidden: {},
+        visible: {
+          transition: { delayChildren: stagger(0.08) },
+        },
+      }}
+    >
       {logoSets.map((column, index) => (
         <LogoColumn
           key={column.id}
@@ -190,6 +208,6 @@ export default function LogoShowcase({
           currentTime={currentTime}
         />
       ))}
-    </div>
+    </m.div>
   );
 }

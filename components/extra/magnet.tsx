@@ -2,6 +2,7 @@
 
 import React, { useRef, useState, ReactNode, HTMLAttributes } from 'react';
 import { m } from 'motion/react';
+import { useIsTouch } from '@/hooks/use-is-touch';
 
 interface MagnetProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
@@ -24,9 +25,11 @@ export default function Magnet({
   const [isActive, setIsActive] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const magnetRef = useRef<HTMLDivElement>(null);
+  const isTouch = useIsTouch();
 
   React.useEffect(() => {
-    if (disabled) {
+    // No cursor on touch — render the child static (no magnetic pull).
+    if (disabled || isTouch) {
       setPosition({ x: 0, y: 0 });
       return;
     }
@@ -59,7 +62,7 @@ export default function Magnet({
     return () => {
       globalThis.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [padding, disabled, magnetStrength]);
+  }, [padding, disabled, magnetStrength, isTouch]);
 
   return (
     <div ref={magnetRef} className={wrapperClassName} {...props}>

@@ -46,7 +46,7 @@ export const DEFAULT_SOCIALS: Social[] = [
     id: 'instagram-default',
     url: 'https://www.instagram.com/dancpluz/',
     text: 'dancpluz',
-    subtextEn: 'Just don\'t stalk me too much',
+    subtextEn: "Just don't stalk me too much",
     subtextPt: 'Pode dar uma olhada, só não stalkeia muito',
     iconUrl:
       'https://pb.ruadebaixo.com.br/api/files/egcnloaglxen3wj/oql1nudbi61l6fo/instagram_7pan57ahig.svg',
@@ -54,11 +54,37 @@ export const DEFAULT_SOCIALS: Social[] = [
   },
 ];
 
+// Identity labels for the About intro's floating "balloon" field.
+// Rendered between quotes and popped subtly — labels that never stick.
+export const ABOUT_LABELS: string[] = [
+  'programador',
+  'frontend',
+  'backend',
+  'fullstack',
+  'designer',
+  'dev',
+  'criativo',
+  'react',
+  'typescript',
+  'engenheiro',
+  'artista',
+  'curioso',
+  'maker',
+  'indie',
+  'generalista',
+  'ui',
+  'ux',
+  'sonhador',
+  'pixel-perfect',
+  'nerd',
+];
+
 export const ROUTES = {
   landing: {
     path: '/',
     text: 'Início',
     media: '/video/universe.webm',
+    menu: false,
   },
   // blog: {
   //   path: '/blog',
@@ -69,18 +95,29 @@ export const ROUTES = {
     path: '/#projects',
     text: 'Obras',
     media: '/video/joias.webm',
+    menu: true,
+  },
+  stack: {
+    path: '/#stack',
+    text: 'Stack',
+    media: '/video/screensaver.webm',
+    menu: false,
   },
   about: {
     path: '/#about',
     text: 'Sobre',
     media: '/video/screensaver.webm',
+    menu: true,
   },
   contact: {
     path: '/#contact',
     text: 'Contato',
     media: '/video/orelhao.webm',
+    menu: true,
   },
 } as const;
+
+export const SECTION_TITLE_CLASS = 'font-heading text-6xl sm:text-7xl lg:text-8xl';
 
 export const MOCK_TESTIMONIALS: Testimonial[] = [
   {
